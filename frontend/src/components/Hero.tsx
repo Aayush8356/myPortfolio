@@ -1,8 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
+
+interface ContactDetails {
+  email: string;
+  phone: string;
+  location: string;
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
+  resume?: string;
+}
 
 const Hero: React.FC = () => {
+  const [contactDetails, setContactDetails] = useState<ContactDetails>({
+    email: '',
+    phone: '',
+    location: '',
+    linkedin: '',
+    github: '',
+    twitter: '',
+    resume: ''
+  });
+
+  useEffect(() => {
+    fetchContactDetails();
+  }, []);
+
+  const fetchContactDetails = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/contact-details`);
+      if (response.ok) {
+        const data = await response.json();
+        setContactDetails(data);
+      }
+    } catch (error) {
+      console.error('Error fetching contact details:', error);
+    }
+  };
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -11,12 +48,18 @@ const Hero: React.FC = () => {
   };
 
   const downloadResume = () => {
-    const link = document.createElement('a');
-    link.href = '/resume.pdf';
-    link.download = 'Resume.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (contactDetails.resume) {
+      // If resume is uploaded via admin panel
+      window.open(`${API_BASE_URL}/resume/download`, '_blank');
+    } else {
+      // Fallback to static resume
+      const link = document.createElement('a');
+      link.href = '/resume.pdf';
+      link.download = 'Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -63,23 +106,27 @@ const Hero: React.FC = () => {
           </div>
 
           <div className="flex justify-center space-x-8">
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"
-            >
-              <Github className="w-8 h-8" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"
-              style={{ animationDelay: '0.5s' }}
-            >
-              <Linkedin className="w-8 h-8" />
-            </a>
+            {contactDetails.github && (
+              <a
+                href={contactDetails.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"
+              >
+                <Github className="w-8 h-8" />
+              </a>
+            )}
+            {contactDetails.linkedin && (
+              <a
+                href={contactDetails.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"
+                style={{ animationDelay: '0.5s' }}
+              >
+                <Linkedin className="w-8 h-8" />
+              </a>
+            )}
             <button
               onClick={() => scrollToSection('contact')}
               className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"

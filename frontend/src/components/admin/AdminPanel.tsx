@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL } from '../../config/api';
 
@@ -56,6 +56,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
   });
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showProjectEditor, setShowProjectEditor] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumeUploading, setResumeUploading] = useState(false);
+  const [currentResume, setCurrentResume] = useState<{hasResume: boolean, resumeUrl: string | null}>({
+    hasResume: false,
+    resumeUrl: null
+  });
 
   useEffect(() => {
     if (activeTab === 'projects') {
@@ -64,6 +70,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       fetchContacts();
     } else if (activeTab === 'contact-details') {
       fetchContactDetails();
+      fetchCurrentResume();
     }
   }, [activeTab]);
 
@@ -128,6 +135,79 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     } catch (error) {
       console.error('Error updating contact details:', error);
       alert('Error updating contact details');
+    }
+  };
+
+  const fetchCurrentResume = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resume/current`);
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentResume(data);
+      }
+    } catch (error) {
+      console.error('Error fetching current resume:', error);
+    }
+  };
+
+  const handleResumeUpload = async () => {
+    if (!resumeFile) {
+      alert('Please select a PDF file first');
+      return;
+    }
+
+    setResumeUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('resume', resumeFile);
+
+      const response = await fetch(`${API_BASE_URL}/resume/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('Resume uploaded successfully!');
+        setResumeFile(null);
+        setCurrentResume({ hasResume: true, resumeUrl: data.resumeUrl });
+        fetchContactDetails(); // Refresh contact details
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Failed to upload resume');
+      }
+    } catch (error) {
+      console.error('Error uploading resume:', error);
+      alert('Error uploading resume');
+    } finally {
+      setResumeUploading(false);
+    }
+  };
+
+  const handleResumeDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete your resume?')) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/resume`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        alert('Resume deleted successfully');
+        setCurrentResume({ hasResume: false, resumeUrl: null });
+        fetchContactDetails(); // Refresh contact details
+      } else {
+        alert('Failed to delete resume');
+      }
+    } catch (error) {
+      console.error('Error deleting resume:', error);
+      alert('Error deleting resume');
     }
   };
 
@@ -461,6 +541,89 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                   <Button onClick={updateContactDetails} className="w-full md:w-auto">
                     Update Contact Details
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Resume Upload Section */}
+            <Card className="mt-6">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <FileText className="w-5 h-5 mr-2" />
+                  Resume Management
+                </h3>
+                
+                {currentResume.hasResume ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+                      <div className="flex items-center">
+                        <FileText className="w-5 h-5 text-green-600 mr-2" />
+                        <span className="text-green-800 dark:text-green-400">Resume is uploaded and active</span>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(`${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf`, '_blank')}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          Preview
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(`${API_BASE_URL}/resume/download`, '_blank')}
+                        >
+                          <Download className="w-4 h-4 mr-1" />
+                          Download
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleResumeDelete}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md">
+                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500 mb-4">No resume uploaded yet</p>
+                  </div>
+                )}
+
+                {/* Upload New Resume */}
+                <div className="mt-6 space-y-4">
+                  <h4 className="font-medium">Upload New Resume</h4>
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                      className="flex-1"
+                    />
+                    <Button
+                      onClick={handleResumeUpload}
+                      disabled={!resumeFile || resumeUploading}
+                      className="whitespace-nowrap"
+                    >
+                      {resumeUploading ? (
+                        'Uploading...'
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4 mr-2" />
+                          Upload PDF
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Only PDF files are allowed. Maximum file size: 5MB.
+                  </p>
                 </div>
               </CardContent>
             </Card>

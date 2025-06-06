@@ -6,6 +6,7 @@ import authRoutes from './routes/auth';
 import projectRoutes from './routes/projects';
 import contactRoutes from './routes/contact';
 import contactDetailsRoutes from './routes/contactDetails';
+import resumeRoutes from './routes/resume';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/contact-details', contactDetailsRoutes);
+app.use('/api/resume', resumeRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Portfolio API is running!' });
