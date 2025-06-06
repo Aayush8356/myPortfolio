@@ -127,8 +127,8 @@ NODE_ENV=development
 ### Default Admin Credentials
 
 After running `npm run seed`:
-- **Email**: admin@example.com
-- **Password**: admin123
+- **Email**: username
+- **Password**: admin password
 
 ## Usage
 
