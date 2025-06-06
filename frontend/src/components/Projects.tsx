@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Github, ExternalLink } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 interface Project {
   _id: string;
@@ -24,7 +25,7 @@ const Projects: React.FC = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('http://localhost:5002/api/projects');
+      const response = await fetch(`${API_BASE_URL}/projects`);
       if (response.ok) {
         const data = await response.json();
         setProjects(data);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, FileText } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 interface ContactDetails {
   email: string;
@@ -37,7 +38,7 @@ const Contact: React.FC = () => {
 
   const fetchContactDetails = async () => {
     try {
-      const response = await fetch('http://localhost:5002/api/contact-details');
+      const response = await fetch(`${API_BASE_URL}/contact-details`);
       if (response.ok) {
         const data = await response.json();
         setContactDetails(data);
@@ -59,7 +60,7 @@ const Contact: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5002/api/contact', {
+      const response = await fetch(`${API_BASE_URL}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

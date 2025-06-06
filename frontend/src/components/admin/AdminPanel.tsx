@@ -3,6 +3,7 @@ import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
+import { API_BASE_URL } from '../../config/api';
 
 interface Project {
   _id: string;
@@ -68,7 +69,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('http://localhost:5002/api/projects');
+      const response = await fetch(`${API_BASE_URL}/projects`);
       if (response.ok) {
         const data = await response.json();
         setProjects(data);
@@ -80,7 +81,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch('http://localhost:5002/api/contact', {
+      const response = await fetch(`${API_BASE_URL}/contact`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -96,7 +97,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const fetchContactDetails = async () => {
     try {
-      const response = await fetch('http://localhost:5002/api/contact-details');
+      const response = await fetch(`${API_BASE_URL}/contact-details`);
       if (response.ok) {
         const data = await response.json();
         setContactDetails(data);
@@ -108,7 +109,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const updateContactDetails = async () => {
     try {
-      const response = await fetch('http://localhost:5002/api/contact-details', {
+      const response = await fetch(`${API_BASE_URL}/contact-details`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +135,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5002/api/projects/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -154,7 +155,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const markContactAsRead = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5002/api/contact/${id}/read`, {
+      const response = await fetch(`${API_BASE_URL}/contact/${id}/read`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -175,7 +176,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     if (!window.confirm('Are you sure you want to delete this contact?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5002/api/contact/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/contact/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

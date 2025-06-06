@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Save, X } from 'lucide-react';
+import { API_BASE_URL } from '../../config/api';
 
 interface Project {
   _id: string;
@@ -74,8 +75,8 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
       };
 
       const url = project 
-        ? `http://localhost:5002/api/projects/${project._id}`
-        : 'http://localhost:5002/api/projects';
+        ? `${API_BASE_URL}/projects/${project._id}`
+        : `${API_BASE_URL}/projects`;
       
       const method = project ? 'PUT' : 'POST';
 
