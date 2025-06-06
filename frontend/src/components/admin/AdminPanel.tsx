@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL } from '../../config/api';
+import { useToast, ToastContainer } from '../ui/toast';
 
 interface Project {
   _id: string;
@@ -42,6 +43,7 @@ interface AdminPanelProps {
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
+  const { toasts, toast, removeToast } = useToast();
   const [activeTab, setActiveTab] = useState('projects');
   const [projects, setProjects] = useState<Project[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -128,13 +130,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       if (response.ok) {
         const data = await response.json();
         setContactDetails(data);
-        alert('Contact details updated successfully!');
+        toast.success('Contact details updated successfully!', 'Your information has been saved.');
       } else {
-        alert('Failed to update contact details');
+        toast.error('Failed to update contact details', 'Please try again.');
       }
     } catch (error) {
       console.error('Error updating contact details:', error);
-      alert('Error updating contact details');
+      toast.error('Error updating contact details', 'Please check your connection and try again.');
     }
   };
 
@@ -152,7 +154,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const handleResumeUpload = async () => {
     if (!resumeFile) {
-      alert('Please select a PDF file first');
+      toast.warning('No file selected', 'Please select a PDF file first.');
       return;
     }
 
@@ -171,17 +173,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
       if (response.ok) {
         const data = await response.json();
-        alert('Resume uploaded successfully!');
+        toast.success('Resume uploaded successfully!', 'Your resume is now available for download.');
         setResumeFile(null);
         setCurrentResume({ hasResume: true, resumeUrl: data.resumeUrl });
         fetchContactDetails(); // Refresh contact details
       } else {
         const error = await response.json();
-        alert(error.message || 'Failed to upload resume');
+        toast.error('Upload failed', error.message || 'Failed to upload resume. Please try again.');
       }
     } catch (error) {
       console.error('Error uploading resume:', error);
-      alert('Error uploading resume');
+      toast.error('Upload error', 'Please check your connection and try again.');
     } finally {
       setResumeUploading(false);
     }
@@ -199,15 +201,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       });
 
       if (response.ok) {
-        alert('Resume deleted successfully');
+        toast.success('Resume deleted successfully', 'Your resume has been removed.');
         setCurrentResume({ hasResume: false, resumeUrl: null });
         fetchContactDetails(); // Refresh contact details
       } else {
-        alert('Failed to delete resume');
+        toast.error('Failed to delete resume', 'Please try again.');
       }
     } catch (error) {
       console.error('Error deleting resume:', error);
-      alert('Error deleting resume');
+      toast.error('Delete error', 'Please check your connection and try again.');
     }
   };
 
@@ -224,12 +226,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
       if (response.ok) {
         setProjects(projects.filter(p => p._id !== id));
+        toast.success('Project deleted successfully', 'The project has been removed from your portfolio.');
       } else {
-        alert('Failed to delete project');
+        toast.error('Failed to delete project', 'Please try again.');
       }
     } catch (error) {
       console.error('Error deleting project:', error);
-      alert('Error deleting project');
+      toast.error('Delete error', 'Please check your connection and try again.');
     }
   };
 
@@ -286,6 +289,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   return (
     <div className="fixed inset-0 bg-background z-50 overflow-y-auto">
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
       <div className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Admin Panel</h1>

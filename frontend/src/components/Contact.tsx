@@ -22,6 +22,7 @@ const Contact: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
   const [contactDetails, setContactDetails] = useState<ContactDetails>({
     email: 'your.email@example.com',
     phone: '+1 (555) 123-4567',
@@ -58,6 +59,7 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
       const response = await fetch(`${API_BASE_URL}/contact`, {
@@ -77,7 +79,8 @@ const Contact: React.FC = () => {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      setError('Failed to send message. Please check your connection and try again.');
+      setTimeout(() => setError(''), 5000);
     } finally {
       setLoading(false);
     }
@@ -156,6 +159,12 @@ const Contact: React.FC = () => {
               {success && (
                 <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 rounded-md">
                   Message sent successfully! I'll get back to you soon.
+                </div>
+              )}
+              
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 rounded-md">
+                  {error}
                 </div>
               )}
               
