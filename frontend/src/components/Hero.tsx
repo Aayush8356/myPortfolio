@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { Github, Linkedin, Mail, Download } from 'lucide-react';
+import { Github, Linkedin, Mail, Download, Eye } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
 
 interface ContactDetails {
@@ -23,9 +23,11 @@ const Hero: React.FC = () => {
     twitter: '',
     resume: ''
   });
+  const [hasUploadedResume, setHasUploadedResume] = useState(false);
 
   useEffect(() => {
     fetchContactDetails();
+    checkResumeStatus();
   }, []);
 
   const fetchContactDetails = async () => {
@@ -40,6 +42,18 @@ const Hero: React.FC = () => {
     }
   };
 
+  const checkResumeStatus = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resume/current`);
+      if (response.ok) {
+        const data = await response.json();
+        setHasUploadedResume(data.hasResume);
+      }
+    } catch (error) {
+      console.error('Error checking resume status:', error);
+    }
+  };
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -48,17 +62,27 @@ const Hero: React.FC = () => {
   };
 
   const downloadResume = () => {
-    if (contactDetails.resume) {
+    if (hasUploadedResume) {
       // If resume is uploaded via admin panel
       window.open(`${API_BASE_URL}/resume/download`, '_blank');
     } else {
-      // Fallback to static resume
+      // Fallback to static resume in public folder
       const link = document.createElement('a');
       link.href = '/resume.pdf';
-      link.download = 'Resume.pdf';
+      link.download = 'Aayush_Gupta_Resume.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+  };
+
+  const previewResume = () => {
+    if (hasUploadedResume) {
+      // If resume is uploaded via admin panel
+      window.open(`${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf`, '_blank');
+    } else {
+      // Fallback to static resume in public folder
+      window.open('/resume.pdf', '_blank');
     }
   };
 

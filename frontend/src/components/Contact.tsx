@@ -32,9 +32,11 @@ const Contact: React.FC = () => {
     twitter: '',
     resume: ''
   });
+  const [hasUploadedResume, setHasUploadedResume] = useState(false);
 
   useEffect(() => {
     fetchContactDetails();
+    checkResumeStatus();
   }, []);
 
   const fetchContactDetails = async () => {
@@ -46,6 +48,18 @@ const Contact: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching contact details:', error);
+    }
+  };
+
+  const checkResumeStatus = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resume/current`);
+      if (response.ok) {
+        const data = await response.json();
+        setHasUploadedResume(data.hasResume);
+      }
+    } catch (error) {
+      console.error('Error checking resume status:', error);
     }
   };
 
@@ -136,9 +150,14 @@ const Contact: React.FC = () => {
                       <Twitter className="w-5 h-5" />
                     </a>
                   )}
-                  {contactDetails.resume && (
-                    <a href={contactDetails.resume} target="_blank" rel="noopener noreferrer"
-                       className="text-muted-foreground hover:text-accent transition-colors">
+                  {(hasUploadedResume || contactDetails.resume) && (
+                    <a 
+                      href={hasUploadedResume ? `${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf` : contactDetails.resume} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-accent transition-colors"
+                      title="View Resume"
+                    >
                       <FileText className="w-5 h-5" />
                     </a>
                   )}

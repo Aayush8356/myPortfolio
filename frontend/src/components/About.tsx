@@ -1,25 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Eye, Download } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 const About: React.FC = () => {
+  const [hasUploadedResume, setHasUploadedResume] = useState(false);
+  
   const skills = [
     'React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL',
     'Tailwind CSS', 'Next.js', 'Python', 'AWS', 'Docker', 'Git'
   ];
 
+  useEffect(() => {
+    checkResumeStatus();
+  }, []);
+
+  const checkResumeStatus = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resume/current`);
+      if (response.ok) {
+        const data = await response.json();
+        setHasUploadedResume(data.hasResume);
+      }
+    } catch (error) {
+      console.error('Error checking resume status:', error);
+    }
+  };
+
   const openResumePreview = () => {
-    window.open('/resume.pdf', '_blank');
+    if (hasUploadedResume) {
+      // If resume is uploaded via admin panel
+      window.open(`${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf`, '_blank');
+    } else {
+      // Fallback to static resume in public folder
+      window.open('/resume.pdf', '_blank');
+    }
   };
 
   const downloadResume = () => {
-    const link = document.createElement('a');
-    link.href = '/resume.pdf';
-    link.download = 'Resume.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (hasUploadedResume) {
+      // If resume is uploaded via admin panel
+      window.open(`${API_BASE_URL}/resume/download`, '_blank');
+    } else {
+      // Fallback to static resume in public folder
+      const link = document.createElement('a');
+      link.href = '/resume.pdf';
+      link.download = 'Aayush_Gupta_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (

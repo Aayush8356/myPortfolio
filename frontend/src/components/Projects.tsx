@@ -32,6 +32,7 @@ const Projects: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      // Only use mock projects if database is completely unavailable
       setProjects(mockProjects);
     } finally {
       setLoading(false);
@@ -82,7 +83,7 @@ const Projects: React.FC = () => {
     );
   }
 
-  const displayProjects = projects.length > 0 ? projects : mockProjects;
+  const displayProjects = projects;
 
   return (
     <section id="projects" className="py-20 bg-background relative">
@@ -90,8 +91,13 @@ const Projects: React.FC = () => {
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayProjects.map((project) => (
+        {displayProjects.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No projects available yet. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayProjects.map((project) => (
             <Card key={project._id} className="group hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift">
               <CardHeader>
                 {project.imageUrl && (
@@ -146,8 +152,9 @@ const Projects: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
