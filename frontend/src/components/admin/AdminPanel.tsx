@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
 
 interface Project {
@@ -24,6 +24,17 @@ interface Contact {
   createdAt: string;
 }
 
+interface ContactDetails {
+  _id?: string;
+  email: string;
+  phone: string;
+  location: string;
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
+  resume?: string;
+}
+
 interface AdminPanelProps {
   token: string;
   onLogout: () => void;
@@ -33,6 +44,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
   const [activeTab, setActiveTab] = useState('projects');
   const [projects, setProjects] = useState<Project[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [contactDetails, setContactDetails] = useState<ContactDetails>({
+    email: '',
+    phone: '',
+    location: '',
+    linkedin: '',
+    github: '',
+    twitter: '',
+    resume: ''
+  });
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showProjectEditor, setShowProjectEditor] = useState(false);
 
@@ -41,6 +61,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       fetchProjects();
     } else if (activeTab === 'contacts') {
       fetchContacts();
+    } else if (activeTab === 'contact-details') {
+      fetchContactDetails();
     }
   }, [activeTab]);
 
@@ -69,6 +91,42 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       }
     } catch (error) {
       console.error('Error fetching contacts:', error);
+    }
+  };
+
+  const fetchContactDetails = async () => {
+    try {
+      const response = await fetch('http://localhost:5002/api/contact-details');
+      if (response.ok) {
+        const data = await response.json();
+        setContactDetails(data);
+      }
+    } catch (error) {
+      console.error('Error fetching contact details:', error);
+    }
+  };
+
+  const updateContactDetails = async () => {
+    try {
+      const response = await fetch('http://localhost:5002/api/contact-details', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(contactDetails)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setContactDetails(data);
+        alert('Contact details updated successfully!');
+      } else {
+        alert('Failed to update contact details');
+      }
+    } catch (error) {
+      console.error('Error updating contact details:', error);
+      alert('Error updating contact details');
     }
   };
 
@@ -178,6 +236,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
           >
             <Mail className="w-4 h-4 inline mr-2" />
             Contacts ({contacts.filter(c => !c.read).length})
+          </button>
+          <button
+            className={`px-4 py-2 border-b-2 transition-colors ${
+              activeTab === 'contact-details' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+            onClick={() => setActiveTab('contact-details')}
+          >
+            <User className="w-4 h-4 inline mr-2" />
+            My Details
           </button>
         </div>
 
@@ -298,6 +367,102 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {activeTab === 'contact-details' && (
+          <div>
+            <h2 className="text-2xl font-semibold mb-6">My Contact Details</h2>
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email *</label>
+                    <input
+                      type="email"
+                      value={contactDetails.email}
+                      onChange={(e) => setContactDetails({ ...contactDetails, email: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Phone *</label>
+                    <input
+                      type="tel"
+                      value={contactDetails.phone}
+                      onChange={(e) => setContactDetails({ ...contactDetails, phone: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Location *</label>
+                  <input
+                    type="text"
+                    value={contactDetails.location}
+                    onChange={(e) => setContactDetails({ ...contactDetails, location: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                    placeholder="City, Country"
+                    required
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">LinkedIn</label>
+                    <input
+                      type="url"
+                      value={contactDetails.linkedin}
+                      onChange={(e) => setContactDetails({ ...contactDetails, linkedin: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="https://linkedin.com/in/yourprofile"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">GitHub</label>
+                    <input
+                      type="url"
+                      value={contactDetails.github}
+                      onChange={(e) => setContactDetails({ ...contactDetails, github: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="https://github.com/yourusername"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Twitter</label>
+                    <input
+                      type="url"
+                      value={contactDetails.twitter}
+                      onChange={(e) => setContactDetails({ ...contactDetails, twitter: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="https://twitter.com/yourusername"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Resume URL</label>
+                    <input
+                      type="url"
+                      value={contactDetails.resume}
+                      onChange={(e) => setContactDetails({ ...contactDetails, resume: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="/resume.pdf or external link"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button onClick={updateContactDetails} className="w-full md:w-auto">
+                    Update Contact Details
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>

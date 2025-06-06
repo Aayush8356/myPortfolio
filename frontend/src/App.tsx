@@ -8,7 +8,6 @@ import FunCentre from './components/FunCentre';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminPanel from './components/admin/AdminPanel';
 import { Button } from './components/ui/button';
-import { Shield } from 'lucide-react';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -55,7 +54,10 @@ function App() {
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.altKey && e.key === 'a') {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const modifierKey = isMac ? e.metaKey : e.ctrlKey;
+      
+      if (modifierKey && e.altKey && (e.code === 'KeyA' || e.key === 'å')) {
         e.preventDefault();
         if (adminToken) {
           handleAdminLogout();
@@ -86,17 +88,6 @@ function App() {
       <footer className="bg-secondary/5 py-8 text-center text-muted-foreground">
         <div className="container mx-auto px-4">
           <p>&copy; 2024 Portfolio. Built with React, TypeScript, and Tailwind CSS.</p>
-          <div className="mt-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowAdminLogin(true)}
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              <Shield className="w-3 h-3 mr-1" />
-              Admin (Ctrl+Alt+A)
-            </Button>
-          </div>
         </div>
       </footer>
 

@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth';
 import projectRoutes from './routes/projects';
 import contactRoutes from './routes/contact';
+import contactDetailsRoutes from './routes/contactDetails';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/contact-details', contactDetailsRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Portfolio API is running!' });

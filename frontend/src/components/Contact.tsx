@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, FileText } from 'lucide-react';
+
+interface ContactDetails {
+  email: string;
+  phone: string;
+  location: string;
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
+  resume?: string;
+}
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +21,31 @@ const Contact: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [contactDetails, setContactDetails] = useState<ContactDetails>({
+    email: 'your.email@example.com',
+    phone: '+1 (555) 123-4567',
+    location: 'Your City, Country',
+    linkedin: '',
+    github: '',
+    twitter: '',
+    resume: ''
+  });
+
+  useEffect(() => {
+    fetchContactDetails();
+  }, []);
+
+  const fetchContactDetails = async () => {
+    try {
+      const response = await fetch('http://localhost:5002/api/contact-details');
+      if (response.ok) {
+        const data = await response.json();
+        setContactDetails(data);
+      }
+    } catch (error) {
+      console.error('Error fetching contact details:', error);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -61,18 +96,49 @@ const Contact: React.FC = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-accent" />
-                <span className="text-muted-foreground">your.email@example.com</span>
+                <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors">
+                  {contactDetails.email}
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-accent" />
-                <span className="text-muted-foreground">+1 (555) 123-4567</span>
+                <a href={`tel:${contactDetails.phone}`} className="text-muted-foreground hover:text-accent transition-colors">
+                  {contactDetails.phone}
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-accent" />
-                <span className="text-muted-foreground">Your City, Country</span>
+                <span className="text-muted-foreground">{contactDetails.location}</span>
               </div>
               
+              {/* Social Links */}
               <div className="pt-4">
+                <div className="flex space-x-4 mb-4">
+                  {contactDetails.linkedin && (
+                    <a href={contactDetails.linkedin} target="_blank" rel="noopener noreferrer" 
+                       className="text-muted-foreground hover:text-accent transition-colors">
+                      <Linkedin className="w-5 h-5" />
+                    </a>
+                  )}
+                  {contactDetails.github && (
+                    <a href={contactDetails.github} target="_blank" rel="noopener noreferrer"
+                       className="text-muted-foreground hover:text-accent transition-colors">
+                      <Github className="w-5 h-5" />
+                    </a>
+                  )}
+                  {contactDetails.twitter && (
+                    <a href={contactDetails.twitter} target="_blank" rel="noopener noreferrer"
+                       className="text-muted-foreground hover:text-accent transition-colors">
+                      <Twitter className="w-5 h-5" />
+                    </a>
+                  )}
+                  {contactDetails.resume && (
+                    <a href={contactDetails.resume} target="_blank" rel="noopener noreferrer"
+                       className="text-muted-foreground hover:text-accent transition-colors">
+                      <FileText className="w-5 h-5" />
+                    </a>
+                  )}
+                </div>
                 <p className="text-muted-foreground">
                   I'm always interested in new opportunities and exciting projects. 
                   Whether you have a question or just want to say hi, feel free to reach out!

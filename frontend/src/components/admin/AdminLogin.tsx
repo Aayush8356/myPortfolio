@@ -90,7 +90,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin, onClose }) => {
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="admin@example.com"
+                placeholder="Enter admin email"
               />
             </div>
             
@@ -124,11 +124,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin, onClose }) => {
             </Button>
           </form>
           
-          <div className="mt-4 text-xs text-muted-foreground">
-            <p>Default admin credentials:</p>
-            <p>Email: admin@example.com</p>
-            <p>Password: admin123</p>
-          </div>
         </CardContent>
       </Card>
     </div>
