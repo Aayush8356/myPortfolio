@@ -67,7 +67,7 @@ const About: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  I'm a passionate <span className="text-foreground font-semibold">full-stack developer</span> with expertise in modern web technologies.
+                  I'm <span className="text-foreground font-semibold">Aayush Gupta</span>, a passionate full-stack developer with expertise in modern web technologies.
                   I love creating efficient, scalable applications that provide excellent user experiences.
                   My journey in tech started with <span className="text-accent font-semibold">curiosity</span> and has evolved into a commitment to continuous learning
                   and building <span className="text-primary font-semibold">innovative solutions</span>.

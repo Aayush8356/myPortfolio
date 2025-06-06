@@ -24,11 +24,22 @@ const Hero: React.FC = () => {
     resume: ''
   });
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
+  const [currentText, setCurrentText] = useState(0);
+
+  const texts = ['AAYUSH GUPTA', 'FULL STACK DEVELOPER'];
 
   useEffect(() => {
     fetchContactDetails();
     checkResumeStatus();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentText((prev) => (prev + 1) % texts.length);
+    }, 3000); // Switch every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [texts.length]);
 
   const fetchContactDetails = async () => {
     try {
@@ -90,19 +101,29 @@ const Hero: React.FC = () => {
     <section id="home" className="min-h-screen flex items-center justify-center bg-background dark-grid relative overflow-hidden">
       <div className="absolute inset-0 dark-gradient opacity-50"></div>
       <div className="container mx-auto px-4 text-center relative z-10">
-        <div className="max-w-4xl mx-auto animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gradient uppercase-spaced">
-            FULL STACK
-          </h1>
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-foreground uppercase-spaced">
-            DEVELOPER
-          </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Creating <span className="text-foreground font-semibold">modern web applications</span> with cutting-edge technologies.
-            Passionate about <span className="text-accent font-semibold">clean code</span>, user experience, and <span className="text-primary font-semibold">innovative solutions</span>.
-          </p>
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6">
+            <p className="text-lg md:text-xl text-muted-foreground mb-4 animate-fade-in">Hi, I'm</p>
+            <div className="h-16 md:h-20 flex items-center justify-center overflow-hidden">
+              <h1 className={`text-2xl md:text-4xl lg:text-5xl font-bold uppercase-spaced transition-all duration-700 ease-in-out transform ${
+                currentText === 0 
+                  ? 'text-foreground translate-y-0 opacity-100' 
+                  : currentText === 1 
+                  ? 'text-gradient translate-y-0 opacity-100' 
+                  : 'translate-y-full opacity-0'
+              }`}>
+                {texts[currentText]}
+              </h1>
+            </div>
+          </div>
+          <div className="overflow-hidden">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-slide-up-delayed-3">
+              Creating <span className="text-foreground font-semibold">modern web applications</span> with cutting-edge technologies.
+              Passionate about <span className="text-primary font-semibold">clean code</span>, user experience, and <span className="text-primary font-semibold">innovative solutions</span>.
+            </p>
+          </div>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12 animate-slide-up-delayed-4">
             <Button
               size="lg"
               onClick={() => scrollToSection('projects')}
@@ -129,13 +150,13 @@ const Hero: React.FC = () => {
             </Button>
           </div>
 
-          <div className="flex justify-center space-x-8">
+          <div className="flex justify-center space-x-8 animate-slide-up-delayed-5">
             {contactDetails.github && (
               <a
                 href={contactDetails.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
               >
                 <Github className="w-8 h-8" />
               </a>
@@ -145,16 +166,14 @@ const Hero: React.FC = () => {
                 href={contactDetails.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"
-                style={{ animationDelay: '0.5s' }}
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
               >
                 <Linkedin className="w-8 h-8" />
               </a>
             )}
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 animate-subtle-float hover-lift"
-              style={{ animationDelay: '1s' }}
+              className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
             >
               <Mail className="w-8 h-8" />
             </button>

@@ -207,7 +207,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
     <header className={`fixed top-0 w-full ${getNavbarBackground()} backdrop-blur-md border-b ${getNavbarBorder()} z-50 transition-all duration-1000`}>
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className={`text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-1000`}>PORTFOLIO</h1>
+          <h1 className={`text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-1000`}>AAYUSH GUPTA</h1>
           <div className={`hidden md:block text-sm font-mono font-bold ${getClockColor()}`}>
             {time.toLocaleTimeString()}
           </div>
