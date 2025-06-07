@@ -42,8 +42,8 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Direct backend URL - bypassing all routing issues
-      window.open('https://portfolio-backend-fm3n.onrender.com/api/resume/preview', '_blank');
+      // Use your domain route for preview
+      window.open('/resume-preview', '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');
@@ -55,8 +55,8 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Direct backend URL - bypassing all routing issues
-      window.open('https://portfolio-backend-fm3n.onrender.com/api/resume/download', '_blank');
+      // Use your domain route for download
+      window.open('/resume-download', '_blank');
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
