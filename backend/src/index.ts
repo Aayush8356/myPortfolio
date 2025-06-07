@@ -61,7 +61,7 @@ app.get('/debug/uploads', (req, res) => {
     res.json({
       uploadsPath,
       exists: fs.existsSync(uploadsPath),
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       __dirname,
       cwd: process.cwd()
     });
