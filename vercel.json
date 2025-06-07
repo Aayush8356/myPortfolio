@@ -19,43 +19,7 @@
       "dest": "backend/index.js"
     },
     {
-      "src": "/resume/preview",
-      "dest": "backend/index.js"
-    },
-    {
-      "src": "/resume/download",
-      "dest": "backend/index.js"
-    },
-    {
-      "src": "/test-backend",
-      "dest": "backend/index.js"
-    },
-    {
-      "src": "/uploads/(.*)",
-      "dest": "backend/index.js"
-    },
-    {
-      "src": "/debug/(.*)",
-      "dest": "backend/index.js"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "frontend/build/static/$1"
-    },
-    {
-      "src": "/manifest.json",
-      "dest": "frontend/build/manifest.json"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "frontend/build/favicon.ico"
-    },
-    {
-      "src": "/",
-      "dest": "frontend/build/index.html"
-    },
-    {
-      "src": "/((?!api|resume|uploads|debug).*)",
+      "src": "/(.*)",
       "dest": "frontend/build/index.html"
     }
   ],

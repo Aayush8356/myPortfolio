@@ -31,33 +31,6 @@ if (!fs.existsSync(uploadsPath)) {
 // Serve uploads directory with correct path for both dev and production
 app.use('/uploads', express.static(uploadsPath));
 
-// Serve resume directly through uploads route to work with domain routing
-app.get('/uploads/resume.pdf', (req, res) => {
-  const resumePath = path.join(uploadsPath, 'resume.pdf');
-  console.log('Resume request for:', resumePath);
-  
-  if (fs.existsSync(resumePath)) {
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
-    res.sendFile(resumePath);
-  } else {
-    console.log('Resume file not found at:', resumePath);
-    // Redirect to a default "resume not found" message instead of 404
-    res.status(404).send(`
-      <html>
-        <body>
-          <h1>Resume Not Available</h1>
-          <p>The resume file is currently not available. Please try again later.</p>
-          <script>
-            setTimeout(() => {
-              window.close();
-            }, 3000);
-          </script>
-        </body>
-      </html>
-    `);
-  }
-});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
@@ -65,63 +38,6 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/contact-details', contactDetailsRoutes);
 app.use('/api/resume', resumeRoutes);
 
-// Add proxy routes to serve through your domain
-app.get('/resume/preview', (req, res) => {
-  console.log('🔥 RESUME PREVIEW REQUEST RECEIVED');
-  const resumePath = path.join(__dirname, '../uploads/resume.pdf');
-  console.log('Resume path:', resumePath);
-  console.log('File exists:', fs.existsSync(resumePath));
-  
-  if (fs.existsSync(resumePath)) {
-    console.log('✅ Serving resume file');
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
-    res.sendFile(resumePath);
-  } else {
-    console.log('❌ Resume file not found');
-    res.status(404).send(`
-      <html>
-        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-          <h1>Resume Not Available</h1>
-          <p>The resume file is currently not available. Please try again later.</p>
-          <p>Path checked: ${resumePath}</p>
-          <button onclick="window.close()">Close</button>
-        </body>
-      </html>
-    `);
-  }
-});
-
-app.get('/resume/download', (req, res) => {
-  console.log('🔥 RESUME DOWNLOAD REQUEST RECEIVED');
-  const resumePath = path.join(__dirname, '../uploads/resume.pdf');
-  console.log('Resume path:', resumePath);
-  console.log('File exists:', fs.existsSync(resumePath));
-  
-  if (fs.existsSync(resumePath)) {
-    console.log('✅ Downloading resume file');
-    res.download(resumePath, 'Aayush_Gupta_Resume.pdf', (err) => {
-      if (err) {
-        console.log('❌ Download error:', err);
-        res.status(500).json({ message: 'Error downloading resume' });
-      }
-    });
-  } else {
-    console.log('❌ Resume file not found for download');
-    res.status(404).json({ message: 'Resume not found' });
-  }
-});
-
-// Add a test route to verify routing is working
-app.get('/test-backend', (req, res) => {
-  console.log('🧪 TEST BACKEND ROUTE ACCESSED');
-  res.json({ 
-    message: 'Backend is working!', 
-    timestamp: new Date().toISOString(),
-    __dirname,
-    cwd: process.cwd()
-  });
-});
 
 app.get('/', (req, res) => {
   res.json({ message: 'Portfolio API is running!' });

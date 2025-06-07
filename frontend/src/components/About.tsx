@@ -42,8 +42,8 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use domain route for preview
-      window.open('/resume/preview', '_blank');
+      // Use API route for preview
+      window.open('/api/resume/preview', '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');
@@ -55,8 +55,8 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use domain route for download
-      window.open('/resume/download', '_blank');
+      // Use API route for download
+      window.open('/api/resume/download', '_blank');
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
