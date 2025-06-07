@@ -31,18 +31,31 @@ if (!fs.existsSync(uploadsPath)) {
 // Serve uploads directory with correct path for both dev and production
 app.use('/uploads', express.static(uploadsPath));
 
-// Add explicit handler for resume.pdf to ensure it's served correctly
+// Serve resume directly through uploads route to work with domain routing
 app.get('/uploads/resume.pdf', (req, res) => {
   const resumePath = path.join(uploadsPath, 'resume.pdf');
   console.log('Resume request for:', resumePath);
   
   if (fs.existsSync(resumePath)) {
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename="resume.pdf"');
+    res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
     res.sendFile(resumePath);
   } else {
     console.log('Resume file not found at:', resumePath);
-    res.status(404).json({ error: 'Resume not found' });
+    // Redirect to a default "resume not found" message instead of 404
+    res.status(404).send(`
+      <html>
+        <body>
+          <h1>Resume Not Available</h1>
+          <p>The resume file is currently not available. Please try again later.</p>
+          <script>
+            setTimeout(() => {
+              window.close();
+            }, 3000);
+          </script>
+        </body>
+      </html>
+    `);
   }
 });
 

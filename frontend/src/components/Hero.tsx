@@ -84,24 +84,13 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Try domain-relative path first, with fallback to API route
-      try {
-        const response = await fetch('/uploads/resume.pdf', { method: 'HEAD' });
-        if (response.ok) {
-          const link = document.createElement('a');
-          link.href = '/uploads/resume.pdf';
-          link.download = 'Aayush_Gupta_Resume.pdf';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          // Fallback to API route
-          window.open(`${API_BASE_URL}/resume/download`, '_blank');
-        }
-      } catch (error) {
-        // Fallback to API route
-        window.open(`${API_BASE_URL}/resume/download`, '_blank');
-      }
+      // Use domain-relative path for download
+      const link = document.createElement('a');
+      link.href = '/uploads/resume.pdf';
+      link.download = 'Aayush_Gupta_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
@@ -118,19 +107,8 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Try domain-relative path first, with fallback to API route
-      try {
-        const response = await fetch('/uploads/resume.pdf', { method: 'HEAD' });
-        if (response.ok) {
-          window.open('/uploads/resume.pdf', '_blank');
-        } else {
-          // Fallback to API route if file not accessible via static route
-          window.open(`${API_BASE_URL}/resume/download`, '_blank');
-        }
-      } catch (error) {
-        // Fallback to API route if fetch fails
-        window.open(`${API_BASE_URL}/resume/download`, '_blank');
-      }
+      // Use domain-relative path to serve through main domain
+      window.open('/uploads/resume.pdf', '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');

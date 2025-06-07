@@ -19,16 +19,19 @@
       "dest": "backend/index.js"
     },
     {
+      "src": "/uploads/resume\\.pdf",
+      "dest": "backend/index.js"
+    },
+    {
       "src": "/uploads/(.*)",
-      "dest": "backend/index.js",
-      "methods": ["GET"]
+      "dest": "backend/index.js"
     },
     {
       "src": "/debug/(.*)",
       "dest": "backend/index.js"
     },
     {
-      "src": "/(?!api|uploads|debug).*",
+      "src": "/(.*)",
       "dest": "frontend/build/index.html"
     }
   ],
