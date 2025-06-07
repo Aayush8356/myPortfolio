@@ -576,7 +576,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(`${API_BASE_URL}/resume/download`, '_blank')}
+                          onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = '/uploads/resume.pdf';
+                            link.download = 'Aayush_Gupta_Resume.pdf';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }}
                         >
                           <Download className="w-4 h-4 mr-1" />
                           Download

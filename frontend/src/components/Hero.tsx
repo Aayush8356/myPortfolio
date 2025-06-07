@@ -84,8 +84,13 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // If resume is uploaded via admin panel
-      window.open(`${API_BASE_URL}/resume/download`, '_blank');
+      // Use domain-relative path for download too
+      const link = document.createElement('a');
+      link.href = '/uploads/resume.pdf';
+      link.download = 'Aayush_Gupta_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
