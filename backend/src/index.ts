@@ -40,6 +40,31 @@ app.get('/', (req, res) => {
   res.json({ message: 'Portfolio API is running!' });
 });
 
+// Debug route to test uploads path
+app.get('/debug/uploads', (req, res) => {
+  const uploadsPath = path.join(__dirname, '../uploads');
+  console.log('Debug uploads path:', uploadsPath);
+  
+  try {
+    const files = fs.readdirSync(uploadsPath);
+    res.json({
+      uploadsPath,
+      exists: fs.existsSync(uploadsPath),
+      files: files,
+      __dirname,
+      cwd: process.cwd()
+    });
+  } catch (error) {
+    res.json({
+      uploadsPath,
+      exists: fs.existsSync(uploadsPath),
+      error: error.message,
+      __dirname,
+      cwd: process.cwd()
+    });
+  }
+});
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio')
   .then(() => {
     console.log('Connected to MongoDB');
