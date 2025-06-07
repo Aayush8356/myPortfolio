@@ -67,18 +67,24 @@ app.use('/api/resume', resumeRoutes);
 
 // Add proxy routes to serve through your domain
 app.get('/resume/preview', (req, res) => {
+  console.log('🔥 RESUME PREVIEW REQUEST RECEIVED');
   const resumePath = path.join(__dirname, '../uploads/resume.pdf');
+  console.log('Resume path:', resumePath);
+  console.log('File exists:', fs.existsSync(resumePath));
   
   if (fs.existsSync(resumePath)) {
+    console.log('✅ Serving resume file');
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
     res.sendFile(resumePath);
   } else {
+    console.log('❌ Resume file not found');
     res.status(404).send(`
       <html>
         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
           <h1>Resume Not Available</h1>
           <p>The resume file is currently not available. Please try again later.</p>
+          <p>Path checked: ${resumePath}</p>
           <button onclick="window.close()">Close</button>
         </body>
       </html>
@@ -87,17 +93,34 @@ app.get('/resume/preview', (req, res) => {
 });
 
 app.get('/resume/download', (req, res) => {
+  console.log('🔥 RESUME DOWNLOAD REQUEST RECEIVED');
   const resumePath = path.join(__dirname, '../uploads/resume.pdf');
+  console.log('Resume path:', resumePath);
+  console.log('File exists:', fs.existsSync(resumePath));
   
   if (fs.existsSync(resumePath)) {
+    console.log('✅ Downloading resume file');
     res.download(resumePath, 'Aayush_Gupta_Resume.pdf', (err) => {
       if (err) {
+        console.log('❌ Download error:', err);
         res.status(500).json({ message: 'Error downloading resume' });
       }
     });
   } else {
+    console.log('❌ Resume file not found for download');
     res.status(404).json({ message: 'Resume not found' });
   }
+});
+
+// Add a test route to verify routing is working
+app.get('/test-backend', (req, res) => {
+  console.log('🧪 TEST BACKEND ROUTE ACCESSED');
+  res.json({ 
+    message: 'Backend is working!', 
+    timestamp: new Date().toISOString(),
+    __dirname,
+    cwd: process.cwd()
+  });
 });
 
 app.get('/', (req, res) => {
