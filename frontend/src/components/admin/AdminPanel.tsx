@@ -568,7 +568,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open('/uploads/resume.pdf', '_blank')}
+                          onClick={() => window.open(`${API_BASE_URL}/resume/preview`, '_blank')}
                         >
                           <Eye className="w-4 h-4 mr-1" />
                           Preview
@@ -576,14 +576,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = '/uploads/resume.pdf';
-                            link.download = 'Aayush_Gupta_Resume.pdf';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                          }}
+                          onClick={() => window.open(`${API_BASE_URL}/resume/download`, '_blank')}
                         >
                           <Download className="w-4 h-4 mr-1" />
                           Download

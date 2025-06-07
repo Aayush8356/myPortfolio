@@ -84,13 +84,8 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use domain-relative path for download
-      const link = document.createElement('a');
-      link.href = '/uploads/resume.pdf';
-      link.download = 'Aayush_Gupta_Resume.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Use API route that we know works for download
+      window.open(`${API_BASE_URL}/resume/download`, '_blank');
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
@@ -107,8 +102,8 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use domain-relative path to serve through main domain
-      window.open('/uploads/resume.pdf', '_blank');
+      // Use API route that we know works
+      window.open(`${API_BASE_URL}/resume/preview`, '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');

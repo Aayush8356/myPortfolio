@@ -77,6 +77,27 @@ router.get('/current', async (req, res) => {
   }
 });
 
+// Preview resume (opens in browser)
+router.get('/preview', (req, res) => {
+  const resumePath = path.join(__dirname, '../../uploads/resume.pdf');
+  
+  if (fs.existsSync(resumePath)) {
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
+    res.sendFile(resumePath);
+  } else {
+    res.status(404).send(`
+      <html>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+          <h1>Resume Not Available</h1>
+          <p>The resume file is currently not available. Please try again later.</p>
+          <button onclick="window.close()">Close</button>
+        </body>
+      </html>
+    `);
+  }
+});
+
 // Download resume
 router.get('/download', (req, res) => {
   const resumePath = path.join(__dirname, '../../uploads/resume.pdf');
