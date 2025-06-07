@@ -28,7 +28,23 @@ if (!fs.existsSync(uploadsPath)) {
   console.log('Created uploads directory');
 }
 
+// Serve uploads directory with correct path for both dev and production
 app.use('/uploads', express.static(uploadsPath));
+
+// Add explicit handler for resume.pdf to ensure it's served correctly
+app.get('/uploads/resume.pdf', (req, res) => {
+  const resumePath = path.join(uploadsPath, 'resume.pdf');
+  console.log('Resume request for:', resumePath);
+  
+  if (fs.existsSync(resumePath)) {
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="resume.pdf"');
+    res.sendFile(resumePath);
+  } else {
+    console.log('Resume file not found at:', resumePath);
+    res.status(404).json({ error: 'Resume not found' });
+  }
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);

@@ -20,14 +20,15 @@
     },
     {
       "src": "/uploads/(.*)",
-      "dest": "backend/index.js"
+      "dest": "backend/index.js",
+      "methods": ["GET"]
     },
     {
       "src": "/debug/(.*)",
       "dest": "backend/index.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/(?!api|uploads|debug).*",
       "dest": "frontend/build/index.html"
     }
   ],
