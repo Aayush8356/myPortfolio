@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { LogIn, Eye, EyeOff } from 'lucide-react';
+import PasswordInput from '../ui/password-input';
+import { LogIn } from 'lucide-react';
 import { API_BASE_URL } from '../../config/api';
 
 interface AdminLoginProps {
@@ -16,7 +17,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin, onClose }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -99,25 +99,16 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin, onClose }) => {
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password
               </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 pr-10 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
+              <PasswordInput
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
             </div>
             
             <Button type="submit" disabled={loading} className="w-full">

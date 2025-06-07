@@ -19,12 +19,8 @@
       "dest": "backend/index.js"
     },
     {
-      "src": "/resume-preview",
-      "dest": "backend/index.js"
-    },
-    {
-      "src": "/resume-download", 
-      "dest": "backend/index.js"
+      "src": "/admin",
+      "dest": "frontend/build/index.html"
     },
     {
       "src": "/(.*)",

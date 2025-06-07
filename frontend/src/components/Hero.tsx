@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { Github, Linkedin, Mail, Download, Eye } from 'lucide-react';
+import { Github, Linkedin, Mail, Download } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
 
 interface ContactDetails {
@@ -11,6 +11,16 @@ interface ContactDetails {
   github?: string;
   twitter?: string;
   resume?: string;
+}
+
+interface HeroContent {
+  greeting: string;
+  name: string;
+  title: string;
+  description: string;
+  primaryButtonText: string;
+  secondaryButtonText: string;
+  resumeButtonText: string;
 }
 
 const Hero: React.FC = () => {
@@ -25,11 +35,21 @@ const Hero: React.FC = () => {
   });
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
   const [currentText, setCurrentText] = useState(0);
+  const [heroContent, setHeroContent] = useState<HeroContent>({
+    greeting: "Hi, I'm",
+    name: 'AAYUSH GUPTA',
+    title: 'FULL STACK DEVELOPER',
+    description: "Creating modern web applications with cutting-edge technologies. Passionate about clean code, user experience, and innovative solutions.",
+    primaryButtonText: 'View My Work',
+    secondaryButtonText: 'Get In Touch',
+    resumeButtonText: 'Resume'
+  });
 
-  const texts = ['AAYUSH GUPTA', 'FULL STACK DEVELOPER'];
+  const texts = [heroContent.name, heroContent.title];
 
   useEffect(() => {
     fetchContactDetails();
+    fetchHeroContent();
     checkResumeStatus();
     // Check resume status periodically
     const resumeInterval = setInterval(checkResumeStatus, 30000);
@@ -53,6 +73,18 @@ const Hero: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching contact details:', error);
+    }
+  };
+
+  const fetchHeroContent = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/hero`);
+      if (response.ok) {
+        const data = await response.json();
+        setHeroContent(data);
+      }
+    } catch (error) {
+      console.error('Error fetching hero content:', error);
     }
   };
 
@@ -97,18 +129,6 @@ const Hero: React.FC = () => {
     }
   };
 
-  const previewResume = async () => {
-    // Recheck status before previewing to ensure we have the latest state
-    await checkResumeStatus();
-    
-    if (hasUploadedResume) {
-      // Direct backend URL - this works reliably
-      window.open('https://portfolio-backend-fm3n.onrender.com/api/resume/preview', '_blank');
-    } else {
-      // Fallback to static resume in public folder
-      window.open('/resume.pdf', '_blank');
-    }
-  };
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center bg-background dark-grid relative overflow-hidden">
@@ -116,7 +136,7 @@ const Hero: React.FC = () => {
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
-            <p className="text-lg md:text-xl text-muted-foreground mb-4 animate-fade-in">Hi, I'm</p>
+            <p className="text-lg md:text-xl text-muted-foreground mb-4 animate-fade-in">{heroContent.greeting}</p>
             <div className="h-16 md:h-20 flex items-center justify-center overflow-hidden">
               <h1 className={`text-2xl md:text-4xl lg:text-5xl font-bold uppercase-spaced transition-all duration-700 ease-in-out transform ${
                 currentText === 0 
@@ -131,8 +151,7 @@ const Hero: React.FC = () => {
           </div>
           <div className="overflow-hidden">
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-slide-up-delayed-3">
-              Creating <span className="text-foreground font-semibold">modern web applications</span> with cutting-edge technologies.
-              Passionate about <span className="text-primary font-semibold">clean code</span>, user experience, and <span className="text-primary font-semibold">innovative solutions</span>.
+              {heroContent.description}
             </p>
           </div>
           
@@ -142,7 +161,7 @@ const Hero: React.FC = () => {
               onClick={() => scrollToSection('projects')}
               className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift uppercase-spaced"
             >
-              View My Work
+              {heroContent.primaryButtonText}
             </Button>
             <Button
               variant="outline"
@@ -150,7 +169,7 @@ const Hero: React.FC = () => {
               onClick={() => scrollToSection('contact')}
               className="w-full sm:w-auto border-dark text-foreground hover:bg-muted hover-lift uppercase-spaced"
             >
-              Get In Touch
+              {heroContent.secondaryButtonText}
             </Button>
             <Button
               variant="outline"
@@ -159,7 +178,7 @@ const Hero: React.FC = () => {
               className="w-full sm:w-auto border-dark text-foreground hover:bg-muted hover-lift uppercase-spaced"
             >
               <Download className="w-4 h-4 mr-2" />
-              Resume
+              {heroContent.resumeButtonText}
             </Button>
           </div>
 

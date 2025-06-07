@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText } from 'lucide-react';
+import PasswordInput from '../ui/password-input';
+import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText, Home, Info, Key } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL } from '../../config/api';
 import { useToast, ToastContainer } from '../ui/toast';
@@ -37,6 +38,34 @@ interface ContactDetails {
   resume?: string;
 }
 
+interface HeroContent {
+  _id?: string;
+  greeting: string;
+  name: string;
+  title: string;
+  description: string;
+  primaryButtonText: string;
+  secondaryButtonText: string;
+  resumeButtonText: string;
+}
+
+interface AboutContent {
+  _id?: string;
+  backgroundTitle: string;
+  backgroundContent: string;
+  experienceTitle: string;
+  experienceContent: string;
+  skills: string[];
+  resumeDescription: string;
+}
+
+interface UserInfo {
+  id: string;
+  username: string;
+  email: string;
+  isAdmin: boolean;
+}
+
 interface AdminPanelProps {
   token: string;
   onLogout: () => void;
@@ -64,6 +93,40 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     hasResume: false,
     resumeUrl: null
   });
+  const [heroContent, setHeroContent] = useState<HeroContent>({
+    greeting: "Hi, I'm",
+    name: 'AAYUSH GUPTA',
+    title: 'FULL STACK DEVELOPER',
+    description: "Creating modern web applications with cutting-edge technologies. Passionate about clean code, user experience, and innovative solutions.",
+    primaryButtonText: 'View My Work',
+    secondaryButtonText: 'Get In Touch',
+    resumeButtonText: 'Resume'
+  });
+  const [aboutContent, setAboutContent] = useState<AboutContent>({
+    backgroundTitle: 'BACKGROUND',
+    backgroundContent: "I'm Aayush Gupta, a passionate full-stack developer with expertise in modern web technologies. I love creating efficient, scalable applications that provide excellent user experiences. My journey in tech started with curiosity and has evolved into a commitment to continuous learning and building innovative solutions.",
+    experienceTitle: 'EXPERIENCE',
+    experienceContent: "With experience in both frontend and backend development, I specialize in the MERN stack and modern frameworks. I enjoy working on challenging projects that push the boundaries of what's possible on the web.",
+    skills: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Tailwind CSS', 'Next.js', 'Python', 'AWS', 'Docker', 'Git'],
+    resumeDescription: "Download or preview my complete resume to learn more about my experience and qualifications."
+  });
+  const [newSkill, setNewSkill] = useState('');
+  const [userInfo, setUserInfo] = useState<UserInfo>({
+    id: '',
+    username: '',
+    email: '',
+    isAdmin: false
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [credentialsData, setCredentialsData] = useState({
+    username: '',
+    email: '',
+    currentPassword: ''
+  });
 
   useEffect(() => {
     if (activeTab === 'projects') {
@@ -73,6 +136,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     } else if (activeTab === 'contact-details') {
       fetchContactDetails();
       fetchCurrentResume();
+    } else if (activeTab === 'hero') {
+      fetchHeroContent();
+    } else if (activeTab === 'about') {
+      fetchAboutContent();
+    } else if (activeTab === 'account') {
+      fetchUserInfo();
     }
   }, [activeTab]);
 
@@ -149,6 +218,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       }
     } catch (error) {
       console.error('Error fetching current resume:', error);
+    }
+  };
+
+  const fetchHeroContent = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/hero`);
+      if (response.ok) {
+        const data = await response.json();
+        setHeroContent(data);
+      }
+    } catch (error) {
+      console.error('Error fetching hero content:', error);
+    }
+  };
+
+  const fetchAboutContent = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/about`);
+      if (response.ok) {
+        const data = await response.json();
+        setAboutContent(data);
+      }
+    } catch (error) {
+      console.error('Error fetching about content:', error);
     }
   };
 
@@ -287,6 +380,168 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     setEditingProject(null);
   };
 
+  const updateHeroContent = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/hero`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(heroContent)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setHeroContent(data);
+        toast.success('Hero section updated successfully!', 'Your changes have been saved.');
+      } else {
+        toast.error('Failed to update hero section', 'Please try again.');
+      }
+    } catch (error) {
+      console.error('Error updating hero content:', error);
+      toast.error('Error updating hero section', 'Please check your connection and try again.');
+    }
+  };
+
+  const updateAboutContent = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/about`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(aboutContent)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAboutContent(data);
+        toast.success('About section updated successfully!', 'Your changes have been saved.');
+      } else {
+        toast.error('Failed to update about section', 'Please try again.');
+      }
+    } catch (error) {
+      console.error('Error updating about content:', error);
+      toast.error('Error updating about section', 'Please check your connection and try again.');
+    }
+  };
+
+  const addSkill = () => {
+    if (newSkill.trim() && !aboutContent.skills.includes(newSkill.trim())) {
+      setAboutContent({
+        ...aboutContent,
+        skills: [...aboutContent.skills, newSkill.trim()]
+      });
+      setNewSkill('');
+    }
+  };
+
+  const removeSkill = (skillToRemove: string) => {
+    setAboutContent({
+      ...aboutContent,
+      skills: aboutContent.skills.filter(skill => skill !== skillToRemove)
+    });
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo(data.user);
+        setCredentialsData({
+          username: data.user.username,
+          email: data.user.email,
+          currentPassword: ''
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  };
+
+  const changePassword = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error('Password mismatch', 'New password and confirm password do not match.');
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      toast.error('Invalid password', 'Password must be at least 6 characters long.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      });
+
+      if (response.ok) {
+        toast.success('Password changed successfully!', 'Your password has been updated.');
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+      } else {
+        const error = await response.json();
+        toast.error('Failed to change password', error.message || 'Please try again.');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      toast.error('Error changing password', 'Please check your connection and try again.');
+    }
+  };
+
+  const updateCredentials = async () => {
+    if (!credentialsData.currentPassword) {
+      toast.error('Current password required', 'Please enter your current password to update credentials.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/update-credentials`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(credentialsData)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo(data.user);
+        setCredentialsData({
+          username: data.user.username,
+          email: data.user.email,
+          currentPassword: ''
+        });
+        toast.success('Credentials updated successfully!', 'Your information has been saved.');
+      } else {
+        const error = await response.json();
+        toast.error('Failed to update credentials', error.message || 'Please try again.');
+      }
+    } catch (error) {
+      console.error('Error updating credentials:', error);
+      toast.error('Error updating credentials', 'Please check your connection and try again.');
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-background z-50 overflow-y-auto">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
@@ -299,9 +554,31 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
           </Button>
         </div>
 
-        <div className="flex space-x-1 mb-6 border-b">
+        <div className="flex space-x-1 mb-6 border-b overflow-x-auto">
           <button
-            className={`px-4 py-2 border-b-2 transition-colors ${
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'hero' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+            onClick={() => setActiveTab('hero')}
+          >
+            <Home className="w-4 h-4 inline mr-2" />
+            Hero Section
+          </button>
+          <button
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'about' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+            onClick={() => setActiveTab('about')}
+          >
+            <Info className="w-4 h-4 inline mr-2" />
+            About Section
+          </button>
+          <button
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'projects' 
                 ? 'border-primary text-primary' 
                 : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -312,7 +589,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
             Projects
           </button>
           <button
-            className={`px-4 py-2 border-b-2 transition-colors ${
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'contacts' 
                 ? 'border-primary text-primary' 
                 : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -323,7 +600,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
             Contacts ({contacts.filter(c => !c.read).length})
           </button>
           <button
-            className={`px-4 py-2 border-b-2 transition-colors ${
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'contact-details' 
                 ? 'border-primary text-primary' 
                 : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -333,7 +610,232 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
             <User className="w-4 h-4 inline mr-2" />
             My Details
           </button>
+          <button
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'account' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+            onClick={() => setActiveTab('account')}
+          >
+            <Key className="w-4 h-4 inline mr-2" />
+            Account
+          </button>
         </div>
+
+        {activeTab === 'hero' && (
+          <div>
+            <h2 className="text-2xl font-semibold mb-6">Edit Hero Section</h2>
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Greeting</label>
+                  <input
+                    type="text"
+                    value={heroContent.greeting}
+                    onChange={(e) => setHeroContent({ ...heroContent, greeting: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                    placeholder="Hi, I'm"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Name</label>
+                  <input
+                    type="text"
+                    value={heroContent.name}
+                    onChange={(e) => setHeroContent({ ...heroContent, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                    placeholder="AAYUSH GUPTA"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Title</label>
+                  <input
+                    type="text"
+                    value={heroContent.title}
+                    onChange={(e) => setHeroContent({ ...heroContent, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                    placeholder="FULL STACK DEVELOPER"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <textarea
+                    value={heroContent.description}
+                    onChange={(e) => setHeroContent({ ...heroContent, description: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                    rows={4}
+                    placeholder="Creating modern web applications..."
+                  />
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Primary Button Text</label>
+                    <input
+                      type="text"
+                      value={heroContent.primaryButtonText}
+                      onChange={(e) => setHeroContent({ ...heroContent, primaryButtonText: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="View My Work"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Secondary Button Text</label>
+                    <input
+                      type="text"
+                      value={heroContent.secondaryButtonText}
+                      onChange={(e) => setHeroContent({ ...heroContent, secondaryButtonText: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="Get In Touch"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Resume Button Text</label>
+                    <input
+                      type="text"
+                      value={heroContent.resumeButtonText}
+                      onChange={(e) => setHeroContent({ ...heroContent, resumeButtonText: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="Resume"
+                    />
+                  </div>
+                </div>
+                
+                <div className="pt-4">
+                  <Button onClick={updateHeroContent} className="w-full md:w-auto">
+                    Update Hero Section
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'about' && (
+          <div>
+            <h2 className="text-2xl font-semibold mb-6">Edit About Section</h2>
+            
+            <div className="space-y-6">
+              {/* Background Section */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-semibold">Background Section</h3>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Background Title</label>
+                    <input
+                      type="text"
+                      value={aboutContent.backgroundTitle}
+                      onChange={(e) => setAboutContent({ ...aboutContent, backgroundTitle: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="BACKGROUND"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Background Content</label>
+                    <textarea
+                      value={aboutContent.backgroundContent}
+                      onChange={(e) => setAboutContent({ ...aboutContent, backgroundContent: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      rows={4}
+                      placeholder="Tell your story..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Experience Section */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-semibold">Experience Section</h3>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Experience Title</label>
+                    <input
+                      type="text"
+                      value={aboutContent.experienceTitle}
+                      onChange={(e) => setAboutContent({ ...aboutContent, experienceTitle: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="EXPERIENCE"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Experience Content</label>
+                    <textarea
+                      value={aboutContent.experienceContent}
+                      onChange={(e) => setAboutContent({ ...aboutContent, experienceContent: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      rows={4}
+                      placeholder="Describe your experience..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Skills Section */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-semibold">Skills & Technologies</h3>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {aboutContent.skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-2"
+                      >
+                        {skill}
+                        <button
+                          onClick={() => removeSkill(skill)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newSkill}
+                      onChange={(e) => setNewSkill(e.target.value)}
+                      className="flex-1 px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="Add new skill..."
+                      onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                    />
+                    <Button onClick={addSkill} variant="outline">
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Resume Section */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-semibold">Resume Section</h3>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Resume Description</label>
+                    <textarea
+                      value={aboutContent.resumeDescription}
+                      onChange={(e) => setAboutContent({ ...aboutContent, resumeDescription: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      rows={2}
+                      placeholder="Describe the resume section..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="pt-4">
+                <Button onClick={updateAboutContent} className="w-full md:w-auto">
+                  Update About Section
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {activeTab === 'projects' && (
           <div>
@@ -631,6 +1133,131 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        )}
+
+        {activeTab === 'account' && (
+          <div>
+            <h2 className="text-2xl font-semibold mb-6">Account Settings</h2>
+            
+            <div className="space-y-6">
+              {/* User Information */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <User className="w-5 h-5 mr-2" />
+                    User Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">User ID</label>
+                        <p className="text-sm font-mono bg-muted px-3 py-2 rounded">{userInfo.id}</p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Role</label>
+                        <p className="text-sm px-3 py-2">
+                          <span className={`px-2 py-1 rounded-full text-xs ${userInfo.isAdmin ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'}`}>
+                            {userInfo.isAdmin ? 'Admin' : 'User'}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Update Credentials */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <Edit className="w-5 h-5 mr-2" />
+                    Update Credentials
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Username</label>
+                        <input
+                          type="text"
+                          value={credentialsData.username}
+                          onChange={(e) => setCredentialsData({ ...credentialsData, username: e.target.value })}
+                          className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                          placeholder="Enter username"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Email</label>
+                        <input
+                          type="email"
+                          value={credentialsData.email}
+                          onChange={(e) => setCredentialsData({ ...credentialsData, email: e.target.value })}
+                          className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                          placeholder="Enter email"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Current Password *</label>
+                      <PasswordInput
+                        value={credentialsData.currentPassword}
+                        onChange={(e) => setCredentialsData({ ...credentialsData, currentPassword: e.target.value })}
+                        placeholder="Enter current password to verify changes"
+                        required
+                        autoComplete="current-password"
+                      />
+                    </div>
+                    <Button onClick={updateCredentials} className="w-full md:w-auto">
+                      Update Credentials
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Change Password */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <Key className="w-5 h-5 mr-2" />
+                    Change Password
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Current Password</label>
+                      <PasswordInput
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                        placeholder="Enter current password"
+                        autoComplete="current-password"
+                      />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">New Password</label>
+                        <PasswordInput
+                          value={passwordData.newPassword}
+                          onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                          placeholder="Enter new password (min 6 chars)"
+                          autoComplete="new-password"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Confirm New Password</label>
+                        <PasswordInput
+                          value={passwordData.confirmPassword}
+                          onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                          placeholder="Confirm new password"
+                          autoComplete="new-password"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={changePassword} className="w-full md:w-auto">
+                      Change Password
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
       </div>

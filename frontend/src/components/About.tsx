@@ -4,20 +4,45 @@ import { Button } from './ui/button';
 import { Eye, Download } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
 
+interface AboutContent {
+  backgroundTitle: string;
+  backgroundContent: string;
+  experienceTitle: string;
+  experienceContent: string;
+  skills: string[];
+  resumeDescription: string;
+}
+
 const About: React.FC = () => {
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
-  
-  const skills = [
-    'React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL',
-    'Tailwind CSS', 'Next.js', 'Python', 'AWS', 'Docker', 'Git'
-  ];
+  const [aboutContent, setAboutContent] = useState<AboutContent>({
+    backgroundTitle: 'BACKGROUND',
+    backgroundContent: "I'm Aayush Gupta, a passionate full-stack developer with expertise in modern web technologies. I love creating efficient, scalable applications that provide excellent user experiences. My journey in tech started with curiosity and has evolved into a commitment to continuous learning and building innovative solutions.",
+    experienceTitle: 'EXPERIENCE',
+    experienceContent: "With experience in both frontend and backend development, I specialize in the MERN stack and modern frameworks. I enjoy working on challenging projects that push the boundaries of what's possible on the web.",
+    skills: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Tailwind CSS', 'Next.js', 'Python', 'AWS', 'Docker', 'Git'],
+    resumeDescription: "Download or preview my complete resume to learn more about my experience and qualifications."
+  });
 
   useEffect(() => {
+    fetchAboutContent();
     checkResumeStatus();
     // Check resume status every 30 seconds to ensure it's current
     const interval = setInterval(checkResumeStatus, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchAboutContent = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/about`);
+      if (response.ok) {
+        const data = await response.json();
+        setAboutContent(data);
+      }
+    } catch (error) {
+      console.error('Error fetching about content:', error);
+    }
+  };
 
   const checkResumeStatus = async () => {
     try {
@@ -78,27 +103,22 @@ const About: React.FC = () => {
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
               <CardHeader>
-                <CardTitle className="text-foreground uppercase-spaced">BACKGROUND</CardTitle>
+                <CardTitle className="text-foreground uppercase-spaced">{aboutContent.backgroundTitle}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  I'm <span className="text-foreground font-semibold">Aayush Gupta</span>, a passionate full-stack developer with expertise in modern web technologies.
-                  I love creating efficient, scalable applications that provide excellent user experiences.
-                  My journey in tech started with <span className="text-accent font-semibold">curiosity</span> and has evolved into a commitment to continuous learning
-                  and building <span className="text-primary font-semibold">innovative solutions</span>.
+                  {aboutContent.backgroundContent}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
               <CardHeader>
-                <CardTitle className="text-foreground uppercase-spaced">EXPERIENCE</CardTitle>
+                <CardTitle className="text-foreground uppercase-spaced">{aboutContent.experienceTitle}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  With experience in both <span className="text-foreground font-semibold">frontend</span> and <span className="text-accent font-semibold">backend</span> development, I specialize in the MERN stack
-                  and modern frameworks. I enjoy working on <span className="text-primary font-semibold">challenging projects</span> that push the boundaries
-                  of what's possible on the web.
+                  {aboutContent.experienceContent}
                 </p>
               </CardContent>
             </Card>
@@ -110,7 +130,7 @@ const About: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-3">
-                {skills.map((skill, index) => (
+                {aboutContent.skills.map((skill, index) => (
                   <span
                     key={index}
                     className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 bg-muted text-foreground border border-dark-subtle hover-lift"
@@ -128,7 +148,7 @@ const About: React.FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                Download or preview my complete <span className="text-foreground font-semibold">resume</span> to learn more about my experience and qualifications.
+                {aboutContent.resumeDescription}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button onClick={openResumePreview} variant="outline" className="border-dark text-foreground hover:bg-muted hover-lift">
