@@ -31,14 +31,17 @@ const Hero: React.FC = () => {
   useEffect(() => {
     fetchContactDetails();
     checkResumeStatus();
+    // Check resume status periodically
+    const resumeInterval = setInterval(checkResumeStatus, 30000);
+    return () => clearInterval(resumeInterval);
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const textInterval = setInterval(() => {
       setCurrentText((prev) => (prev + 1) % texts.length);
     }, 3000); // Switch every 3 seconds
 
-    return () => clearInterval(interval);
+    return () => clearInterval(textInterval);
   }, [texts.length]);
 
   const fetchContactDetails = async () => {
@@ -59,9 +62,13 @@ const Hero: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setHasUploadedResume(data.hasResume);
+      } else {
+        console.warn('Resume status check failed, falling back to static resume');
+        setHasUploadedResume(false);
       }
     } catch (error) {
       console.error('Error checking resume status:', error);
+      setHasUploadedResume(false);
     }
   };
 
@@ -72,7 +79,10 @@ const Hero: React.FC = () => {
     }
   };
 
-  const downloadResume = () => {
+  const downloadResume = async () => {
+    // Recheck status before downloading to ensure we have the latest state
+    await checkResumeStatus();
+    
     if (hasUploadedResume) {
       // If resume is uploaded via admin panel
       window.open(`${API_BASE_URL}/resume/download`, '_blank');
@@ -87,10 +97,13 @@ const Hero: React.FC = () => {
     }
   };
 
-  const previewResume = () => {
+  const previewResume = async () => {
+    // Recheck status before previewing to ensure we have the latest state
+    await checkResumeStatus();
+    
     if (hasUploadedResume) {
-      // If resume is uploaded via admin panel
-      window.open(`${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf`, '_blank');
+      // Use domain-relative path to serve through main domain
+      window.open('/uploads/resume.pdf', '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');

@@ -14,6 +14,9 @@ const About: React.FC = () => {
 
   useEffect(() => {
     checkResumeStatus();
+    // Check resume status every 30 seconds to ensure it's current
+    const interval = setInterval(checkResumeStatus, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const checkResumeStatus = async () => {
@@ -22,23 +25,35 @@ const About: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setHasUploadedResume(data.hasResume);
+      } else {
+        // If API fails, assume no uploaded resume to avoid confusion
+        console.warn('Resume status check failed, falling back to static resume');
+        setHasUploadedResume(false);
       }
     } catch (error) {
       console.error('Error checking resume status:', error);
+      // If API is unreachable, fall back to static resume
+      setHasUploadedResume(false);
     }
   };
 
-  const openResumePreview = () => {
+  const openResumePreview = async () => {
+    // Recheck status before opening to ensure we have the latest state
+    await checkResumeStatus();
+    
     if (hasUploadedResume) {
-      // If resume is uploaded via admin panel
-      window.open(`${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf`, '_blank');
+      // Use domain-relative path to serve through main domain
+      window.open('/uploads/resume.pdf', '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');
     }
   };
 
-  const downloadResume = () => {
+  const downloadResume = async () => {
+    // Recheck status before downloading to ensure we have the latest state
+    await checkResumeStatus();
+    
     if (hasUploadedResume) {
       // If resume is uploaded via admin panel
       window.open(`${API_BASE_URL}/resume/download`, '_blank');

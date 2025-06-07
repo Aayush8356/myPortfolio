@@ -568,7 +568,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(`${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf`, '_blank')}
+                          onClick={() => window.open('/uploads/resume.pdf', '_blank')}
                         >
                           <Eye className="w-4 h-4 mr-1" />
                           Preview
