@@ -84,8 +84,8 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use API route for download
-      window.open('/api/resume/download', '_blank');
+      // Direct backend URL - bypassing all routing issues
+      window.open('https://portfolio-backend-fm3n.onrender.com/api/resume/download', '_blank');
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
@@ -102,8 +102,8 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use API route for preview
-      window.open('/api/resume/preview', '_blank');
+      // Direct backend URL - bypassing all routing issues
+      window.open('https://portfolio-backend-fm3n.onrender.com/api/resume/preview', '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');
