@@ -65,6 +65,41 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/contact-details', contactDetailsRoutes);
 app.use('/api/resume', resumeRoutes);
 
+// Add proxy routes to serve through your domain
+app.get('/resume/preview', (req, res) => {
+  const resumePath = path.join(__dirname, '../uploads/resume.pdf');
+  
+  if (fs.existsSync(resumePath)) {
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
+    res.sendFile(resumePath);
+  } else {
+    res.status(404).send(`
+      <html>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+          <h1>Resume Not Available</h1>
+          <p>The resume file is currently not available. Please try again later.</p>
+          <button onclick="window.close()">Close</button>
+        </body>
+      </html>
+    `);
+  }
+});
+
+app.get('/resume/download', (req, res) => {
+  const resumePath = path.join(__dirname, '../uploads/resume.pdf');
+  
+  if (fs.existsSync(resumePath)) {
+    res.download(resumePath, 'Aayush_Gupta_Resume.pdf', (err) => {
+      if (err) {
+        res.status(500).json({ message: 'Error downloading resume' });
+      }
+    });
+  } else {
+    res.status(404).json({ message: 'Resume not found' });
+  }
+});
+
 app.get('/', (req, res) => {
   res.json({ message: 'Portfolio API is running!' });
 });

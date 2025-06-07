@@ -19,7 +19,11 @@
       "dest": "backend/index.js"
     },
     {
-      "src": "/uploads/resume\\.pdf",
+      "src": "/resume/preview",
+      "dest": "backend/index.js"
+    },
+    {
+      "src": "/resume/download",
       "dest": "backend/index.js"
     },
     {

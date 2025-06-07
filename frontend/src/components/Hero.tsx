@@ -84,8 +84,8 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use API route that we know works for download
-      window.open(`${API_BASE_URL}/resume/download`, '_blank');
+      // Use domain route for download
+      window.open('/resume/download', '_blank');
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
@@ -102,8 +102,8 @@ const Hero: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use API route that we know works
-      window.open(`${API_BASE_URL}/resume/preview`, '_blank');
+      // Use domain route for preview
+      window.open('/resume/preview', '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');
