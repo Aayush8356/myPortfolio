@@ -67,7 +67,7 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Direct backend URL - this works reliably
+      // Use backend API which handles both Vercel Blob and local files
       window.open(`${API_BASE_URL}/resume/preview`, '_blank');
     } else {
       // Fallback to static resume in public folder
@@ -80,7 +80,7 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Direct backend URL - this works reliably
+      // Use backend API which handles both Vercel Blob and local files
       window.open(`${API_BASE_URL}/resume/download`, '_blank');
     } else {
       // Fallback to static resume in public folder

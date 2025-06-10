@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import Project from '../models/Project';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
 import { uploadProjectImage } from '../middleware/upload';
+import { put, del } from '@vercel/blob';
 import path from 'path';
 import fs from 'fs';
 
@@ -80,10 +81,34 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res
 
 router.delete('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
-    const project = await Project.findByIdAndDelete(req.params.id);
+    const project = await Project.findById(req.params.id);
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
+
+    // Delete associated image if it exists
+    if (project.imageUrl) {
+      // If it's a Vercel Blob URL, delete from blob storage
+      if (project.imageUrl.startsWith('https://')) {
+        try {
+          await del(project.imageUrl);
+        } catch (blobError) {
+          console.warn('Error deleting project image blob:', blobError);
+        }
+      }
+      // If it's a local file path, delete the local file
+      else if (project.imageUrl.startsWith('/projects/images/')) {
+        const filename = project.imageUrl.split('/').pop();
+        if (filename) {
+          const imagePath = path.join(__dirname, '../../uploads/projects', filename);
+          if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+          }
+        }
+      }
+    }
+
+    await Project.findByIdAndDelete(req.params.id);
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -97,13 +122,46 @@ router.post('/upload-image', authenticateToken, requireAdmin, uploadProjectImage
       return res.status(400).json({ message: 'No image file provided' });
     }
 
-    const imageUrl = `/projects/images/${req.file.filename}`;
+    let imageUrl: string;
+    let filename: string;
+
+    if (process.env.NODE_ENV === 'production' && process.env.BLOB_READ_WRITE_TOKEN) {
+      // Production: Use Vercel Blob
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(req.file.originalname).toLowerCase();
+      filename = `project-${uniqueSuffix}${extension}`;
+      
+      const blob = await put(filename, req.file.buffer, { 
+        access: 'public',
+        contentType: req.file.mimetype
+      });
+      imageUrl = blob.url;
+    } else {
+      // Development: Use local storage
+      const projectImagesDir = path.join(__dirname, '../../uploads/projects');
+      
+      // Ensure projects directory exists
+      if (!fs.existsSync(projectImagesDir)) {
+        fs.mkdirSync(projectImagesDir, { recursive: true });
+      }
+      
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(req.file.originalname).toLowerCase();
+      filename = `project-${uniqueSuffix}${extension}`;
+      const imagePath = path.join(projectImagesDir, filename);
+      
+      // Write file to local storage
+      fs.writeFileSync(imagePath, req.file.buffer);
+      imageUrl = `/projects/images/${filename}`;
+    }
+
     res.json({ 
       message: 'Image uploaded successfully',
       imageUrl,
-      filename: req.file.filename 
+      filename 
     });
   } catch (error) {
+    console.error('Error uploading project image:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });

@@ -22,7 +22,25 @@ PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_super_secret_jwt_key_here
 NODE_ENV=production
+BLOB_READ_WRITE_TOKEN=your_vercel_blob_token_here
 ```
+
+**Note:** For file uploads to persist in production, you need to set up Vercel Blob storage and provide the `BLOB_READ_WRITE_TOKEN`. Without this token, uploads will fall back to local storage (which doesn't persist in serverless environments).
+
+### 3. Vercel Blob Setup (Required for File Uploads)
+To enable persistent file uploads in production:
+
+1. Go to your Vercel dashboard
+2. Navigate to your project settings
+3. Go to "Storage" tab
+4. Create a new Blob store
+5. Copy the `BLOB_READ_WRITE_TOKEN` from the store settings
+6. Add it to your environment variables in Vercel
+
+**Alternative Storage Options:**
+- AWS S3: Replace Vercel Blob with S3 SDK
+- Cloudinary: Use for image optimization and storage
+- Google Cloud Storage: Enterprise-grade file storage
 
 ## 🚀 Deployment Options
 
