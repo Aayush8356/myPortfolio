@@ -11,6 +11,7 @@ import contactDetailsRoutes from './routes/contactDetails';
 import resumeRoutes from './routes/resume';
 import heroRoutes from './routes/hero';
 import aboutRoutes from './routes/about';
+import funCentreRoutes from './routes/funCentre';
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use('/api/contact-details', contactDetailsRoutes);
 app.use('/api/resume', resumeRoutes);
 app.use('/api/hero', heroRoutes);
 app.use('/api/about', aboutRoutes);
+app.use('/api/fun-centre', funCentreRoutes);
 
 
 
