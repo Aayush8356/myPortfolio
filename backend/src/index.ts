@@ -47,7 +47,11 @@ app.use('/api/fun-centre', funCentreRoutes);
 
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Portfolio API is running!' });
+  res.json({ 
+    message: 'Portfolio API is running!',
+    version: '1.1.0',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Debug route to test uploads path
