@@ -230,7 +230,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
                 <div className="mb-4">
                   <p className="text-sm text-gray-600 mb-2">Current Image:</p>
                   <img 
-                    src={formData.imageUrl.startsWith('/api') ? `${API_BASE_URL}${formData.imageUrl}` : formData.imageUrl}
+                    src={formData.imageUrl.startsWith('/projects') ? `${API_BASE_URL}${formData.imageUrl}` : formData.imageUrl}
                     alt="Project preview" 
                     className="w-32 h-32 object-cover rounded-lg border"
                   />

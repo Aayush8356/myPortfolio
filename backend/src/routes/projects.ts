@@ -97,7 +97,7 @@ router.post('/upload-image', authenticateToken, requireAdmin, uploadProjectImage
       return res.status(400).json({ message: 'No image file provided' });
     }
 
-    const imageUrl = `/api/projects/images/${req.file.filename}`;
+    const imageUrl = `/projects/images/${req.file.filename}`;
     res.json({ 
       message: 'Image uploaded successfully',
       imageUrl,
