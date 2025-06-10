@@ -2,13 +2,6 @@
   "version": 2,
   "builds": [
     {
-      "src": "backend/package.json",
-      "use": "@vercel/node",
-      "config": {
-        "buildCommand": "npm run build"
-      }
-    },
-    {
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
@@ -19,7 +12,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/dist/index.js"
+      "dest": "https://portfolio-backend-fm3n.onrender.com/api/$1"
     },
     {
       "src": "/admin",
