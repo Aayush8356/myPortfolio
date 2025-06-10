@@ -137,9 +137,19 @@ router.get('/preview', async (req, res) => {
     const contactDetails = await ContactDetails.findOne();
     
     if (contactDetails && contactDetails.resume) {
-      // If it's a Vercel Blob URL, redirect to it directly
+      // If it's a Vercel Blob URL, fetch and serve the content
       if (contactDetails.resume.startsWith('https://')) {
-        return res.redirect(contactDetails.resume);
+        try {
+          const response = await fetch(contactDetails.resume);
+          if (response.ok) {
+            const buffer = await response.arrayBuffer();
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
+            return res.send(Buffer.from(buffer));
+          }
+        } catch (fetchError) {
+          console.error('Error fetching blob resume:', fetchError);
+        }
       }
       
       // If it's a local file path
@@ -184,10 +194,19 @@ router.get('/download', async (req, res) => {
     const contactDetails = await ContactDetails.findOne();
     
     if (contactDetails && contactDetails.resume) {
-      // If it's a Vercel Blob URL, redirect with download headers
+      // If it's a Vercel Blob URL, fetch and serve the content
       if (contactDetails.resume.startsWith('https://')) {
-        res.setHeader('Content-Disposition', 'attachment; filename="Aayush_Gupta_Resume.pdf"');
-        return res.redirect(contactDetails.resume);
+        try {
+          const response = await fetch(contactDetails.resume);
+          if (response.ok) {
+            const buffer = await response.arrayBuffer();
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename="Aayush_Gupta_Resume.pdf"');
+            return res.send(Buffer.from(buffer));
+          }
+        } catch (fetchError) {
+          console.error('Error fetching blob resume for download:', fetchError);
+        }
       }
       
       // If it's a local file path
