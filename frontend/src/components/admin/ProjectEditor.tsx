@@ -286,13 +286,13 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
                     Or enter image URL manually:
                   </label>
                   <input
-                    type="url"
+                    type="text"
                     id="imageUrl"
                     name="imageUrl"
                     value={formData.imageUrl}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="https://example.com/image.jpg"
+                    placeholder="https://example.com/image.jpg or /projects/images/..."
                   />
                 </div>
               </div>
