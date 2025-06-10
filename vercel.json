@@ -9,11 +9,13 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://portfolio-backend-fm3n.onrender.com/api/$1"
-    },
+      "source": "/api/:path*",
+      "destination": "https://portfolio-backend-fm3n.onrender.com/api/:path*"
+    }
+  ],
+  "routes": [
     {
       "src": "/admin",
       "dest": "frontend/build/index.html"
