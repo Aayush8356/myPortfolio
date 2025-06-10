@@ -125,7 +125,7 @@ router.post('/upload-image', authenticateToken, requireAdmin, uploadProjectImage
     let imageUrl: string;
     let filename: string;
 
-    if (process.env.NODE_ENV === 'production' && process.env.BLOB_READ_WRITE_TOKEN) {
+    if (process.env.NODE_ENV === 'production') {
       // Production: Use Vercel Blob
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(req.file.originalname).toLowerCase();

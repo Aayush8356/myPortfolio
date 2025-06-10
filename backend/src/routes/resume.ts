@@ -29,7 +29,7 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
     try {
       let resumeUrl: string;
 
-      if (process.env.NODE_ENV === 'production' && process.env.BLOB_READ_WRITE_TOKEN) {
+      if (process.env.NODE_ENV === 'production') {
         // Production: Use Vercel Blob
         const filename = `resume-${Date.now()}.pdf`;
         const blob = await put(filename, req.file.buffer, { 
