@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { Save, X } from 'lucide-react';
+import { Save, X, Upload, Image as ImageIcon } from 'lucide-react';
 import { API_BASE_URL } from '../../config/api';
 
 interface Project {
@@ -34,6 +34,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string>('');
 
   useEffect(() => {
     if (project) {
@@ -56,6 +59,53 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     });
     setError('');
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!imageFile) return;
+    
+    setImageUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', imageFile);
+
+      const response = await fetch(`${API_BASE_URL}/projects/upload-image`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const data = await response.json();
+      setFormData(prev => ({
+        ...prev,
+        imageUrl: data.imageUrl
+      }));
+      setImageFile(null);
+      setImagePreview('');
+      setError('');
+    } catch (error) {
+      setError('Failed to upload image');
+    } finally {
+      setImageUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -171,18 +221,81 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
             </div>
             
             <div>
-              <label htmlFor="imageUrl" className="block text-sm font-medium mb-2">
-                Image URL
+              <label className="block text-sm font-medium mb-2">
+                Project Image
               </label>
-              <input
-                type="url"
-                id="imageUrl"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="https://example.com/image.jpg"
-              />
+              
+              {/* Current Image Display */}
+              {formData.imageUrl && (
+                <div className="mb-4">
+                  <p className="text-sm text-gray-600 mb-2">Current Image:</p>
+                  <img 
+                    src={formData.imageUrl.startsWith('/api') ? `${API_BASE_URL}${formData.imageUrl}` : formData.imageUrl}
+                    alt="Project preview" 
+                    className="w-32 h-32 object-cover rounded-lg border"
+                  />
+                </div>
+              )}
+              
+              {/* Image Upload Section */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                    id="imageUpload"
+                  />
+                  <label 
+                    htmlFor="imageUpload"
+                    className="cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  >
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    Choose Image
+                  </label>
+                  
+                  {imageFile && (
+                    <Button
+                      type="button"
+                      onClick={handleImageUpload}
+                      disabled={imageUploading}
+                      className="flex items-center"
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      {imageUploading ? 'Uploading...' : 'Upload'}
+                    </Button>
+                  )}
+                </div>
+                
+                {/* Image Preview */}
+                {imagePreview && (
+                  <div>
+                    <p className="text-sm text-gray-600 mb-2">Preview:</p>
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="w-32 h-32 object-cover rounded-lg border"
+                    />
+                  </div>
+                )}
+                
+                {/* Manual URL Input */}
+                <div>
+                  <label htmlFor="imageUrl" className="block text-sm font-medium mb-1">
+                    Or enter image URL manually:
+                  </label>
+                  <input
+                    type="url"
+                    id="imageUrl"
+                    name="imageUrl"
+                    value={formData.imageUrl}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+              </div>
             </div>
             
             <div>
