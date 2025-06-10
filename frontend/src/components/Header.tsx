@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Moon, Sun, Menu, X } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -10,11 +11,25 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [time, setTime] = useState(new Date());
+  const [heroContent, setHeroContent] = useState({ name: 'AAYUSH GUPTA' });
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
+    fetchHeroContent();
     return () => clearInterval(timer);
   }, []);
+
+  const fetchHeroContent = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/hero`);
+      if (response.ok) {
+        const data = await response.json();
+        setHeroContent(data);
+      }
+    } catch (error) {
+      console.error('Error fetching hero content:', error);
+    }
+  };
 
 
   const getClockColor = () => {
@@ -207,7 +222,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
     <header className={`fixed top-0 w-full ${getNavbarBackground()} backdrop-blur-md border-b ${getNavbarBorder()} z-50 transition-all duration-1000`}>
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className={`text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-1000`}>AAYUSH GUPTA</h1>
+          <h1 className={`text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-1000`}>{heroContent.name}</h1>
           <div className={`hidden md:block text-sm font-mono font-bold ${getClockColor()}`}>
             {time.toLocaleTimeString()}
           </div>

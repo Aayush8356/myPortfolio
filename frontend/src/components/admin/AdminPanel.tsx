@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import PasswordInput from '../ui/password-input';
-import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText, Home, Info, Key } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText, Home, Info, Key, Gamepad2 } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL } from '../../config/api';
 import { useToast, ToastContainer } from '../ui/toast';
@@ -57,6 +57,25 @@ interface AboutContent {
   experienceContent: string;
   skills: string[];
   resumeDescription: string;
+}
+
+interface FunCentreSettings {
+  _id?: string;
+  enabled: boolean;
+  title: string;
+  description: string;
+  games: {
+    ticTacToe: {
+      enabled: boolean;
+      title: string;
+      description: string;
+    };
+    memoryGame: {
+      enabled: boolean;
+      title: string;
+      description: string;
+    };
+  };
 }
 
 interface UserInfo {
@@ -127,6 +146,23 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     email: '',
     currentPassword: ''
   });
+  const [funCentreSettings, setFunCentreSettings] = useState<FunCentreSettings>({
+    enabled: true,
+    title: "Fun Centre",
+    description: "Take a break and enjoy some interactive games while exploring my portfolio!",
+    games: {
+      ticTacToe: {
+        enabled: true,
+        title: "Tic Tac Toe",
+        description: "Classic Tic Tac Toe game. Challenge yourself!"
+      },
+      memoryGame: {
+        enabled: true,
+        title: "Memory Game",
+        description: "Test your memory with this card matching game."
+      }
+    }
+  });
 
   useEffect(() => {
     if (activeTab === 'projects') {
@@ -142,7 +178,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       fetchAboutContent();
     } else if (activeTab === 'account') {
       fetchUserInfo();
+    } else if (activeTab === 'fun-centre') {
+      fetchFunCentreSettings();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const fetchProjects = async () => {
@@ -542,6 +581,42 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     }
   };
 
+  const fetchFunCentreSettings = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/fun-centre`);
+      if (response.ok) {
+        const data = await response.json();
+        setFunCentreSettings(data);
+      }
+    } catch (error) {
+      console.error('Error fetching fun centre settings:', error);
+    }
+  };
+
+  const updateFunCentreSettings = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/fun-centre`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(funCentreSettings)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFunCentreSettings(data);
+        toast.success('Fun Centre updated successfully!', 'Your changes have been saved.');
+      } else {
+        toast.error('Failed to update Fun Centre', 'Please try again.');
+      }
+    } catch (error) {
+      console.error('Error updating fun centre settings:', error);
+      toast.error('Error updating Fun Centre', 'Please check your connection and try again.');
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-background z-50 overflow-y-auto">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
@@ -609,6 +684,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
           >
             <User className="w-4 h-4 inline mr-2" />
             My Details
+          </button>
+          <button
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'fun-centre' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+            onClick={() => setActiveTab('fun-centre')}
+          >
+            <Gamepad2 className="w-4 h-4 inline mr-2" />
+            Fun Centre
           </button>
           <button
             className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
@@ -1133,6 +1219,173 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        )}
+
+        {activeTab === 'fun-centre' && (
+          <div>
+            <h2 className="text-2xl font-semibold mb-6">Fun Centre Management</h2>
+            
+            <div className="space-y-6">
+              {/* General Settings */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-semibold">General Settings</h3>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="funCentreEnabled"
+                      checked={funCentreSettings.enabled}
+                      onChange={(e) => setFunCentreSettings({ ...funCentreSettings, enabled: e.target.checked })}
+                      className="rounded"
+                    />
+                    <label htmlFor="funCentreEnabled" className="text-sm font-medium">
+                      Enable Fun Centre Section
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Section Title</label>
+                    <input
+                      type="text"
+                      value={funCentreSettings.title}
+                      onChange={(e) => setFunCentreSettings({ ...funCentreSettings, title: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="Fun Centre"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Section Description</label>
+                    <textarea
+                      value={funCentreSettings.description}
+                      onChange={(e) => setFunCentreSettings({ ...funCentreSettings, description: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      rows={3}
+                      placeholder="Take a break and enjoy some interactive games..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tic Tac Toe Game */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-semibold">Tic Tac Toe Game</h3>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="ticTacToeEnabled"
+                      checked={funCentreSettings.games.ticTacToe.enabled}
+                      onChange={(e) => setFunCentreSettings({
+                        ...funCentreSettings,
+                        games: {
+                          ...funCentreSettings.games,
+                          ticTacToe: { ...funCentreSettings.games.ticTacToe, enabled: e.target.checked }
+                        }
+                      })}
+                      className="rounded"
+                    />
+                    <label htmlFor="ticTacToeEnabled" className="text-sm font-medium">
+                      Enable Tic Tac Toe Game
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Game Title</label>
+                    <input
+                      type="text"
+                      value={funCentreSettings.games.ticTacToe.title}
+                      onChange={(e) => setFunCentreSettings({
+                        ...funCentreSettings,
+                        games: {
+                          ...funCentreSettings.games,
+                          ticTacToe: { ...funCentreSettings.games.ticTacToe, title: e.target.value }
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="Tic Tac Toe"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Game Description</label>
+                    <textarea
+                      value={funCentreSettings.games.ticTacToe.description}
+                      onChange={(e) => setFunCentreSettings({
+                        ...funCentreSettings,
+                        games: {
+                          ...funCentreSettings.games,
+                          ticTacToe: { ...funCentreSettings.games.ticTacToe, description: e.target.value }
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      rows={2}
+                      placeholder="Classic Tic Tac Toe game..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Memory Game */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-semibold">Memory Game</h3>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="memoryGameEnabled"
+                      checked={funCentreSettings.games.memoryGame.enabled}
+                      onChange={(e) => setFunCentreSettings({
+                        ...funCentreSettings,
+                        games: {
+                          ...funCentreSettings.games,
+                          memoryGame: { ...funCentreSettings.games.memoryGame, enabled: e.target.checked }
+                        }
+                      })}
+                      className="rounded"
+                    />
+                    <label htmlFor="memoryGameEnabled" className="text-sm font-medium">
+                      Enable Memory Game
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Game Title</label>
+                    <input
+                      type="text"
+                      value={funCentreSettings.games.memoryGame.title}
+                      onChange={(e) => setFunCentreSettings({
+                        ...funCentreSettings,
+                        games: {
+                          ...funCentreSettings.games,
+                          memoryGame: { ...funCentreSettings.games.memoryGame, title: e.target.value }
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      placeholder="Memory Game"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Game Description</label>
+                    <textarea
+                      value={funCentreSettings.games.memoryGame.description}
+                      onChange={(e) => setFunCentreSettings({
+                        ...funCentreSettings,
+                        games: {
+                          ...funCentreSettings.games,
+                          memoryGame: { ...funCentreSettings.games.memoryGame, description: e.target.value }
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                      rows={2}
+                      placeholder="Test your memory with this card matching game..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="pt-4">
+                <Button onClick={updateFunCentreSettings} className="w-full md:w-auto">
+                  Update Fun Centre Settings
+                </Button>
+              </div>
+            </div>
           </div>
         )}
 

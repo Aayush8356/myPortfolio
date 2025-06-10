@@ -23,7 +23,16 @@ const Portfolio: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
       </main>
       <footer className="bg-secondary/5 py-8 text-center text-muted-foreground">
         <div className="container mx-auto px-4">
-          <p>&copy; 2024 Portfolio. Built with React, TypeScript, and Tailwind CSS.</p>
+          <p>&copy; {new Date().getFullYear()} Aayush Gupta. Built with React, TypeScript, and Tailwind CSS.</p>
+          <div className="mt-2 text-sm opacity-75">
+            <button 
+              onClick={() => window.location.href = '/admin'}
+              className="hover:text-foreground transition-colors"
+              title="Admin Panel (Ctrl+Alt+A)"
+            >
+              Admin
+            </button>
+          </div>
         </div>
       </footer>
     </div>
@@ -68,6 +77,17 @@ function App() {
       setDarkMode(true);
       document.documentElement.classList.add('dark');
     }
+
+    // Admin panel keyboard shortcut
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.altKey && e.key === 'a') {
+        e.preventDefault();
+        window.location.href = '/admin';
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const toggleDarkMode = () => {

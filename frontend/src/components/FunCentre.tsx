@@ -2,39 +2,102 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Gamepad2, RotateCcw, Trophy } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
+
+interface FunCentreSettings {
+  enabled: boolean;
+  title: string;
+  description: string;
+  games: {
+    ticTacToe: {
+      enabled: boolean;
+      title: string;
+      description: string;
+    };
+    memoryGame: {
+      enabled: boolean;
+      title: string;
+      description: string;
+    };
+  };
+}
 
 const FunCentre: React.FC = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
+  const [settings, setSettings] = useState<FunCentreSettings>({
+    enabled: true,
+    title: "Fun Centre",
+    description: "Take a break and enjoy some interactive games while exploring my portfolio!",
+    games: {
+      ticTacToe: {
+        enabled: true,
+        title: "Tic Tac Toe",
+        description: "Classic Tic Tac Toe game. Challenge yourself!"
+      },
+      memoryGame: {
+        enabled: true,
+        title: "Memory Game",
+        description: "Test your memory with this card matching game."
+      }
+    }
+  });
+
+  useEffect(() => {
+    fetchFunCentreSettings();
+  }, []);
+
+  const fetchFunCentreSettings = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/fun-centre`);
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+      }
+    } catch (error) {
+      console.error('Error fetching fun centre settings:', error);
+    }
+  };
+
+  // Don't render if disabled
+  if (!settings.enabled) {
+    return null;
+  }
 
   return (
-    <section id="fun-centre" className="py-20">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Fun Centre</h2>
+    <section id="fun-centre" className="py-20 bg-background relative">
+      <div className="absolute inset-0 dark-grid opacity-20"></div>
+      <div className="container mx-auto px-4 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gradient uppercase-spaced">{settings.title}</h2>
+        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">{settings.description}</p>
         
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveGame('tic-tac-toe')}>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Gamepad2 className="w-5 h-5 mr-2" />
-                Tic Tac Toe
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Classic Tic Tac Toe game. Challenge yourself!</p>
-            </CardContent>
-          </Card>
+          {settings.games.ticTacToe.enabled && (
+            <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift" onClick={() => setActiveGame('tic-tac-toe')}>
+              <CardHeader>
+                <CardTitle className="flex items-center text-foreground">
+                  <Gamepad2 className="w-5 h-5 mr-2" />
+                  {settings.games.ticTacToe.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{settings.games.ticTacToe.description}</p>
+              </CardContent>
+            </Card>
+          )}
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveGame('memory-game')}>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Trophy className="w-5 h-5 mr-2" />
-                Memory Game
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Test your memory with this card matching game.</p>
-            </CardContent>
-          </Card>
+          {settings.games.memoryGame.enabled && (
+            <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift" onClick={() => setActiveGame('memory-game')}>
+              <CardHeader>
+                <CardTitle className="flex items-center text-foreground">
+                  <Trophy className="w-5 h-5 mr-2" />
+                  {settings.games.memoryGame.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{settings.games.memoryGame.description}</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {activeGame === 'tic-tac-toe' && <TicTacToe onClose={() => setActiveGame(null)} />}

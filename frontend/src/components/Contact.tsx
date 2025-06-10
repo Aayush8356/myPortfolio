@@ -152,7 +152,7 @@ const Contact: React.FC = () => {
                   )}
                   {(hasUploadedResume || contactDetails.resume) && (
                     <a 
-                      href={hasUploadedResume ? `${API_BASE_URL.replace('/api', '')}/uploads/resume.pdf` : contactDetails.resume} 
+                      href={hasUploadedResume ? `${API_BASE_URL}/resume/preview` : contactDetails.resume} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-muted-foreground hover:text-accent transition-colors"
