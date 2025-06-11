@@ -63,34 +63,13 @@ const About: React.FC = () => {
   };
 
   const openResumePreview = async () => {
-    // Recheck status before opening to ensure we have the latest state
-    await checkResumeStatus();
-    
-    if (hasUploadedResume) {
-      // Use backend API directly
-      window.open(`${API_BASE_URL}/resume/preview`, '_blank');
-    } else {
-      // Fallback to static resume in public folder
-      window.open('/resume.pdf', '_blank');
-    }
+    // Always use backend API which handles both uploaded and fallback resumes
+    window.open(`${API_BASE_URL}/resume/preview`, '_blank');
   };
 
   const downloadResume = async () => {
-    // Recheck status before downloading to ensure we have the latest state
-    await checkResumeStatus();
-    
-    if (hasUploadedResume) {
-      // Use backend API directly
-      window.open(`${API_BASE_URL}/resume/download`, '_blank');
-    } else {
-      // Fallback to static resume in public folder
-      const link = document.createElement('a');
-      link.href = '/resume.pdf';
-      link.download = 'Aayush_Gupta_Resume.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    // Always use backend API which handles both uploaded and fallback resumes
+    window.open(`${API_BASE_URL}/resume/download`, '_blank');
   };
 
   return (
