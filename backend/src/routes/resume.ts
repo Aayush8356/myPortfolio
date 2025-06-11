@@ -297,4 +297,17 @@ router.delete('/clear-invalid', authenticateToken, requireAdmin, async (req: Aut
   }
 });
 
+// Check environment configuration (admin only) - debugging endpoint
+router.get('/env-check', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    res.json({
+      nodeEnv: process.env.NODE_ENV,
+      hasBlobToken: !!process.env.BLOB_READ_WRITE_TOKEN,
+      blobTokenPrefix: process.env.BLOB_READ_WRITE_TOKEN ? process.env.BLOB_READ_WRITE_TOKEN.substring(0, 20) + '...' : 'Not set'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error checking environment' });
+  }
+});
+
 export default router;
