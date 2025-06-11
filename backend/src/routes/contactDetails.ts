@@ -44,7 +44,7 @@ router.put('/', authenticateToken, requireAdmin, async (req: AuthRequest, res) =
         linkedin,
         github,
         twitter,
-        resume
+        resume: resume || ''
       });
     } else {
       contactDetails.email = email;
@@ -53,10 +53,11 @@ router.put('/', authenticateToken, requireAdmin, async (req: AuthRequest, res) =
       contactDetails.linkedin = linkedin || '';
       contactDetails.github = github || '';
       contactDetails.twitter = twitter || '';
-      // Only update resume if explicitly provided, otherwise preserve existing value
+      // Only update resume if explicitly provided in request body, otherwise preserve existing value
       if (resume !== undefined) {
         contactDetails.resume = resume || '';
       }
+      // If resume is not in request body at all, keep the existing resume value
     }
     
     await contactDetails.save();

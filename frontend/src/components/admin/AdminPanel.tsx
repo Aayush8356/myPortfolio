@@ -226,13 +226,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const updateContactDetails = async () => {
     try {
+      // Exclude resume field from contact details update to prevent overwriting blob URLs
+      const { resume, ...contactDetailsWithoutResume } = contactDetails;
+      
       const response = await fetch(`${API_BASE_URL}/contact-details`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(contactDetails)
+        body: JSON.stringify(contactDetailsWithoutResume)
       });
 
       if (response.ok) {
@@ -1106,27 +1109,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Twitter</label>
-                    <input
-                      type="url"
-                      value={contactDetails.twitter}
-                      onChange={(e) => setContactDetails({ ...contactDetails, twitter: e.target.value })}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
-                      placeholder="https://twitter.com/yourusername"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Resume URL</label>
-                    <input
-                      type="url"
-                      value={contactDetails.resume}
-                      onChange={(e) => setContactDetails({ ...contactDetails, resume: e.target.value })}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background"
-                      placeholder="/resume.pdf or external link"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Twitter</label>
+                  <input
+                    type="url"
+                    value={contactDetails.twitter}
+                    onChange={(e) => setContactDetails({ ...contactDetails, twitter: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                    placeholder="https://twitter.com/yourusername"
+                  />
                 </div>
 
                 <div className="pt-4">
