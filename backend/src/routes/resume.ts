@@ -89,20 +89,24 @@ router.get('/current', async (req, res) => {
     
     if (contactDetails && contactDetails.resume) {
       // Check if it's a Vercel Blob URL (starts with https://)
-      if (contactDetails.resume.startsWith('https://') && process.env.BLOB_READ_WRITE_TOKEN) {
-        // Verify the blob still exists
+      if (contactDetails.resume.startsWith('https://')) {
+        // Verify the blob still exists by making a HEAD request
         try {
-          await head(contactDetails.resume);
-          res.json({ 
-            hasResume: true, 
-            resumeUrl: contactDetails.resume,
-            uploadedAt: contactDetails.updatedAt
-          });
-          return;
+          const response = await fetch(contactDetails.resume, { method: 'HEAD' });
+          if (response.ok) {
+            res.json({ 
+              hasResume: true, 
+              resumeUrl: contactDetails.resume,
+              uploadedAt: contactDetails.updatedAt
+            });
+            return;
+          } else {
+            console.warn('Blob URL not accessible:', contactDetails.resume, response.status);
+          }
         } catch (blobError) {
-          console.warn('Blob URL no longer valid:', contactDetails.resume);
-          // Continue to check local file
+          console.warn('Error checking blob URL:', contactDetails.resume, blobError);
         }
+        // Continue to check local file if blob check fails
       }
       
       // Check local file for development or fallback
@@ -116,6 +120,11 @@ router.get('/current', async (req, res) => {
             uploadedAt: fs.statSync(resumePath).mtime
           });
           return;
+        } else {
+          // Local file doesn't exist, clear the invalid URL from database
+          console.warn('Local resume file not found, clearing invalid URL from database');
+          contactDetails.resume = '';
+          await contactDetails.save();
         }
       }
     }
