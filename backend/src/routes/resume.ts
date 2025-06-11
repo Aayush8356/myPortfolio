@@ -278,4 +278,23 @@ router.delete('/', authenticateToken, requireAdmin, async (req: AuthRequest, res
   }
 });
 
+// Force clear invalid resume URL (admin only) - temporary debugging endpoint
+router.delete('/clear-invalid', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const contactDetails = await ContactDetails.findOne();
+    
+    if (contactDetails) {
+      console.log('Clearing invalid resume URL:', contactDetails.resume);
+      contactDetails.resume = '';
+      await contactDetails.save();
+      res.json({ message: 'Resume URL cleared from database' });
+    } else {
+      res.json({ message: 'No contact details found' });
+    }
+  } catch (error) {
+    console.error('Error clearing resume URL:', error);
+    res.status(500).json({ message: 'Error clearing resume URL' });
+  }
+});
+
 export default router;
