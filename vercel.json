@@ -9,22 +9,14 @@
       }
     }
   ],
-  "functions": {
-    "frontend/build/index.html": {
-      "includeFiles": "frontend/build/**"
-    }
-  },
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://portfolio-backend-fm3n.onrender.com/api/$1"
+      "src": "/admin",
+      "dest": "frontend/build/index.html"
     },
     {
       "src": "/(.*)",
       "dest": "frontend/build/index.html"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }

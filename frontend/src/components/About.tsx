@@ -67,8 +67,8 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use domain-relative URL to go through Vercel proxy
-      window.open('/api/resume/preview', '_blank');
+      // Use backend API directly
+      window.open(`${API_BASE_URL}/resume/preview`, '_blank');
     } else {
       // Fallback to static resume in public folder
       window.open('/resume.pdf', '_blank');
@@ -80,8 +80,8 @@ const About: React.FC = () => {
     await checkResumeStatus();
     
     if (hasUploadedResume) {
-      // Use domain-relative URL to go through Vercel proxy
-      window.open('/api/resume/download', '_blank');
+      // Use backend API directly
+      window.open(`${API_BASE_URL}/resume/download`, '_blank');
     } else {
       // Fallback to static resume in public folder
       const link = document.createElement('a');
