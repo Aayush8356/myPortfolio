@@ -9,19 +9,21 @@
       }
     }
   ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://portfolio-backend-fm3n.onrender.com/api/$1"
-    }
-  ],
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://portfolio-backend-fm3n.onrender.com/api/$1",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "headers": {
+        "cache-control": "s-maxage=0"
+      }
+    },
     {
       "src": "/admin",
       "dest": "frontend/build/index.html"
     },
     {
-      "src": "/(.*)",
+      "src": "^/(?!api).*",
       "dest": "frontend/build/index.html"
     }
   ],
