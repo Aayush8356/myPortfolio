@@ -29,7 +29,7 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
     try {
       let resumeUrl: string;
 
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV === 'production' && process.env.BLOB_READ_WRITE_TOKEN) {
         // Production: Use Vercel Blob
         const filename = `resume-${Date.now()}.pdf`;
         const blob = await put(filename, req.file.buffer, { 
@@ -89,7 +89,7 @@ router.get('/current', async (req, res) => {
     
     if (contactDetails && contactDetails.resume) {
       // Check if it's a Vercel Blob URL (starts with https://)
-      if (contactDetails.resume.startsWith('https://')) {
+      if (contactDetails.resume.startsWith('https://') && process.env.BLOB_READ_WRITE_TOKEN) {
         // Verify the blob still exists
         try {
           await head(contactDetails.resume);
@@ -237,7 +237,7 @@ router.delete('/', authenticateToken, requireAdmin, async (req: AuthRequest, res
     
     if (contactDetails && contactDetails.resume) {
       // If it's a Vercel Blob URL, delete from blob storage
-      if (contactDetails.resume.startsWith('https://')) {
+      if (contactDetails.resume.startsWith('https://') && process.env.BLOB_READ_WRITE_TOKEN) {
         try {
           await del(contactDetails.resume);
         } catch (blobError) {

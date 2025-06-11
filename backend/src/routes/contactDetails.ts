@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
         linkedin: 'https://linkedin.com/in/yourprofile',
         github: 'https://github.com/yourusername',
         twitter: 'https://twitter.com/yourusername',
-        resume: '/resume.pdf'
+        resume: ''
       });
       await contactDetails.save();
     }
@@ -53,7 +53,10 @@ router.put('/', authenticateToken, requireAdmin, async (req: AuthRequest, res) =
       contactDetails.linkedin = linkedin || '';
       contactDetails.github = github || '';
       contactDetails.twitter = twitter || '';
-      contactDetails.resume = resume || '';
+      // Only update resume if explicitly provided, otherwise preserve existing value
+      if (resume !== undefined) {
+        contactDetails.resume = resume || '';
+      }
     }
     
     await contactDetails.save();

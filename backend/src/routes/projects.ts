@@ -89,7 +89,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, 
     // Delete associated image if it exists
     if (project.imageUrl) {
       // If it's a Vercel Blob URL, delete from blob storage
-      if (project.imageUrl.startsWith('https://')) {
+      if (project.imageUrl.startsWith('https://') && process.env.BLOB_READ_WRITE_TOKEN) {
         try {
           await del(project.imageUrl);
         } catch (blobError) {
@@ -125,7 +125,7 @@ router.post('/upload-image', authenticateToken, requireAdmin, uploadProjectImage
     let imageUrl: string;
     let filename: string;
 
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' && process.env.BLOB_READ_WRITE_TOKEN) {
       // Production: Use Vercel Blob
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(req.file.originalname).toLowerCase();
