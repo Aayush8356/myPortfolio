@@ -1147,7 +1147,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(`${API_BASE_URL}/resume/preview`, '_blank')}
+                          onClick={() => window.open('/api/resume/preview', '_blank')}
                         >
                           <Eye className="w-4 h-4 mr-1" />
                           Preview
@@ -1155,7 +1155,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(`${API_BASE_URL}/resume/download`, '_blank')}
+                          onClick={() => window.open('/api/resume/download', '_blank')}
                         >
                           <Download className="w-4 h-4 mr-1" />
                           Download
