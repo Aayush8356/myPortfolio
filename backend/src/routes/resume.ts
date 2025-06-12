@@ -310,4 +310,56 @@ router.get('/env-check', authenticateToken, requireAdmin, async (req: AuthReques
   }
 });
 
+// Sync resume URL (admin only) - fixes production resume URL issue
+router.post('/sync-url', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { resumeUrl } = req.body;
+    
+    if (!resumeUrl) {
+      return res.status(400).json({ message: 'Resume URL is required' });
+    }
+
+    // Validate that it's a valid Vercel Blob URL
+    if (!resumeUrl.startsWith('https://') || !resumeUrl.includes('blob.vercel-storage.com')) {
+      return res.status(400).json({ message: 'Invalid Vercel Blob URL' });
+    }
+
+    // Verify the blob still exists by making a HEAD request
+    try {
+      const response = await fetch(resumeUrl, { method: 'HEAD' });
+      if (!response.ok) {
+        return res.status(400).json({ message: 'Resume URL is not accessible' });
+      }
+    } catch (fetchError) {
+      return res.status(400).json({ message: 'Could not verify resume URL' });
+    }
+
+    // Update contact details with the resume URL
+    let contactDetails = await ContactDetails.findOne();
+    
+    if (!contactDetails) {
+      // Create default contact details if none exist
+      contactDetails = new ContactDetails({
+        email: 'your.email@example.com',
+        phone: '+1 (555) 123-4567',
+        location: 'Your City, Country',
+        resume: resumeUrl
+      });
+    } else {
+      contactDetails.resume = resumeUrl;
+    }
+    
+    await contactDetails.save();
+
+    res.json({
+      message: 'Resume URL synced successfully',
+      resumeUrl: resumeUrl,
+      updatedAt: contactDetails.updatedAt
+    });
+  } catch (error) {
+    console.error('Error syncing resume URL:', error);
+    res.status(500).json({ message: 'Error syncing resume URL' });
+  }
+});
+
 export default router;
