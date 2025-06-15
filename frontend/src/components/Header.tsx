@@ -220,9 +220,11 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <header className={`fixed top-0 w-full ${getNavbarBackground()} backdrop-blur-md border-b ${getNavbarBorder()} z-50 transition-all duration-1000`}>
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <h1 className={`text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-1000`}>{heroContent.name}</h1>
+      <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 flex justify-between items-center">
+        <div className="flex items-center space-x-2 md:space-x-4">
+          <h1 className={`text-lg md:text-xl lg:text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-1000 truncate`}>
+            {heroContent.name.length > 12 ? 'AAYUSH GUPTA' : heroContent.name}
+          </h1>
           <div className={`hidden md:block text-sm font-mono font-bold ${getClockColor()}`}>
             {time.toLocaleTimeString()}
           </div>
@@ -264,54 +266,54 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
           </Button>
         </nav>
 
-        <div className="md:hidden flex items-center space-x-2">
-          <div className={`text-xs font-mono ${getClockColor()}`}>
-            {time.toLocaleTimeString()}
+        <div className="md:hidden flex items-center space-x-1 md:space-x-2">
+          <div className={`text-xs font-mono ${getClockColor()} hidden sm:block`}>
+            {time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="hover:bg-white/10">
-            {darkMode ? <Sun className={`h-4 w-4 ${getNavbarTextColor()}`} /> : <Moon className={`h-4 w-4 ${getNavbarTextColor()}`} />}
+          <Button variant="ghost" size="sm" onClick={toggleDarkMode} className="hover:bg-white/10 p-1">
+            {darkMode ? <Sun className={`h-3 w-3 md:h-4 md:w-4 ${getNavbarTextColor()}`} /> : <Moon className={`h-3 w-3 md:h-4 md:w-4 ${getNavbarTextColor()}`} />}
           </Button>
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="hover:bg-white/10"
+            className="hover:bg-white/10 p-1"
           >
-            {isMenuOpen ? <X className={`h-5 w-5 ${getNavbarTextColor()}`} /> : <Menu className={`h-5 w-5 ${getNavbarTextColor()}`} />}
+            {isMenuOpen ? <X className={`h-4 w-4 md:h-5 md:w-5 ${getNavbarTextColor()}`} /> : <Menu className={`h-4 w-4 md:h-5 md:w-5 ${getNavbarTextColor()}`} />}
           </Button>
         </div>
       </div>
 
       {isMenuOpen && (
         <div className={`md:hidden ${getNavbarBackground()} border-t ${getNavbarBorder()} transition-all duration-1000`}>
-          <nav className="container mx-auto px-4 py-4 flex flex-col space-y-3">
+          <nav className="container mx-auto px-3 md:px-4 py-3 md:py-4 flex flex-col space-y-2 md:space-y-3">
             <button
               onClick={() => scrollToSection('home')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300`}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
             >
               Home
             </button>
             <button
               onClick={() => scrollToSection('about')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300`}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
             >
               About
             </button>
             <button
               onClick={() => scrollToSection('projects')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300`}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
             >
               Projects
             </button>
             <button
               onClick={() => scrollToSection('contact')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300`}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
             >
               Contact
             </button>
             <button
               onClick={() => scrollToSection('fun-centre')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300`}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
             >
               Fun Centre
             </button>

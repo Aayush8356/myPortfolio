@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
 import fs from 'fs';
+import { createIndexes } from './config/database';
 import authRoutes from './routes/auth';
 import projectRoutes from './routes/projects';
 import contactRoutes from './routes/contact';
@@ -80,8 +81,12 @@ app.get('/debug/uploads', (req, res) => {
 });
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio')
-  .then(() => {
+  .then(async () => {
     console.log('Connected to MongoDB');
+    
+    // Create database indexes for better performance
+    await createIndexes();
+    
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });

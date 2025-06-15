@@ -64,23 +64,23 @@ const FunCentre: React.FC = () => {
   }
 
   return (
-    <section id="fun-centre" className="py-20 bg-background relative">
+    <section id="fun-centre" className="py-12 md:py-20 bg-background relative">
       <div className="absolute inset-0 dark-grid opacity-20"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gradient uppercase-spaced">{settings.title}</h2>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">{settings.description}</p>
+        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-3 md:mb-4 text-gradient uppercase-spaced">{settings.title}</h2>
+        <p className="text-center text-muted-foreground mb-8 md:mb-12 max-w-2xl mx-auto text-sm md:text-base px-4">{settings.description}</p>
         
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {settings.games.ticTacToe.enabled && (
             <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift" onClick={() => setActiveGame('tic-tac-toe')}>
               <CardHeader>
-                <CardTitle className="flex items-center text-foreground">
-                  <Gamepad2 className="w-5 h-5 mr-2" />
+                <CardTitle className="flex items-center text-foreground text-sm md:text-base lg:text-lg">
+                  <Gamepad2 className="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" />
                   {settings.games.ticTacToe.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">{settings.games.ticTacToe.description}</p>
+                <p className="text-muted-foreground text-sm md:text-base">{settings.games.ticTacToe.description}</p>
               </CardContent>
             </Card>
           )}
@@ -88,13 +88,13 @@ const FunCentre: React.FC = () => {
           {settings.games.memoryGame.enabled && (
             <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift" onClick={() => setActiveGame('memory-game')}>
               <CardHeader>
-                <CardTitle className="flex items-center text-foreground">
-                  <Trophy className="w-5 h-5 mr-2" />
+                <CardTitle className="flex items-center text-foreground text-sm md:text-base lg:text-lg">
+                  <Trophy className="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" />
                   {settings.games.memoryGame.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">{settings.games.memoryGame.description}</p>
+                <p className="text-muted-foreground text-sm md:text-base">{settings.games.memoryGame.description}</p>
               </CardContent>
             </Card>
           )}

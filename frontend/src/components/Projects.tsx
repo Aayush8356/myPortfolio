@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Github, ExternalLink } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
+import { cachedFetch } from '../lib/cache';
 
 interface Project {
   _id: string;
@@ -18,6 +19,7 @@ interface Project {
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProjects();
@@ -25,13 +27,25 @@ const Projects: React.FC = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects`);
-      if (response.ok) {
-        const data = await response.json();
-        setProjects(data);
-      }
+      setError(null);
+      const data = await cachedFetch<Project[]>(
+        `${API_BASE_URL}/projects`,
+        {},
+        'projects-list',
+        300 // 5 minute cache
+      );
+      setProjects(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          setError('Request timed out. Please check your connection and try again.');
+        } else {
+          setError('Failed to load projects. Please try again later.');
+        }
+      } else {
+        setError('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
@@ -40,10 +54,31 @@ const Projects: React.FC = () => {
 
   if (loading) {
     return (
-      <section id="projects" className="py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Projects</h2>
-          <div className="text-center">Loading projects...</div>
+      <section id="projects" className="py-12 md:py-20 bg-background relative">
+        <div className="absolute inset-0 dark-grid opacity-20"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+            <p className="text-muted-foreground">Loading projects...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="projects" className="py-12 md:py-20 bg-background relative">
+        <div className="absolute inset-0 dark-grid opacity-20"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg mb-4">{error}</p>
+            <Button onClick={fetchProjects} variant="outline" className="border-dark text-foreground hover:bg-muted">
+              Try Again
+            </Button>
+          </div>
         </div>
       </section>
     );
@@ -51,22 +86,22 @@ const Projects: React.FC = () => {
 
 
   return (
-    <section id="projects" className="py-20 bg-background relative">
+    <section id="projects" className="py-12 md:py-20 bg-background relative">
       <div className="absolute inset-0 dark-grid opacity-20"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
+        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
         
         {projects.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">No projects available yet. Check back soon!</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {projects.map((project) => (
             <Card key={project._id} className="group hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift">
               <CardHeader>
                 {project.imageUrl && (
-                  <div className="w-full h-48 bg-muted rounded-md mb-4 overflow-hidden">
+                  <div className="w-full h-32 md:h-40 lg:h-48 bg-muted rounded-md mb-4 overflow-hidden">
                     <img
                       src={project.imageUrl.startsWith('/projects') ? `${API_BASE_URL}${project.imageUrl}` : project.imageUrl}
                       alt={project.title}
@@ -74,42 +109,42 @@ const Projects: React.FC = () => {
                     />
                   </div>
                 )}
-                <CardTitle className="flex items-center justify-between text-foreground">
-                  {project.title}
+                <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-foreground gap-2">
+                  <span className="text-sm md:text-base lg:text-lg">{project.title}</span>
                   {project.featured && (
-                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full border border-dark-subtle">
+                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full border border-dark-subtle self-start sm:self-auto">
                       FEATURED
                     </span>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-4">{project.description}</p>
+                <p className="text-muted-foreground mb-3 md:mb-4 text-sm md:text-base">{project.description}</p>
                 
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
                   {project.technologies.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 hover:scale-105 bg-muted text-foreground border border-dark-subtle hover-lift"
+                      className="px-2 md:px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 hover:scale-105 bg-muted text-foreground border border-dark-subtle hover-lift"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   {project.githubUrl && (
-                    <Button variant="outline" size="sm" asChild className="border-dark text-foreground hover:bg-muted hover-lift">
+                    <Button variant="outline" size="sm" asChild className="border-dark text-foreground hover:bg-muted hover-lift text-xs md:text-sm">
                       <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                        <Github className="w-4 h-4 mr-2" />
+                        <Github className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                         Code
                       </a>
                     </Button>
                   )}
                   {project.liveUrl && (
-                    <Button size="sm" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift">
+                    <Button size="sm" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift text-xs md:text-sm">
                       <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4 mr-2" />
+                        <ExternalLink className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                         Demo
                       </a>
                     </Button>

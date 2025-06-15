@@ -99,6 +99,36 @@ code {
     border: 1px solid hsl(var(--border));
   }
   
+  /* Mobile-specific improvements */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    .text-responsive {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    
+    .btn-mobile {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+    
+    .card-mobile {
+      padding: 0.75rem;
+    }
+  }
+  
+  /* Ensure touch targets are at least 44px */
+  @media (max-width: 768px) {
+    button, .btn, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+  
   .dark-grid {
     background-image: 
       linear-gradient(hsl(var(--border) / 0.1) 1px, transparent 1px),
@@ -144,6 +174,21 @@ code {
   
   .hover-lift:hover {
     transform: translateY(-2px);
+  }
+  
+  /* Disable hover effects on touch devices */
+  @media (hover: none) {
+    .hover-lift:hover {
+      transform: none;
+    }
+    
+    .hover\:scale-105:hover {
+      transform: none;
+    }
+    
+    .hover\:scale-110:hover {
+      transform: none;
+    }
   }
   
   .shadow-dark {

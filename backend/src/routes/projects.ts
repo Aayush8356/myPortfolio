@@ -10,30 +10,49 @@ const router = express.Router();
 
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    // Add cache headers for better performance
+    res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+    
+    // Use lean() for faster queries and limit fields if needed
+    const projects = await Project.find()
+      .sort({ createdAt: -1 })
+      .lean();
+    
     res.json(projects);
   } catch (error) {
+    console.error('Error fetching projects:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });
 
 router.get('/featured', async (req: Request, res: Response) => {
   try {
-    const projects = await Project.find({ featured: true }).sort({ createdAt: -1 });
+    // Add cache headers for better performance
+    res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+    
+    const projects = await Project.find({ featured: true })
+      .sort({ createdAt: -1 })
+      .lean();
+    
     res.json(projects);
   } catch (error) {
+    console.error('Error fetching featured projects:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const project = await Project.findById(req.params.id);
+    // Add cache headers for individual projects
+    res.setHeader('Cache-Control', 'public, max-age=600'); // 10 minutes cache
+    
+    const project = await Project.findById(req.params.id).lean();
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
     res.json(project);
   } catch (error) {
+    console.error('Error fetching project:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });

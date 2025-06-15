@@ -131,14 +131,14 @@ const Hero: React.FC = () => {
 
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center bg-background dark-grid relative overflow-hidden">
+    <section id="home" className="min-h-screen flex items-center justify-center bg-background dark-grid relative overflow-hidden pt-16 md:pt-0">
       <div className="absolute inset-0 dark-gradient opacity-50"></div>
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
-            <p className="text-lg md:text-xl text-muted-foreground mb-4 animate-fade-in">{heroContent.greeting}</p>
-            <div className="h-16 md:h-20 flex items-center justify-center overflow-hidden">
-              <h1 className={`text-2xl md:text-4xl lg:text-5xl font-bold uppercase-spaced transition-all duration-700 ease-in-out transform ${
+          <div className="mb-4 md:mb-6">
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground mb-2 md:mb-4 animate-fade-in">{heroContent.greeting}</p>
+            <div className="h-12 md:h-16 lg:h-20 flex items-center justify-center overflow-hidden">
+              <h1 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold uppercase-spaced transition-all duration-700 ease-in-out transform ${
                 currentText === 0 
                   ? 'text-foreground translate-y-0 opacity-100' 
                   : currentText === 1 
@@ -150,16 +150,16 @@ const Hero: React.FC = () => {
             </div>
           </div>
           <div className="overflow-hidden">
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-slide-up-delayed-3">
+            <p className="text-sm md:text-lg lg:text-xl xl:text-2xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed animate-slide-up-delayed-3 px-2 md:px-0">
               {heroContent.description}
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12 animate-slide-up-delayed-4">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 lg:gap-6 justify-center items-center mb-8 md:mb-12 animate-slide-up-delayed-4 px-4 sm:px-0">
             <Button
               size="lg"
               onClick={() => scrollToSection('projects')}
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift uppercase-spaced"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift uppercase-spaced text-xs md:text-sm"
             >
               {heroContent.primaryButtonText}
             </Button>
@@ -167,7 +167,7 @@ const Hero: React.FC = () => {
               variant="outline"
               size="lg"
               onClick={() => scrollToSection('contact')}
-              className="w-full sm:w-auto border-dark text-foreground hover:bg-muted hover-lift uppercase-spaced"
+              className="w-full sm:w-auto border-dark text-foreground hover:bg-muted hover-lift uppercase-spaced text-xs md:text-sm"
             >
               {heroContent.secondaryButtonText}
             </Button>
@@ -175,14 +175,14 @@ const Hero: React.FC = () => {
               variant="outline"
               size="lg"
               onClick={downloadResume}
-              className="w-full sm:w-auto border-dark text-foreground hover:bg-muted hover-lift uppercase-spaced"
+              className="w-full sm:w-auto border-dark text-foreground hover:bg-muted hover-lift uppercase-spaced text-xs md:text-sm"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="w-3 h-3 md:w-4 md:h-4 mr-2" />
               {heroContent.resumeButtonText}
             </Button>
           </div>
 
-          <div className="flex justify-center space-x-8 animate-slide-up-delayed-5">
+          <div className="flex justify-center space-x-4 md:space-x-6 lg:space-x-8 animate-slide-up-delayed-5">
             {contactDetails.github && (
               <a
                 href={contactDetails.github}
@@ -190,7 +190,7 @@ const Hero: React.FC = () => {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
               >
-                <Github className="w-8 h-8" />
+                <Github className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
               </a>
             )}
             {contactDetails.linkedin && (
@@ -200,14 +200,14 @@ const Hero: React.FC = () => {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
               >
-                <Linkedin className="w-8 h-8" />
+                <Linkedin className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
               </a>
             )}
             <button
               onClick={() => scrollToSection('contact')}
               className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
             >
-              <Mail className="w-8 h-8" />
+              <Mail className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
             </button>
           </div>
         </div>

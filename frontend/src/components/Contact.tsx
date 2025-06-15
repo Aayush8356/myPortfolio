@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, FileText } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
+import { cachedFetch } from '../lib/cache';
 
 interface ContactDetails {
   email: string;
@@ -33,21 +34,34 @@ const Contact: React.FC = () => {
     resume: ''
   });
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
+  const [contactLoading, setContactLoading] = useState(true);
+  const [contactError, setContactError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchContactDetails();
-    checkResumeStatus();
+    Promise.all([fetchContactDetails(), checkResumeStatus()]);
   }, []);
 
   const fetchContactDetails = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/contact-details`);
-      if (response.ok) {
-        const data = await response.json();
-        setContactDetails(data);
-      }
+      setContactError(null);
+      const data = await cachedFetch<ContactDetails>(
+        `${API_BASE_URL}/contact-details`,
+        {},
+        'contact-details',
+        300 // 5 minute cache
+      );
+      setContactDetails(data);
     } catch (error) {
       console.error('Error fetching contact details:', error);
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          setContactError('Request timed out. Using default contact info.');
+        } else {
+          setContactError('Failed to load contact details.');
+        }
+      }
+    } finally {
+      setContactLoading(false);
     }
   };
 
@@ -101,33 +115,47 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-background relative">
+    <section id="contact" className="py-12 md:py-20 bg-background relative">
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-gradient uppercase-spaced">CONTACT ME</h2>
+        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">CONTACT ME</h2>
         
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
             <CardHeader>
               <CardTitle className="text-foreground uppercase-spaced">CONTACT INFO</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-accent" />
-                <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors">
-                  {contactDetails.email}
-                </a>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-accent" />
-                <a href={`tel:${contactDetails.phone}`} className="text-muted-foreground hover:text-accent transition-colors">
-                  {contactDetails.phone}
-                </a>
-              </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-accent" />
-                <span className="text-muted-foreground">{contactDetails.location}</span>
-              </div>
+            <CardContent className="space-y-3 md:space-y-4">
+              {contactLoading ? (
+                <div className="text-center py-4 md:py-6">
+                  <div className="inline-block animate-spin rounded-full h-5 h-5 md:h-6 md:w-6 border-b-2 border-accent mb-2"></div>
+                  <p className="text-muted-foreground text-xs md:text-sm">Loading contact info...</p>
+                </div>
+              ) : (
+                <>
+                  {contactError && (
+                    <div className="text-xs text-muted-foreground italic mb-3 md:mb-4 p-2 bg-muted/30 rounded">
+                      {contactError}
+                    </div>
+                  )}
+                  <div className="flex items-center space-x-2 md:space-x-3">
+                    <Mail className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                    <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base break-all">
+                      {contactDetails.email}
+                    </a>
+                  </div>
+                  <div className="flex items-center space-x-2 md:space-x-3">
+                    <Phone className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                    <a href={`tel:${contactDetails.phone}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base">
+                      {contactDetails.phone}
+                    </a>
+                  </div>
+                  <div className="flex items-center space-x-2 md:space-x-3">
+                    <MapPin className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                    <span className="text-muted-foreground text-sm md:text-base">{contactDetails.location}</span>
+                  </div>
+                </>
+              )}
               
               {/* Social Links */}
               <div className="pt-4">

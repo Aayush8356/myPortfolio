@@ -81,55 +81,24 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
   });
 });
 
-// Get current resume
+// Get current resume - optimized for performance
 router.get('/current', async (req, res) => {
   try {
-    // Check contact details for stored resume URL
-    const contactDetails = await ContactDetails.findOne();
+    // Quick database lookup with lean query
+    const contactDetails = await ContactDetails.findOne().lean();
     
     if (contactDetails && contactDetails.resume) {
-      // Check if it's a Vercel Blob URL (starts with https://)
-      if (contactDetails.resume.startsWith('https://')) {
-        // Verify the blob still exists by making a HEAD request
-        try {
-          const response = await fetch(contactDetails.resume, { method: 'HEAD' });
-          if (response.ok) {
-            res.json({ 
-              hasResume: true, 
-              resumeUrl: contactDetails.resume,
-              uploadedAt: contactDetails.updatedAt
-            });
-            return;
-          } else {
-            console.warn('Blob URL not accessible:', contactDetails.resume, response.status);
-          }
-        } catch (blobError) {
-          console.warn('Error checking blob URL:', contactDetails.resume, blobError);
-        }
-        // Continue to check local file if blob check fails
-      }
-      
-      // Check local file for development or fallback
-      if (contactDetails.resume.startsWith('/uploads/')) {
-        const resumePath = path.join(__dirname, '../../uploads/resume.pdf');
-        
-        if (fs.existsSync(resumePath)) {
-          res.json({ 
-            hasResume: true, 
-            resumeUrl: contactDetails.resume,
-            uploadedAt: fs.statSync(resumePath).mtime
-          });
-          return;
-        } else {
-          // Local file doesn't exist, clear the invalid URL from database
-          console.warn('Local resume file not found, clearing invalid URL from database');
-          contactDetails.resume = '';
-          await contactDetails.save();
-        }
-      }
+      // Trust the database record without external verification for speed
+      // The actual preview/download endpoints will handle errors gracefully
+      res.json({ 
+        hasResume: true, 
+        resumeUrl: contactDetails.resume,
+        uploadedAt: contactDetails.updatedAt
+      });
+      return;
     }
     
-    // No valid resume found
+    // No resume found
     res.json({ 
       hasResume: false, 
       resumeUrl: null 
@@ -140,24 +109,35 @@ router.get('/current', async (req, res) => {
   }
 });
 
-// Preview resume (opens in browser)
+// Preview resume (opens in browser) - optimized with caching
 router.get('/preview', async (req, res) => {
   try {
-    const contactDetails = await ContactDetails.findOne();
+    // Set cache headers for better performance
+    res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+    
+    const contactDetails = await ContactDetails.findOne().lean();
     
     if (contactDetails && contactDetails.resume) {
-      // If it's a Vercel Blob URL, fetch and serve the content
+      // If it's a Vercel Blob URL, redirect directly for better performance
       if (contactDetails.resume.startsWith('https://')) {
         try {
-          const response = await fetch(contactDetails.resume);
+          // Test blob accessibility with timeout
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+          
+          const response = await fetch(contactDetails.resume, { 
+            method: 'HEAD',
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          
           if (response.ok) {
-            const buffer = await response.arrayBuffer();
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
-            return res.send(Buffer.from(buffer));
+            // Redirect to blob URL for direct viewing
+            return res.redirect(contactDetails.resume);
           }
         } catch (fetchError) {
-          console.error('Error fetching blob resume:', fetchError);
+          const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown error';
+          console.warn('Blob URL check failed, serving error page:', errorMessage);
         }
       }
       
@@ -173,7 +153,7 @@ router.get('/preview', async (req, res) => {
       }
     }
     
-    // No resume found
+    // No resume found or error occurred
     res.status(404).send(`
       <html>
         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
@@ -197,24 +177,32 @@ router.get('/preview', async (req, res) => {
   }
 });
 
-// Download resume
+// Download resume - optimized with direct blob access
 router.get('/download', async (req, res) => {
   try {
-    const contactDetails = await ContactDetails.findOne();
+    const contactDetails = await ContactDetails.findOne().lean();
     
     if (contactDetails && contactDetails.resume) {
-      // If it's a Vercel Blob URL, fetch and serve the content
+      // If it's a Vercel Blob URL, redirect for direct download
       if (contactDetails.resume.startsWith('https://')) {
         try {
-          const response = await fetch(contactDetails.resume);
-          if (response.ok) {
-            const buffer = await response.arrayBuffer();
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'attachment; filename="Aayush_Gupta_Resume.pdf"');
-            return res.send(Buffer.from(buffer));
-          }
+          // Add download disposition to the URL redirect
+          const downloadUrl = contactDetails.resume + '?download=1';
+          return res.redirect(downloadUrl);
         } catch (fetchError) {
-          console.error('Error fetching blob resume for download:', fetchError);
+          console.error('Error with blob download redirect:', fetchError);
+          // Fallback to fetch method
+          try {
+            const response = await fetch(contactDetails.resume);
+            if (response.ok) {
+              const buffer = await response.arrayBuffer();
+              res.setHeader('Content-Type', 'application/pdf');
+              res.setHeader('Content-Disposition', 'attachment; filename="Aayush_Gupta_Resume.pdf"');
+              return res.send(Buffer.from(buffer));
+            }
+          } catch (fallbackError) {
+            console.error('Fallback download also failed:', fallbackError);
+          }
         }
       }
       
@@ -225,6 +213,7 @@ router.get('/download', async (req, res) => {
         if (fs.existsSync(resumePath)) {
           return res.download(resumePath, 'Aayush_Gupta_Resume.pdf', (err) => {
             if (err) {
+              console.error('Local file download error:', err);
               res.status(500).json({ message: 'Error downloading resume' });
             }
           });

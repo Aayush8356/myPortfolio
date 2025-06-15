@@ -4,14 +4,17 @@ import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth
 
 const router = express.Router();
 
-// Get contact details (public)
+// Get contact details (public) - optimized
 router.get('/', async (req, res) => {
   try {
-    let contactDetails = await ContactDetails.findOne();
+    // Add cache headers for better performance
+    res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+    
+    let contactDetails = await ContactDetails.findOne().lean();
     
     // If no contact details exist, create default ones
     if (!contactDetails) {
-      contactDetails = new ContactDetails({
+      const newContactDetails = new ContactDetails({
         email: 'your.email@example.com',
         phone: '+1 (555) 123-4567',
         location: 'Your City, Country',
@@ -20,11 +23,14 @@ router.get('/', async (req, res) => {
         twitter: 'https://twitter.com/yourusername',
         resume: ''
       });
-      await contactDetails.save();
+      await newContactDetails.save();
+      // Fetch the saved document with lean() for consistent typing
+      contactDetails = await ContactDetails.findOne().lean();
     }
     
     res.json(contactDetails);
   } catch (error) {
+    console.error('Error fetching contact details:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
