@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import path from 'path';
 import fs from 'fs';
 import { createIndexes } from './config/database';
+import User from './models/User';
 import authRoutes from './routes/auth';
 import projectRoutes from './routes/projects';
 import contactRoutes from './routes/contact';
@@ -51,7 +52,18 @@ app.get('/', (req, res) => {
   res.json({ 
     message: 'Portfolio API is running!',
     version: '1.1.0',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    status: 'healthy'
+  });
+});
+
+// Health check endpoint for deployment verification
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    version: '1.1.0'
   });
 });
 
@@ -80,17 +92,61 @@ app.get('/debug/uploads', (req, res) => {
   }
 });
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio')
-  .then(async () => {
+// Auto-seed admin user function
+const seedAdminUser = async () => {
+  try {
+    const existingAdmin = await User.findOne({ email: 'admin@example.com' });
+    
+    if (!existingAdmin) {
+      const admin = new User({
+        username: 'admin',
+        email: 'admin@example.com',
+        password: 'admin123',
+        isAdmin: true
+      });
+      await admin.save();
+      console.log('Admin user created: admin@example.com / admin123');
+    } else {
+      console.log('Admin user already exists');
+    }
+  } catch (error) {
+    console.warn('Warning: Could not seed admin user:', error);
+  }
+};
+
+// Handle uncaught exceptions and rejections for deployment
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Rejection:', error);
+  process.exit(1);
+});
+
+// Start server
+const startServer = async () => {
+  try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio');
     console.log('Connected to MongoDB');
     
     // Create database indexes for better performance
     await createIndexes();
     
+    // Seed admin user
+    await seedAdminUser();
+    
+    // Start the server
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
+      console.log(`Health check available at: http://localhost:${PORT}/health`);
     });
-  })
-  .catch((error) => {
-    console.error('MongoDB connection error:', error);
-  });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
