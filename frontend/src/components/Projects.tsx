@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Github, ExternalLink } from 'lucide-react';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, ASSETS_BASE_URL } from '../config/api';
 import { cachedFetch } from '../lib/cache';
 import { ProjectSkeleton } from './ui/skeleton';
 
@@ -115,7 +115,7 @@ const Projects: React.FC = () => {
                 {project.imageUrl && (
                   <div className="w-full h-32 md:h-40 lg:h-48 bg-muted rounded-md mb-4 overflow-hidden">
                     <img
-                      src={project.imageUrl.startsWith('/projects') ? `${API_BASE_URL}${project.imageUrl}` : project.imageUrl}
+                      src={project.imageUrl.startsWith('/projects') ? `${ASSETS_BASE_URL}${project.imageUrl}` : project.imageUrl}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />

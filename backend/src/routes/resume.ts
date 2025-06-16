@@ -52,7 +52,7 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
         resumeUrl = '/uploads/resume.pdf';
       }
 
-      // Update contact details with new resume URL
+      // Store internal blob URL but return custom domain URL
       let contactDetails = await ContactDetails.findOne();
       
       if (!contactDetails) {
@@ -61,10 +61,12 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
           email: 'your.email@example.com',
           phone: '+1 (555) 123-4567',
           location: 'Your City, Country',
-          resume: resumeUrl
+          resume: resumeUrl, // Store the actual blob URL internally
+          resumePublicUrl: 'https://meetaayush.com/blob/resume' // Public URL for external access
         });
       } else {
-        contactDetails.resume = resumeUrl;
+        contactDetails.resume = resumeUrl; // Store the actual blob URL internally
+        contactDetails.resumePublicUrl = 'https://meetaayush.com/blob/resume'; // Public URL for external access
       }
       
       await contactDetails.save();
@@ -72,7 +74,7 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
       res.json({
         message: 'Resume uploaded successfully',
         filename: req.file.originalname,
-        resumeUrl: resumeUrl
+        resumeUrl: 'https://meetaayush.com/blob/resume' // Return custom domain URL
       });
     } catch (error) {
       console.error('Error uploading resume:', error);

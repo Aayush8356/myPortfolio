@@ -124,6 +124,45 @@ git branch -M main
 git push -u origin main
 ```
 
+## ⚠️ DEPLOYMENT FIX - RENDER CONFIGURATION
+
+### Current Issue: Status 127 Error on Render
+
+The backend deployment on Render is failing because it's trying to run `npm run dev` (which uses nodemon) instead of production commands.
+
+### Fix for Render Dashboard:
+
+**In your Render service settings, configure:**
+
+**Build Command:**
+```
+npm install && npm run build
+```
+
+**Start Command:**
+```
+npm start
+```
+
+**Environment Variables:**
+```
+NODE_ENV=production
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/portfolio
+JWT_SECRET=your_super_secret_jwt_key_here
+BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
+PORT=10000
+```
+
+**Health Check Path:**
+```
+/health
+```
+
+### Package.json Updates Applied:
+- Moved TypeScript and type definitions to production dependencies
+- Added `postinstall` script that runs build automatically
+- Fixed main entry point to `dist/index.js`
+
 ## 🔧 Environment Configuration
 
 ### Frontend Environment Variables:
