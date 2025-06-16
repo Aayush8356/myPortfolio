@@ -108,9 +108,17 @@ const Projects: React.FC = () => {
             <p className="text-muted-foreground text-lg">No projects available yet. Check back soon!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          <div className={`grid gap-4 md:gap-6 lg:gap-8 ${
+            projects.length === 1 
+              ? 'grid-cols-1 justify-items-center' 
+              : projects.length === 2 
+                ? 'grid-cols-1 md:grid-cols-2 justify-items-center' 
+                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+          }`}>
             {projects.map((project) => (
-            <Card key={project._id} className="group hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift">
+            <Card key={project._id} className={`group hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift ${
+              projects.length <= 2 ? 'max-w-md w-full' : ''
+            }`}>
               <CardHeader>
                 {project.imageUrl && (
                   <div className="w-full h-32 md:h-40 lg:h-48 bg-muted rounded-md mb-4 overflow-hidden">
