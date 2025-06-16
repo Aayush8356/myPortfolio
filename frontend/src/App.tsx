@@ -9,26 +9,14 @@ import Contact from './components/Contact';
 import FunCentre from './components/FunCentre';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminPanel from './components/admin/AdminPanel';
-import WeatherWidget from './components/WeatherWidget';
-import ThemeDebugger from './components/ThemeDebugger';
-import { WeatherThemeProvider } from './contexts/WeatherThemeContext';
 import { preCacheData } from './lib/cache';
 import { API_BASE_URL } from './config/api';
 
 // Main Portfolio Component
 const Portfolio: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = ({ darkMode, toggleDarkMode }) => {
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-1000">
+    <div className="min-h-screen bg-background text-foreground">
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      
-      {/* Weather Widget - positioned fixed in top right */}
-      <div className="fixed top-20 right-4 z-40 hidden md:block">
-        <WeatherWidget />
-      </div>
-      
-      {/* Theme Debugger - for testing */}
-      <ThemeDebugger />
-      
       <main>
         <Hero />
         <About />
@@ -36,15 +24,9 @@ const Portfolio: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
         <Contact />
         <FunCentre />
       </main>
-      
       <footer className="bg-secondary/5 py-8 text-center text-muted-foreground">
         <div className="container mx-auto px-4">
           <p>&copy; {new Date().getFullYear()} Aayush Gupta. Built with React, TypeScript, and Tailwind CSS.</p>
-          
-          {/* Mobile Weather Widget */}
-          <div className="mt-4 md:hidden flex justify-center">
-            <WeatherWidget />
-          </div>
         </div>
       </footer>
     </div>
@@ -125,25 +107,23 @@ function App() {
   };
 
   return (
-    <WeatherThemeProvider>
-      <Router>
-        <Routes>
-          <Route 
-            path="/" 
-            element={<Portfolio darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} 
-          />
-          <Route 
-            path="/admin" 
-            element={<ProtectedAdminRoute />} 
-          />
-          <Route 
-            path="*" 
-            element={<Navigate to="/" replace />} 
-          />
-        </Routes>
-        <Analytics />
-      </Router>
-    </WeatherThemeProvider>
+    <Router>
+      <Routes>
+        <Route 
+          path="/" 
+          element={<Portfolio darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} 
+        />
+        <Route 
+          path="/admin" 
+          element={<ProtectedAdminRoute />} 
+        />
+        <Route 
+          path="*" 
+          element={<Navigate to="/" replace />} 
+        />
+      </Routes>
+      <Analytics />
+    </Router>
   );
 }
 
