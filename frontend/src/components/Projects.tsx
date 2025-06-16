@@ -116,7 +116,7 @@ const Projects: React.FC = () => {
                 : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
           }`}>
             {projects.map((project) => (
-            <Card key={project._id} className={`group card-nebula border-glow hover:glow-primary transition-all duration-500 animate-float-nebula ${
+            <Card key={project._id} className={`group bg-card hover:bg-card/80 shadow-lg hover:shadow-xl border border-border hover:border-primary/30 dark:card-nebula dark:border-glow dark:hover:glow-primary transition-all duration-500 dark:animate-float-nebula ${
               projects.length <= 2 ? 'max-w-md w-full' : ''
             }`}>
               <CardHeader>
@@ -130,9 +130,9 @@ const Projects: React.FC = () => {
                   </div>
                 )}
                 <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-foreground gap-2">
-                  <span className="text-sm md:text-base lg:text-lg glow-text-primary">{project.title}</span>
+                  <span className="text-sm md:text-base lg:text-lg font-semibold dark:glow-text-primary">{project.title}</span>
                   {project.featured && (
-                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full border-glow glow-primary self-start sm:self-auto animate-glow-pulse">
+                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full border border-primary/30 shadow-sm dark:border-glow dark:glow-primary dark:animate-glow-pulse self-start sm:self-auto">
                       FEATURED
                     </span>
                   )}
@@ -154,7 +154,7 @@ const Projects: React.FC = () => {
 
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   {project.githubUrl && (
-                    <Button variant="outline" size="sm" asChild className="border-glow text-foreground hover:text-secondary hover:glow-secondary transition-all duration-300 text-xs md:text-sm">
+                    <Button variant="outline" size="sm" asChild className="border-secondary/30 hover:border-secondary text-foreground hover:text-secondary hover:bg-secondary/10 dark:border-glow dark:hover:glow-secondary transition-all duration-300 text-xs md:text-sm">
                       <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                         <Github className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                         Code
@@ -162,7 +162,7 @@ const Projects: React.FC = () => {
                     </Button>
                   )}
                   {project.liveUrl && (
-                    <Button size="sm" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground glow-primary hover:glow-accent transition-all duration-300 text-xs md:text-sm">
+                    <Button size="sm" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg dark:glow-primary dark:hover:glow-accent transition-all duration-300 text-xs md:text-sm">
                       <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                         Demo

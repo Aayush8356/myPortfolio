@@ -133,18 +133,18 @@ const Hero: React.FC = () => {
   return (
     <section id="home" className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden pt-16 md:pt-0">
       {/* Dynamic Light Gradients */}
-      <div className="absolute inset-0 opacity-30">
-        {/* Primary purple light */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-radial from-primary/40 via-primary/20 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
+      <div className="absolute inset-0 opacity-20 dark:opacity-30">
+        {/* Primary indigo light */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-radial from-primary/30 dark:from-primary/40 via-primary/10 dark:via-primary/20 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
         
-        {/* Secondary cyan light */}
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-radial from-secondary/35 via-secondary/15 to-transparent rounded-full blur-3xl animate-float-nebula"></div>
+        {/* Secondary emerald light */}
+        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-radial from-secondary/25 dark:from-secondary/35 via-secondary/8 dark:via-secondary/15 to-transparent rounded-full blur-3xl animate-float-nebula"></div>
         
-        {/* Accent magenta light */}
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-radial from-accent/30 via-accent/10 to-transparent rounded-full blur-3xl animate-glow-pulse"></div>
+        {/* Accent purple light */}
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-radial from-accent/20 dark:from-accent/30 via-accent/5 dark:via-accent/10 to-transparent rounded-full blur-3xl animate-glow-pulse"></div>
         
         {/* Moving spotlight effect */}
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-conic from-primary/10 via-transparent to-secondary/10 animate-spin-slow opacity-50"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-conic from-primary/5 dark:from-primary/10 via-transparent to-secondary/5 dark:to-secondary/10 animate-spin-slow opacity-30 dark:opacity-50"></div>
       </div>
       
       {/* Floating particles */}
@@ -164,13 +164,13 @@ const Hero: React.FC = () => {
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="mb-4 md:mb-6">
-            <p className="text-base md:text-lg lg:text-xl text-muted-foreground mb-2 md:mb-4 animate-fade-in glow-text-secondary">{heroContent.greeting}</p>
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground mb-2 md:mb-4 animate-fade-in dark:glow-text-secondary">{heroContent.greeting}</p>
             <div className="h-12 md:h-16 lg:h-20 flex items-center justify-center overflow-hidden">
               <h1 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold uppercase-spaced transition-all duration-700 ease-in-out transform ${
                 currentText === 0 
-                  ? 'text-foreground translate-y-0 opacity-100 glow-text-primary' 
+                  ? 'text-foreground translate-y-0 opacity-100 dark:glow-text-primary' 
                   : currentText === 1 
-                  ? 'text-primary translate-y-0 opacity-100 glow-text-accent animate-glow-pulse' 
+                  ? 'text-primary translate-y-0 opacity-100 dark:glow-text-accent dark:animate-glow-pulse' 
                   : 'translate-y-full opacity-0'
               }`}>
                 {texts[currentText]}
@@ -187,7 +187,7 @@ const Hero: React.FC = () => {
             <Button
               size="lg"
               onClick={() => scrollToSection('projects')}
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground glow-primary hover:glow-accent transition-all duration-300 uppercase-spaced text-xs md:text-sm animate-float-nebula"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl dark:glow-primary dark:hover:glow-accent transition-all duration-300 uppercase-spaced text-xs md:text-sm dark:animate-float-nebula"
             >
               {heroContent.primaryButtonText}
             </Button>
@@ -195,7 +195,7 @@ const Hero: React.FC = () => {
               variant="outline"
               size="lg"
               onClick={() => scrollToSection('contact')}
-              className="w-full sm:w-auto border-glow text-foreground hover:text-secondary hover:glow-secondary transition-all duration-300 uppercase-spaced text-xs md:text-sm"
+              className="w-full sm:w-auto border-primary/20 hover:border-secondary text-foreground hover:text-secondary hover:bg-secondary/10 dark:border-glow dark:hover:glow-secondary transition-all duration-300 uppercase-spaced text-xs md:text-sm"
             >
               {heroContent.secondaryButtonText}
             </Button>
@@ -203,7 +203,7 @@ const Hero: React.FC = () => {
               variant="outline"
               size="lg"
               onClick={downloadResume}
-              className="w-full sm:w-auto border-glow text-foreground hover:text-accent hover:glow-accent transition-all duration-300 uppercase-spaced text-xs md:text-sm"
+              className="w-full sm:w-auto border-accent/20 hover:border-accent text-foreground hover:text-accent hover:bg-accent/10 dark:border-glow dark:hover:glow-accent transition-all duration-300 uppercase-spaced text-xs md:text-sm"
             >
               <Download className="w-3 h-3 md:w-4 md:h-4 mr-2" />
               {heroContent.resumeButtonText}

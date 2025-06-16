@@ -129,49 +129,81 @@
 /* Floating Particles */
 .particle {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
   pointer-events: none;
+  opacity: 0.6;
+}
+
+.dark .particle {
+  width: 4px;
+  height: 4px;
+  opacity: 1;
 }
 
 .particle-1 {
-  background: hsla(var(--glow-primary), 0.8);
+  background: hsla(var(--glow-primary), 0.6);
   top: 20%;
   left: 10%;
   animation: float-particle-1 8s ease-in-out infinite;
+  box-shadow: 0 0 6px hsla(var(--glow-primary), 0.4);
+}
+
+.dark .particle-1 {
+  background: hsla(var(--glow-primary), 0.8);
   box-shadow: 0 0 10px hsla(var(--glow-primary), 0.6);
 }
 
 .particle-2 {
-  background: hsla(var(--glow-secondary), 0.7);
+  background: hsla(var(--glow-secondary), 0.5);
   top: 60%;
   right: 15%;
   animation: float-particle-2 10s ease-in-out infinite;
+  box-shadow: 0 0 5px hsla(var(--glow-secondary), 0.3);
+}
+
+.dark .particle-2 {
+  background: hsla(var(--glow-secondary), 0.7);
   box-shadow: 0 0 8px hsla(var(--glow-secondary), 0.5);
 }
 
 .particle-3 {
-  background: hsla(var(--glow-accent), 0.6);
+  background: hsla(var(--glow-accent), 0.4);
   bottom: 30%;
   left: 20%;
   animation: float-particle-3 12s ease-in-out infinite;
+  box-shadow: 0 0 4px hsla(var(--glow-accent), 0.2);
+}
+
+.dark .particle-3 {
+  background: hsla(var(--glow-accent), 0.6);
   box-shadow: 0 0 6px hsla(var(--glow-accent), 0.4);
 }
 
 .particle-4 {
-  background: hsla(var(--glow-primary), 0.5);
+  background: hsla(var(--glow-primary), 0.3);
   top: 40%;
   right: 30%;
   animation: float-particle-4 9s ease-in-out infinite;
+  box-shadow: 0 0 8px hsla(var(--glow-primary), 0.2);
+}
+
+.dark .particle-4 {
+  background: hsla(var(--glow-primary), 0.5);
   box-shadow: 0 0 12px hsla(var(--glow-primary), 0.3);
 }
 
 .particle-5 {
-  background: hsla(var(--glow-secondary), 0.4);
+  background: hsla(var(--glow-secondary), 0.2);
   bottom: 50%;
   right: 40%;
   animation: float-particle-5 11s ease-in-out infinite;
+  box-shadow: 0 0 5px hsla(var(--glow-secondary), 0.1);
+}
+
+.dark .particle-5 {
+  background: hsla(var(--glow-secondary), 0.4);
   box-shadow: 0 0 8px hsla(var(--glow-secondary), 0.3);
 }
 
@@ -239,13 +271,24 @@
   background: linear-gradient(
     90deg,
     transparent,
+    hsla(var(--glow-primary), 0.05) 40%,
+    hsla(var(--glow-secondary), 0.08) 50%,
+    hsla(var(--glow-accent), 0.05) 60%,
+    transparent
+  );
+  animation: sweep-light 15s ease-in-out infinite;
+  transform: skewX(-15deg);
+}
+
+.dark .light-beam {
+  background: linear-gradient(
+    90deg,
+    transparent,
     hsla(var(--glow-primary), 0.1) 40%,
     hsla(var(--glow-secondary), 0.15) 50%,
     hsla(var(--glow-accent), 0.1) 60%,
     transparent
   );
-  animation: sweep-light 15s ease-in-out infinite;
-  transform: skewX(-15deg);
 }
 
 @keyframes sweep-light {
@@ -257,58 +300,60 @@
 
 @layer base {
   :root {
-    /* Dark Nebula Theme - Sleek black with glowing accents */
-    --background: 240 10% 5%;        /* Deep space black */
-    --foreground: 210 40% 95%;       /* Bright white text */
-    --card: 240 15% 8%;              /* Dark cards with subtle depth */
-    --card-foreground: 210 30% 92%;  /* Soft white for card text */
-    --popover: 240 20% 6%;           /* Darker popover background */
-    --popover-foreground: 210 40% 95%;
-    --primary: 270 100% 75%;         /* Bright electric purple */
-    --primary-foreground: 240 10% 5%; /* Dark text on bright primary */
-    --secondary: 200 100% 60%;       /* Cyan glow accent */
-    --secondary-foreground: 240 10% 5%;
-    --muted: 240 15% 12%;            /* Subtle muted elements */
-    --muted-foreground: 210 15% 65%; /* Muted text */
-    --accent: 320 100% 70%;          /* Magenta/pink glow */
-    --accent-foreground: 240 10% 5%;
-    --destructive: 0 100% 65%;       /* Bright red for errors */
-    --destructive-foreground: 210 40% 95%;
-    --border: 240 20% 15%;           /* Subtle borders */
-    --input: 240 20% 10%;            /* Dark input backgrounds */
-    --ring: 270 100% 75%;            /* Purple focus rings */
-    --radius: 0.75rem;               /* Slightly rounded for modern look */
+    /* Modern Light Theme - Clean and Elegant */
+    --background: 0 0% 100%;          /* Pure white */
+    --foreground: 222.2 84% 4.9%;     /* Dark charcoal */
+    --card: 0 0% 100%;               /* White cards */
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 263 70% 60%;          /* Modern indigo */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;        /* Light gray */
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 142 76% 36%;           /* Emerald green */
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 263 70% 60%;
+    --radius: 0.75rem;
     
-    /* Custom glow colors */
-    --glow-primary: 270, 100%, 75%;
-    --glow-secondary: 200, 100%, 60%;
-    --glow-accent: 320, 100%, 70%;
+    /* Light theme glow colors */
+    --glow-primary: 263, 70%, 60%;   /* Indigo */
+    --glow-secondary: 142, 76%, 36%; /* Emerald */
+    --glow-accent: 271, 91%, 65%;    /* Purple */
   }
 
   .dark {
-    /* Dark mode uses the same Dark Nebula theme */
-    --background: 240 10% 5%;
-    --foreground: 210 40% 95%;
-    --card: 240 15% 8%;
-    --card-foreground: 210 30% 92%;
-    --popover: 240 20% 6%;
-    --popover-foreground: 210 40% 95%;
-    --primary: 270 100% 75%;
-    --primary-foreground: 240 10% 5%;
-    --secondary: 200 100% 60%;
-    --secondary-foreground: 240 10% 5%;
-    --muted: 240 15% 12%;
-    --muted-foreground: 210 15% 65%;
-    --accent: 320 100% 70%;
-    --accent-foreground: 240 10% 5%;
-    --destructive: 0 100% 65%;
-    --destructive-foreground: 210 40% 95%;
-    --border: 240 20% 15%;
-    --input: 240 20% 10%;
-    --ring: 270 100% 75%;
-    --glow-primary: 270, 100%, 75%;
-    --glow-secondary: 200, 100%, 60%;
-    --glow-accent: 320, 100%, 70%;
+    /* Dark Theme - Sophisticated and Eye-catching */
+    --background: 224 71% 4%;        /* Rich dark navy */
+    --foreground: 213 31% 91%;       /* Soft white */
+    --card: 224 71% 6%;              /* Slightly lighter navy cards */
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 263 70% 60%;          /* Beautiful indigo */
+    --primary-foreground: 213 31% 91%;
+    --secondary: 142 76% 36%;        /* Vibrant emerald */
+    --secondary-foreground: 213 31% 91%;
+    --muted: 223 47% 11%;            /* Muted dark */
+    --muted-foreground: 215.4 16.3% 56.9%;
+    --accent: 271 91% 65%;           /* Electric purple */
+    --accent-foreground: 213 31% 91%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 213 31% 91%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 263 70% 60%;
+    
+    /* Dark theme glow colors */
+    --glow-primary: 263, 70%, 60%;   /* Indigo */
+    --glow-secondary: 142, 76%, 36%; /* Emerald */
+    --glow-accent: 271, 91%, 65%;    /* Electric purple */
   }
 }
 

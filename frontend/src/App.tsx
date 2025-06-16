@@ -61,24 +61,19 @@ const ProtectedAdminRoute: React.FC = () => {
 };
 
 function App() {
-  const [darkMode, setDarkMode] = useState(true); // Default to dark mode for Dark Nebula theme
+  const [darkMode, setDarkMode] = useState(false); // Default to light mode
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    // Default to dark mode for Dark Nebula theme
-    if (savedTheme === 'dark' || savedTheme === 'light') {
-      const isDark = savedTheme === 'dark';
-      setDarkMode(isDark);
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-      }
-    } else {
-      // No saved preference - default to dark mode for Dark Nebula
+    // Check saved preference or system preference
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       setDarkMode(true);
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+    } else {
+      setDarkMode(false);
+      document.documentElement.classList.remove('dark');
     }
 
     // Admin panel keyboard shortcut
