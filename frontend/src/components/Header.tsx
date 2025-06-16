@@ -12,19 +12,38 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [heroContent, setHeroContent] = useState({ name: 'AAYUSH GUPTA' });
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     fetchHeroContent();
     
-    // Add scroll listener for navbar styling
+    // Add scroll listener for navbar hide/show and styling
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 50);
+      const currentScrollY = window.scrollY;
+      
+      // Update scroll state for styling
+      setIsScrolled(currentScrollY > 50);
+      
+      // Hide/show navbar logic
+      if (currentScrollY < 10) {
+        // Always show at top
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down and past threshold - hide navbar
+        setIsVisible(false);
+        setIsMenuOpen(false); // Close mobile menu when hiding
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - show navbar
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   const fetchHeroContent = async () => {
     try {
@@ -70,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   return (
     <header className={`fixed top-0 w-full ${getNavbarBackground()} border-b ${getNavbarBorder()} z-50 transition-all duration-300 ${
       isScrolled ? 'py-1 md:py-2' : 'py-2 md:py-3'
-    }`}>
+    } ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="container mx-auto px-3 md:px-4 flex justify-between items-center">
         <div className="flex items-center">
           <h1 className={`text-lg md:text-xl lg:text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-300 truncate`}>
