@@ -132,20 +132,38 @@ const Hero: React.FC = () => {
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden pt-16 md:pt-0">
+      {/* Tech Background Grid */}
+      <div className="absolute inset-0 tech-grid opacity-30"></div>
+      
+      {/* Code Pattern Overlay */}
+      <div className="absolute inset-0 code-pattern opacity-20"></div>
+      
+      {/* Circuit Pattern */}
+      <div className="absolute inset-0 tech-circuit opacity-25"></div>
+      
       {/* Dynamic Light Gradients */}
       <div className="absolute inset-0 opacity-20 dark:opacity-30">
-        {/* Primary indigo light */}
+        {/* Primary tech blue light */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-radial from-primary/30 dark:from-primary/40 via-primary/10 dark:via-primary/20 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
         
-        {/* Secondary emerald light */}
+        {/* Secondary golden light */}
         <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-radial from-secondary/25 dark:from-secondary/35 via-secondary/8 dark:via-secondary/15 to-transparent rounded-full blur-3xl animate-float-nebula"></div>
         
-        {/* Accent purple light */}
+        {/* Accent mint light */}
         <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-radial from-accent/20 dark:from-accent/30 via-accent/5 dark:via-accent/10 to-transparent rounded-full blur-3xl animate-glow-pulse"></div>
         
         {/* Moving spotlight effect */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-conic from-primary/5 dark:from-primary/10 via-transparent to-secondary/5 dark:to-secondary/10 animate-spin-slow opacity-30 dark:opacity-50"></div>
       </div>
+      
+      {/* Tech Objects */}
+      <div className="absolute inset-0 tech-objects pointer-events-none"></div>
+      
+      {/* Terminal Window */}
+      <div className="terminal-window pointer-events-none"></div>
+      
+      {/* API Connection Line */}
+      <div className="api-connection pointer-events-none"></div>
       
       {/* Floating particles */}
       <div className="absolute inset-0 pointer-events-none">
@@ -216,7 +234,7 @@ const Hero: React.FC = () => {
                 href={contactDetails.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
+                className="text-muted-foreground social-github hover-lift"
               >
                 <Github className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
               </a>
@@ -226,14 +244,14 @@ const Hero: React.FC = () => {
                 href={contactDetails.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
+                className="text-muted-foreground social-linkedin hover-lift"
               >
                 <Linkedin className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
               </a>
             )}
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 hover-lift transform hover:scale-110"
+              className="text-muted-foreground social-email hover-lift"
             >
               <Mail className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
             </button>

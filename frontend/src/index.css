@@ -126,6 +126,189 @@
   background: conic-gradient(var(--tw-gradient-stops));
 }
 
+/* Tech Background Elements */
+.tech-grid {
+  background-image: 
+    linear-gradient(hsla(var(--primary), 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, hsla(var(--primary), 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: grid-flow 20s linear infinite;
+}
+
+.code-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%230284c7' fill-opacity='0.05'%3E%3Cpath d='M8 8h4v4H8zM20 8h4v4h-4zM32 8h4v4h-4zM8 20h4v4H8zM20 20h4v4h-4zM32 20h4v4h-4zM8 32h4v4H8zM20 32h4v4h-4zM32 32h4v4h-4z'/%3E%3C/g%3E%3C/svg%3E");
+  animation: code-drift 25s linear infinite;
+}
+
+.tech-circuit {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2334d399' stroke-width='1' stroke-opacity='0.1'%3E%3Cpath d='M10 10h40v40H10z'/%3E%3Cpath d='M20 20h20v20H20z'/%3E%3Ccircle cx='30' cy='30' r='5'/%3E%3Cpath d='M30 10v10M30 40v10M10 30h10M40 30h10'/%3E%3C/g%3E%3C/svg%3E");
+  animation: circuit-pulse 15s ease-in-out infinite;
+}
+
+/* Database/Server Icons */
+.tech-objects::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 60px;
+  height: 80px;
+  background: linear-gradient(135deg, hsla(var(--secondary), 0.15), hsla(var(--accent), 0.1));
+  border-radius: 6px;
+  transform: perspective(100px) rotateY(-15deg);
+  box-shadow: 
+    0 0 20px hsla(var(--secondary), 0.2),
+    inset 0 0 10px hsla(var(--secondary), 0.1);
+  animation: float-server 8s ease-in-out infinite;
+}
+
+.tech-objects::after {
+  content: '{}';
+  position: absolute;
+  bottom: 20%;
+  left: 10%;
+  font-size: 3rem;
+  font-weight: bold;
+  color: hsla(var(--primary), 0.2);
+  text-shadow: 0 0 20px hsla(var(--primary), 0.3);
+  animation: code-glow 6s ease-in-out infinite;
+}
+
+/* Terminal Window */
+.terminal-window {
+  position: absolute;
+  top: 25%;
+  left: 5%;
+  width: 120px;
+  height: 80px;
+  background: linear-gradient(135deg, 
+    hsla(var(--background), 0.8), 
+    hsla(var(--primary), 0.1)
+  );
+  border: 1px solid hsla(var(--primary), 0.3);
+  border-radius: 8px;
+  transform: perspective(200px) rotateY(20deg) rotateX(5deg);
+  box-shadow: 
+    0 10px 30px hsla(var(--primary), 0.2),
+    0 0 20px hsla(var(--primary), 0.1);
+  animation: terminal-flicker 10s ease-in-out infinite;
+}
+
+.terminal-window::before {
+  content: '$ npm run dev';
+  position: absolute;
+  top: 20px;
+  left: 8px;
+  font-size: 8px;
+  font-family: 'Courier New', monospace;
+  color: hsla(var(--accent), 0.8);
+  text-shadow: 0 0 5px hsla(var(--accent), 0.5);
+}
+
+.terminal-window::after {
+  content: '●●●';
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  font-size: 6px;
+  color: hsla(var(--secondary), 0.6);
+}
+
+/* API Connections */
+.api-connection {
+  position: absolute;
+  top: 60%;
+  right: 25%;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(
+    180deg, 
+    transparent,
+    hsla(var(--accent), 0.6),
+    hsla(var(--secondary), 0.4),
+    transparent
+  );
+  animation: data-flow 3s ease-in-out infinite;
+}
+
+.api-connection::before {
+  content: 'API';
+  position: absolute;
+  top: -20px;
+  left: -15px;
+  font-size: 10px;
+  font-weight: bold;
+  color: hsla(var(--accent), 0.7);
+  text-shadow: 0 0 10px hsla(var(--accent), 0.5);
+}
+
+/* Contact Icon Colors */
+.contact-icon-email {
+  color: #ea4335; /* Gmail red */
+  transition: all 0.3s ease;
+}
+
+.contact-icon-phone {
+  color: #25d366; /* WhatsApp green */
+  transition: all 0.3s ease;
+}
+
+.contact-icon-location {
+  color: #4285f4; /* Google Maps blue */
+  transition: all 0.3s ease;
+}
+
+.contact-icon-default {
+  color: hsla(var(--accent), 1);
+  transition: all 0.3s ease;
+}
+
+/* Brand-specific social media colors */
+.social-github {
+  transition: all 0.3s ease;
+}
+
+.social-github:hover {
+  color: #333 !important;
+  filter: drop-shadow(0 0 8px rgba(51, 51, 51, 0.6));
+  transform: scale(1.1);
+}
+
+.dark .social-github:hover {
+  color: #f0f6fc !important;
+  filter: drop-shadow(0 0 8px rgba(240, 246, 252, 0.6));
+}
+
+.social-linkedin {
+  transition: all 0.3s ease;
+}
+
+.social-linkedin:hover {
+  color: #0a66c2 !important;
+  filter: drop-shadow(0 0 8px rgba(10, 102, 194, 0.6));
+  transform: scale(1.1);
+}
+
+.social-twitter {
+  transition: all 0.3s ease;
+}
+
+.social-twitter:hover {
+  color: #1da1f2 !important;
+  filter: drop-shadow(0 0 8px rgba(29, 161, 242, 0.6));
+  transform: scale(1.1);
+}
+
+.social-email {
+  transition: all 0.3s ease;
+}
+
+.social-email:hover {
+  color: #ea4335 !important;
+  filter: drop-shadow(0 0 8px rgba(234, 67, 53, 0.6));
+  transform: scale(1.1);
+}
+
 /* Floating Particles */
 .particle {
   position: absolute;
@@ -298,62 +481,121 @@
   100% { left: 200%; opacity: 0; }
 }
 
+/* Tech Background Animations */
+@keyframes grid-flow {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+@keyframes code-drift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-40px); }
+}
+
+@keyframes circuit-pulse {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes float-server {
+  0%, 100% { transform: perspective(100px) rotateY(-15deg) translateY(0); }
+  50% { transform: perspective(100px) rotateY(-10deg) translateY(-10px); }
+}
+
+@keyframes code-glow {
+  0%, 100% { 
+    text-shadow: 0 0 20px hsla(var(--primary), 0.3);
+    transform: scale(1);
+  }
+  50% { 
+    text-shadow: 0 0 30px hsla(var(--primary), 0.6), 0 0 40px hsla(var(--secondary), 0.3);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes terminal-flicker {
+  0%, 100% { 
+    box-shadow: 0 10px 30px hsla(var(--primary), 0.2), 0 0 20px hsla(var(--primary), 0.1);
+  }
+  50% { 
+    box-shadow: 0 15px 40px hsla(var(--primary), 0.3), 0 0 30px hsla(var(--primary), 0.2);
+  }
+}
+
+@keyframes data-flow {
+  0% {
+    background: linear-gradient(180deg, transparent, transparent, transparent, transparent);
+  }
+  25% {
+    background: linear-gradient(180deg, hsla(var(--accent), 0.6), transparent, transparent, transparent);
+  }
+  50% {
+    background: linear-gradient(180deg, transparent, hsla(var(--accent), 0.6), hsla(var(--secondary), 0.4), transparent);
+  }
+  75% {
+    background: linear-gradient(180deg, transparent, transparent, hsla(var(--secondary), 0.4), hsla(var(--accent), 0.6));
+  }
+  100% {
+    background: linear-gradient(180deg, transparent, transparent, transparent, transparent);
+  }
+}
+
 @layer base {
   :root {
-    /* Modern Light Theme - Clean and Elegant */
+    /* Fullstack Developer Theme - Light Mode */
     --background: 0 0% 100%;          /* Pure white */
-    --foreground: 222.2 84% 4.9%;     /* Dark charcoal */
+    --foreground: 220 26% 14%;        /* Deep slate */
     --card: 0 0% 100%;               /* White cards */
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 26% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 263 70% 60%;          /* Modern indigo */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;        /* Light gray */
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 142 76% 36%;           /* Emerald green */
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 263 70% 60%;
+    --popover-foreground: 220 26% 14%;
+    --primary: 195 100% 39%;         /* Tech blue (#0284c7) */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 47 96% 53%;         /* Golden yellow (#f59e0b) */
+    --secondary-foreground: 220 26% 14%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 158 64% 52%;           /* Mint green (#34d399) */
+    --accent-foreground: 220 26% 14%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 195 100% 39%;
     --radius: 0.75rem;
     
     /* Light theme glow colors */
-    --glow-primary: 263, 70%, 60%;   /* Indigo */
-    --glow-secondary: 142, 76%, 36%; /* Emerald */
-    --glow-accent: 271, 91%, 65%;    /* Purple */
+    --glow-primary: 195, 100%, 39%;  /* Tech blue */
+    --glow-secondary: 47, 96%, 53%;  /* Golden yellow */
+    --glow-accent: 158, 64%, 52%;    /* Mint green */
   }
 
   .dark {
-    /* Dark Theme - Sophisticated and Eye-catching */
-    --background: 224 71% 4%;        /* Rich dark navy */
-    --foreground: 213 31% 91%;       /* Soft white */
-    --card: 224 71% 6%;              /* Slightly lighter navy cards */
-    --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
-    --primary: 263 70% 60%;          /* Beautiful indigo */
-    --primary-foreground: 213 31% 91%;
-    --secondary: 142 76% 36%;        /* Vibrant emerald */
-    --secondary-foreground: 213 31% 91%;
-    --muted: 223 47% 11%;            /* Muted dark */
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 271 91% 65%;           /* Electric purple */
-    --accent-foreground: 213 31% 91%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 213 31% 91%;
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
-    --ring: 263 70% 60%;
+    /* Fullstack Developer Theme - Dark Mode */
+    --background: 220 26% 8%;        /* Deep dark blue-gray */
+    --foreground: 220 14% 96%;       /* Almost white */
+    --card: 220 26% 10%;             /* Slightly lighter cards */
+    --card-foreground: 220 14% 96%;
+    --popover: 220 26% 8%;
+    --popover-foreground: 220 14% 96%;
+    --primary: 195 100% 50%;         /* Bright tech blue */
+    --primary-foreground: 220 26% 8%;
+    --secondary: 47 96% 60%;         /* Bright golden */
+    --secondary-foreground: 220 26% 8%;
+    --muted: 220 26% 15%;
+    --muted-foreground: 220 9% 66%;
+    --accent: 158 64% 58%;           /* Bright mint */
+    --accent-foreground: 220 26% 8%;
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 220 14% 96%;
+    --border: 220 26% 18%;
+    --input: 220 26% 18%;
+    --ring: 195 100% 50%;
     
     /* Dark theme glow colors */
-    --glow-primary: 263, 70%, 60%;   /* Indigo */
-    --glow-secondary: 142, 76%, 36%; /* Emerald */
-    --glow-accent: 271, 91%, 65%;    /* Electric purple */
+    --glow-primary: 195, 100%, 50%;  /* Bright tech blue */
+    --glow-secondary: 47, 96%, 60%;  /* Bright golden */
+    --glow-accent: 158, 64%, 58%;    /* Bright mint */
   }
 }
 

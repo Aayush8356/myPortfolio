@@ -143,19 +143,19 @@ const Contact: React.FC = () => {
                     </div>
                   )}
                   <div className="flex items-center space-x-2 md:space-x-3">
-                    <Mail className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                    <Mail className="w-4 h-4 md:w-5 md:h-5 contact-icon-email flex-shrink-0" />
                     <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base break-all">
                       {contactDetails.email}
                     </a>
                   </div>
                   <div className="flex items-center space-x-2 md:space-x-3">
-                    <Phone className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                    <Phone className="w-4 h-4 md:w-5 md:h-5 contact-icon-phone flex-shrink-0" />
                     <a href={`tel:${contactDetails.phone}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base">
                       {contactDetails.phone}
                     </a>
                   </div>
                   <div className="flex items-center space-x-2 md:space-x-3">
-                    <MapPin className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                    <MapPin className="w-4 h-4 md:w-5 md:h-5 contact-icon-location flex-shrink-0" />
                     <span className="text-muted-foreground text-sm md:text-base">{contactDetails.location}</span>
                   </div>
                 </>
@@ -166,19 +166,19 @@ const Contact: React.FC = () => {
                 <div className="flex space-x-4 mb-4">
                   {contactDetails.linkedin && (
                     <a href={contactDetails.linkedin} target="_blank" rel="noopener noreferrer" 
-                       className="text-muted-foreground hover:text-accent transition-colors">
+                       className="text-muted-foreground social-linkedin hover-lift">
                       <Linkedin className="w-5 h-5" />
                     </a>
                   )}
                   {contactDetails.github && (
                     <a href={contactDetails.github} target="_blank" rel="noopener noreferrer"
-                       className="text-muted-foreground hover:text-accent transition-colors">
+                       className="text-muted-foreground social-github hover-lift">
                       <Github className="w-5 h-5" />
                     </a>
                   )}
                   {contactDetails.twitter && (
                     <a href={contactDetails.twitter} target="_blank" rel="noopener noreferrer"
-                       className="text-muted-foreground hover:text-accent transition-colors">
+                       className="text-muted-foreground social-twitter hover-lift">
                       <Twitter className="w-5 h-5" />
                     </a>
                   )}
@@ -187,7 +187,7 @@ const Contact: React.FC = () => {
                       href={hasUploadedResume ? `${BLOB_BASE_URL}/resume` : contactDetails.resume} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-accent transition-colors"
+                      className="text-muted-foreground contact-icon-default hover-lift"
                       title="View Resume"
                     >
                       <FileText className="w-5 h-5" />
