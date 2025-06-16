@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Github, ExternalLink } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
 import { cachedFetch } from '../lib/cache';
+import { ProjectSkeleton } from './ui/skeleton';
 
 interface Project {
   _id: string;
@@ -22,29 +23,39 @@ const Projects: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Start fetching immediately, no delay
     fetchProjects();
   }, []);
 
   const fetchProjects = async () => {
     try {
       setError(null);
+      
+      // Use more aggressive caching (15 minutes) since projects don't change often
       const data = await cachedFetch<Project[]>(
         `${API_BASE_URL}/projects`,
         {},
         'projects-list',
-        300 // 5 minute cache
+        900 // 15 minute cache
       );
+      
       setProjects(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
+      
+      // More specific error handling
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          setError('Request timed out. Please check your connection and try again.');
+          setError('Connection timeout. Check your internet and try again.');
+        } else if (error.message.includes('500')) {
+          setError('Server error. Please try again in a moment.');
+        } else if (error.message.includes('404')) {
+          setError('Projects not found. The server may be updating.');
         } else {
-          setError('Failed to load projects. Please try again later.');
+          setError('Failed to load projects. Check your connection.');
         }
       } else {
-        setError('An unexpected error occurred.');
+        setError('Network error occurred. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -58,9 +69,10 @@ const Projects: React.FC = () => {
         <div className="absolute inset-0 dark-grid opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
-            <p className="text-muted-foreground">Loading projects...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            {[...Array(6)].map((_, i) => (
+              <ProjectSkeleton key={i} />
+            ))}
           </div>
         </div>
       </section>

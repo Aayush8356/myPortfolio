@@ -9,6 +9,8 @@ import Contact from './components/Contact';
 import FunCentre from './components/FunCentre';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminPanel from './components/admin/AdminPanel';
+import { preCacheData } from './lib/cache';
+import { API_BASE_URL } from './config/api';
 
 // Main Portfolio Component
 const Portfolio: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = ({ darkMode, toggleDarkMode }) => {
@@ -79,7 +81,16 @@ function App() {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    
+    // Pre-cache data for faster loading
+    const timer = setTimeout(() => {
+      preCacheData(API_BASE_URL);
+    }, 1000); // Pre-cache after 1 second to not block initial render
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      clearTimeout(timer);
+    };
   }, []);
 
   const toggleDarkMode = () => {

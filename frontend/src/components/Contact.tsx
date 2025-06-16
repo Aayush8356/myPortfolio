@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, FileText } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
 import { cachedFetch } from '../lib/cache';
+import { ContactSkeleton } from './ui/skeleton';
 
 interface ContactDetails {
   email: string;
@@ -44,22 +45,28 @@ const Contact: React.FC = () => {
   const fetchContactDetails = async () => {
     try {
       setContactError(null);
+      
+      // Use aggressive caching for contact details (15 minutes)
       const data = await cachedFetch<ContactDetails>(
         `${API_BASE_URL}/contact-details`,
         {},
         'contact-details',
-        300 // 5 minute cache
+        900 // 15 minute cache
       );
+      
       setContactDetails(data);
     } catch (error) {
       console.error('Error fetching contact details:', error);
+      
+      // Show error but keep default contact info working
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          setContactError('Request timed out. Using default contact info.');
+          setContactError('Connection timeout. Using default contact info.');
         } else {
-          setContactError('Failed to load contact details.');
+          setContactError('Using default contact info.');
         }
       }
+      // Don't show error in UI, just use defaults
     } finally {
       setContactLoading(false);
     }
@@ -127,10 +134,7 @@ const Contact: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-3 md:space-y-4">
               {contactLoading ? (
-                <div className="text-center py-4 md:py-6">
-                  <div className="inline-block animate-spin rounded-full h-5 h-5 md:h-6 md:w-6 border-b-2 border-accent mb-2"></div>
-                  <p className="text-muted-foreground text-xs md:text-sm">Loading contact info...</p>
-                </div>
+                <ContactSkeleton />
               ) : (
                 <>
                   {contactError && (

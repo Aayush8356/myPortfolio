@@ -71,9 +71,9 @@ export const cachedFetch = async <T>(
     return cached;
   }
 
-  // Add timeout to fetch
+  // Add timeout to fetch - reduced to 5 seconds for faster failure
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
 
   try {
     const response = await fetch(url, {
@@ -81,6 +81,7 @@ export const cachedFetch = async <T>(
       signal: controller.signal,
       headers: {
         'Accept': 'application/json',
+        'Cache-Control': 'public, max-age=300',
         ...options.headers,
       }
     });
@@ -93,12 +94,35 @@ export const cachedFetch = async <T>(
 
     const data = await response.json();
     
-    // Cache the successful response
-    apiCache.set(key, data, ttlSeconds);
+    // Cache the successful response with longer TTL for static content
+    const extendedTTL = url.includes('/projects') || url.includes('/contact-details') ? 900 : ttlSeconds; // 15 minutes for projects/contact
+    apiCache.set(key, data, extendedTTL);
     
     return data;
   } catch (error) {
     clearTimeout(timeoutId);
+    
+    // Return stale cache if available on error
+    const staleCache = apiCache.get<T>(key + '_stale');
+    if (staleCache) {
+      console.warn('Using stale cache due to error:', error);
+      return staleCache;
+    }
+    
     throw error;
+  }
+};
+
+// Function to pre-cache common data
+export const preCacheData = async (baseUrl: string) => {
+  try {
+    // Pre-cache projects and contact details simultaneously
+    await Promise.allSettled([
+      cachedFetch(`${baseUrl}/projects`, {}, 'projects-list', 900),
+      cachedFetch(`${baseUrl}/contact-details`, {}, 'contact-details', 900),
+      cachedFetch(`${baseUrl}/about`, {}, 'about-content', 1800)
+    ]);
+  } catch (error) {
+    console.warn('Pre-caching failed:', error);
   }
 };
