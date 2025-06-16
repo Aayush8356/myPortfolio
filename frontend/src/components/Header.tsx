@@ -14,36 +14,56 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchHeroContent();
     
-    // Add scroll listener for navbar hide/show and styling
+    // Add scroll listener for navbar hide/show and styling with throttling
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Update scroll state for styling
-      setIsScrolled(currentScrollY > 50);
-      
-      // Hide/show navbar logic
-      if (currentScrollY < 10) {
-        // Always show at top
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down and past threshold - hide navbar
-        setIsVisible(false);
-        setIsMenuOpen(false); // Close mobile menu when hiding
-      } else if (currentScrollY < lastScrollY) {
-        // Scrolling up - show navbar
-        setIsVisible(true);
+      // Clear existing timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
       }
+
+      // Throttle scroll events for better performance
+      const newTimeout = setTimeout(() => {
+        const currentScrollY = window.scrollY;
+        const scrollDifference = Math.abs(currentScrollY - lastScrollY);
+        
+        // Update scroll state for styling
+        setIsScrolled(currentScrollY > 50);
+        
+        // Only process if scroll difference is significant (reduces jitter)
+        if (scrollDifference > 5) {
+          // Hide/show navbar logic
+          if (currentScrollY < 10) {
+            // Always show at top
+            setIsVisible(true);
+          } else if (currentScrollY > lastScrollY && currentScrollY > 150) {
+            // Scrolling down and past threshold - hide navbar with delay
+            setTimeout(() => setIsVisible(false), 100);
+            setIsMenuOpen(false); // Close mobile menu when hiding
+          } else if (currentScrollY < lastScrollY - 10) {
+            // Scrolling up with some threshold - show navbar immediately
+            setIsVisible(true);
+          }
+          
+          setLastScrollY(currentScrollY);
+        }
+      }, 10); // Small delay for smoother experience
       
-      setLastScrollY(currentScrollY);
+      setScrollTimeout(newTimeout);
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, [lastScrollY, scrollTimeout]);
 
   const fetchHeroContent = async () => {
     try {
@@ -87,9 +107,9 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   };
 
   return (
-    <header className={`fixed top-0 w-full ${getNavbarBackground()} border-b ${getNavbarBorder()} z-50 transition-all duration-300 ${
+    <header className={`fixed top-0 w-full ${getNavbarBackground()} border-b ${getNavbarBorder()} z-50 ${
       isScrolled ? 'py-1 md:py-2' : 'py-2 md:py-3'
-    } ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+    } ${isVisible ? 'translate-y-0' : '-translate-y-full'} transition-all duration-500 ease-in-out`}>
       <div className="container mx-auto px-3 md:px-4 flex justify-between items-center">
         <div className="flex items-center">
           <h1 className={`text-lg md:text-xl lg:text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-300 truncate`}>
