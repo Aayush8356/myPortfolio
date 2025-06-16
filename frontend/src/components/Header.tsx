@@ -11,9 +11,19 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [heroContent, setHeroContent] = useState({ name: 'AAYUSH GUPTA' });
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     fetchHeroContent();
+    
+    // Add scroll listener for navbar styling
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const fetchHeroContent = async () => {
@@ -29,8 +39,11 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   };
 
 
-  // Static styling without time-based changes for better performance
+  // Dynamic styling based on scroll position for better UX
   const getNavbarBackground = () => {
+    if (isScrolled) {
+      return 'bg-background/98 backdrop-blur-lg shadow-lg';
+    }
     return 'bg-background/95 backdrop-blur-md';
   };
 
@@ -55,8 +68,10 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   };
 
   return (
-    <header className={`fixed top-0 w-full ${getNavbarBackground()} border-b ${getNavbarBorder()} z-50 transition-all duration-300`}>
-      <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 flex justify-between items-center">
+    <header className={`fixed top-0 w-full ${getNavbarBackground()} border-b ${getNavbarBorder()} z-50 transition-all duration-300 ${
+      isScrolled ? 'py-1 md:py-2' : 'py-2 md:py-3'
+    }`}>
+      <div className="container mx-auto px-3 md:px-4 flex justify-between items-center">
         <div className="flex items-center">
           <h1 className={`text-lg md:text-xl lg:text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-300 truncate`}>
             {heroContent.name.length > 12 ? 'AAYUSH GUPTA' : heroContent.name}
