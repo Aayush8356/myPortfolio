@@ -9,3 +9,7 @@ services:
       - key: NODE_ENV
         value: production
     healthCheckPath: /health
+    disk:
+      name: portfolio-data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
