@@ -10,6 +10,7 @@ import FunCentre from './components/FunCentre';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminPanel from './components/admin/AdminPanel';
 import WeatherWidget from './components/WeatherWidget';
+import ThemeDebugger from './components/ThemeDebugger';
 import { WeatherThemeProvider } from './contexts/WeatherThemeContext';
 import { preCacheData } from './lib/cache';
 import { API_BASE_URL } from './config/api';
@@ -24,6 +25,9 @@ const Portfolio: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
       <div className="fixed top-20 right-4 z-40 hidden md:block">
         <WeatherWidget />
       </div>
+      
+      {/* Theme Debugger - for testing */}
+      <ThemeDebugger />
       
       <main>
         <Hero />

@@ -231,25 +231,28 @@ class WeatherService {
   }
 
   private async fetchWeatherData(lat: number, lon: number): Promise<WeatherData> {
-    // Using OpenWeatherMap's free tier - requires API key
-    // For demo purposes, we'll simulate weather data based on time/location
+    // For demo purposes, we'll cycle through different weather conditions
+    // This ensures users can see the theme changes
     const now = new Date();
     const hour = now.getHours();
+    const minute = now.getMinutes();
     const isDay = hour >= 6 && hour < 18;
     
-    // Simulate weather based on time and some randomness
-    const conditions = ['sunny', 'cloudy', 'rainy', 'snowy'];
-    const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
+    // Cycle through conditions every 2 minutes for demo
+    const cycleIndex = Math.floor((hour * 60 + minute) / 2) % 4;
+    const dayConditions = ['sunny', 'cloudy', 'rainy', 'snowy'];
     
-    // Use night theme if it's nighttime
-    const condition = !isDay ? 'night' : randomCondition;
+    // Use night theme if it's nighttime, otherwise cycle through day conditions
+    const condition = !isDay ? 'night' : dayConditions[cycleIndex];
+    
+    console.log('Weather Service: Setting condition to', condition, 'at', `${hour}:${minute}`);
     
     return {
       temperature: Math.floor(Math.random() * 30) + 10,
       condition,
       description: this.getWeatherDescription(condition),
       icon: this.getWeatherIcon(condition),
-      location: 'Your Location',
+      location: `${lat.toFixed(1)}°, ${lon.toFixed(1)}°`,
       humidity: Math.floor(Math.random() * 40) + 40,
       windSpeed: Math.floor(Math.random() * 20) + 5,
       cloudiness: Math.floor(Math.random() * 100),
