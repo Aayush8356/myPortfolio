@@ -20,40 +20,34 @@ interface Project {
 // Default/fallback projects for better UX
 const defaultProjects: Project[] = [
   {
-    id: '1',
+    _id: '1',
     title: 'Full Stack Portfolio',
     description: 'A modern, responsive portfolio website built with React, TypeScript, and Node.js. Features include dark/light mode, admin panel, and contact management.',
     technologies: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'Tailwind CSS'],
     githubUrl: 'https://github.com/Aayush8356/myPortfolio',
     liveUrl: 'https://meetaayush.com',
     imageUrl: '',
-    featured: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    featured: true
   },
   {
-    id: '2',
+    _id: '2',
     title: 'Tech Innovation Project',
     description: 'Innovative project showcasing modern web development techniques and best practices.',
     technologies: ['JavaScript', 'React', 'API Integration'],
     githubUrl: '#',
     liveUrl: '#',
     imageUrl: '',
-    featured: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    featured: false
   },
   {
-    id: '3',
+    _id: '3',
     title: 'Web Development Solution',
     description: 'Comprehensive web solution demonstrating full-stack development capabilities.',
     technologies: ['Full Stack', 'Database', 'UI/UX'],
     githubUrl: '#',
     liveUrl: '#',
     imageUrl: '',
-    featured: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    featured: false
   }
 ];
 
@@ -130,8 +124,8 @@ const Projects: React.FC = () => {
                 : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
           }`}>
             {projects.map((project) => (
-            <Card key={project._id} className={`group bg-card hover:bg-card/80 shadow-lg hover:shadow-xl border border-border hover:border-primary/30 dark:card-nebula dark:border-glow dark:hover:glow-primary transition-all duration-500 dark:animate-float-nebula ${
-              projects.length <= 2 ? 'max-w-md w-full' : ''
+            <Card key={project._id} className={`group bg-dark-card backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:transform hover:scale-[1.02] ${
+              projects.length <= 2 ? 'max-w-lg w-full' : ''
             }`}>
               <CardHeader>
                 {project.imageUrl && (
@@ -144,22 +138,22 @@ const Projects: React.FC = () => {
                   </div>
                 )}
                 <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-foreground gap-2">
-                  <span className="text-sm md:text-base lg:text-lg font-semibold dark:glow-text-primary">{project.title}</span>
+                  <span className="text-base md:text-lg lg:text-xl font-semibold text-foreground">{project.title}</span>
                   {project.featured && (
-                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full border border-primary/30 shadow-sm dark:border-glow dark:glow-primary dark:animate-glow-pulse self-start sm:self-auto">
+                    <span className="text-xs bg-accent/20 text-accent px-3 py-1.5 rounded-full border border-accent/40 font-medium shadow-sm self-start sm:self-auto">
                       FEATURED
                     </span>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-3 md:mb-4 text-sm md:text-base">{project.description}</p>
+                <p className="text-muted-foreground mb-4 md:mb-5 text-sm md:text-base leading-relaxed">{project.description}</p>
                 
-                <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
+                <div className="flex flex-wrap gap-2 md:gap-3 mb-5 md:mb-6">
                   {project.technologies.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-2 md:px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 hover:scale-105 bg-muted text-foreground border border-dark-subtle hover-lift"
+                      className="px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-300 hover:scale-105 bg-muted/80 text-foreground border border-border/30 hover:border-accent/50 hover:bg-accent/10 hover-lift"
                     >
                       {tech}
                     </span>

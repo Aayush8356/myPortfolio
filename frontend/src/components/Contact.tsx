@@ -119,12 +119,14 @@ const Contact: React.FC = () => {
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">CONTACT ME</h2>
         
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
-            <CardHeader>
-              <CardTitle className="text-foreground uppercase-spaced">CONTACT INFO</CardTitle>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
+          <Card className="bg-dark-card backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-foreground uppercase-spaced text-lg md:text-xl lg:text-2xl font-semibold">
+                CONTACT INFO
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 md:space-y-4">
+            <CardContent className="space-y-4 md:space-y-6">
               {contactLoading ? (
                 <ContactSkeleton />
               ) : (
@@ -190,9 +192,11 @@ const Contact: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
-            <CardHeader>
-              <CardTitle className="text-foreground uppercase-spaced">Send Me a Message</CardTitle>
+          <Card className="bg-dark-card backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-foreground uppercase-spaced text-lg md:text-xl lg:text-2xl font-semibold">
+                SEND ME A MESSAGE
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {success && (

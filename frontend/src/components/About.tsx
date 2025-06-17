@@ -79,40 +79,46 @@ const About: React.FC = () => {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">ABOUT ME</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12">
-            <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
-              <CardHeader>
-                <CardTitle className="text-foreground uppercase-spaced text-sm md:text-base lg:text-lg">{aboutContent.backgroundTitle}</CardTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 mb-8 md:mb-12">
+            <Card className="bg-dark-card backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300 shadow-lg hover:shadow-xl">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
+                  {aboutContent.backgroundTitle}
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+                <p className="text-muted-foreground leading-relaxed text-sm md:text-base lg:text-lg">
                   {aboutContent.backgroundContent}
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
-              <CardHeader>
-                <CardTitle className="text-foreground uppercase-spaced text-sm md:text-base lg:text-lg">{aboutContent.experienceTitle}</CardTitle>
+            <Card className="bg-dark-card backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300 shadow-lg hover:shadow-xl">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
+                  {aboutContent.experienceTitle}
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+                <p className="text-muted-foreground leading-relaxed text-sm md:text-base lg:text-lg">
                   {aboutContent.experienceContent}
                 </p>
               </CardContent>
             </Card>
           </div>
 
-          <Card className="mb-6 md:mb-8 bg-dark-card backdrop-blur-sm shadow-dark">
-            <CardHeader>
-              <CardTitle className="text-foreground uppercase-spaced text-sm md:text-base lg:text-lg">SKILLS & TECHNOLOGIES</CardTitle>
+          <Card className="mb-8 md:mb-10 bg-dark-card backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
+                SKILLS & TECHNOLOGIES
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-2 md:gap-3">
+              <div className="flex flex-wrap gap-3 md:gap-4">
                 {aboutContent.skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-300 hover:scale-105 bg-muted text-foreground border border-dark-subtle hover-lift"
+                    className="px-4 md:px-5 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 bg-muted/80 text-foreground border border-border/30 hover:border-accent/50 hover:bg-accent/10 hover-lift"
                   >
                     {skill}
                   </span>
@@ -121,9 +127,11 @@ const About: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-dark-card backdrop-blur-sm shadow-dark">
-            <CardHeader>
-              <CardTitle className="text-foreground uppercase-spaced text-sm md:text-base lg:text-lg">RESUME</CardTitle>
+          <Card className="bg-dark-card backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
+                RESUME
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-3 md:mb-4 text-sm md:text-base">
