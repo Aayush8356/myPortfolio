@@ -80,7 +80,7 @@ const About: React.FC = () => {
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">ABOUT ME</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 mb-8 md:mb-12">
-            <Card className="bg-dark-card backdrop-blur-sm border-2 border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
+            <Card className="bg-dark-card backdrop-blur-sm !border-2 !border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
               <CardHeader className="pb-4">
                 <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
                   {aboutContent.backgroundTitle}
@@ -93,7 +93,7 @@ const About: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-dark-card backdrop-blur-sm border-2 border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
+            <Card className="bg-dark-card backdrop-blur-sm !border-2 !border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
               <CardHeader className="pb-4">
                 <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
                   {aboutContent.experienceTitle}
@@ -107,7 +107,7 @@ const About: React.FC = () => {
             </Card>
           </div>
 
-          <Card className="mb-8 md:mb-10 bg-dark-card backdrop-blur-sm border-2 border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
+          <Card className="mb-8 md:mb-10 bg-dark-card backdrop-blur-sm !border-2 !border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
             <CardHeader className="pb-4">
               <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
                 SKILLS & TECHNOLOGIES
@@ -127,7 +127,7 @@ const About: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-dark-card backdrop-blur-sm border-2 border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
+          <Card className="bg-dark-card backdrop-blur-sm !border-2 !border-cyan-500 hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
             <CardHeader className="pb-4">
               <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
                 RESUME
