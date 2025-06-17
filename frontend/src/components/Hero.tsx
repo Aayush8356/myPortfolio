@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
+import { HeroSkeleton } from './ui/skeleton';
 
 interface ContactDetails {
   email: string;
@@ -44,6 +45,11 @@ const Hero: React.FC = () => {
     secondaryButtonText: 'Get In Touch',
     resumeButtonText: 'Resume'
   });
+  
+  // Loading states
+  const [isLoadingHero, setIsLoadingHero] = useState(true);
+  const [isLoadingContact, setIsLoadingContact] = useState(true);
+  const [isLoadingResume, setIsLoadingResume] = useState(true);
 
   const texts = [heroContent.name, heroContent.title];
 
@@ -66,6 +72,7 @@ const Hero: React.FC = () => {
 
   const fetchContactDetails = async () => {
     try {
+      setIsLoadingContact(true);
       const response = await fetch(`${API_BASE_URL}/contact-details`);
       if (response.ok) {
         const data = await response.json();
@@ -73,11 +80,14 @@ const Hero: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching contact details:', error);
+    } finally {
+      setIsLoadingContact(false);
     }
   };
 
   const fetchHeroContent = async () => {
     try {
+      setIsLoadingHero(true);
       const response = await fetch(`${API_BASE_URL}/hero`);
       if (response.ok) {
         const data = await response.json();
@@ -85,11 +95,14 @@ const Hero: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching hero content:', error);
+    } finally {
+      setIsLoadingHero(false);
     }
   };
 
   const checkResumeStatus = async () => {
     try {
+      setIsLoadingResume(true);
       const response = await fetch(`${API_BASE_URL}/resume/current`);
       if (response.ok) {
         const data = await response.json();
@@ -101,6 +114,8 @@ const Hero: React.FC = () => {
     } catch (error) {
       console.error('Error checking resume status:', error);
       setHasUploadedResume(false);
+    } finally {
+      setIsLoadingResume(false);
     }
   };
 
@@ -181,6 +196,11 @@ const Hero: React.FC = () => {
       
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
+          {(isLoadingHero || isLoadingContact) ? (
+            <HeroSkeleton />
+          ) : (
+            <>
+              
           <div className="mb-4 md:mb-6">
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground mb-2 md:mb-4 animate-fade-in dark:glow-text-secondary">{heroContent.greeting}</p>
             <div className="h-12 md:h-16 lg:h-20 flex items-center justify-center overflow-hidden">
@@ -256,6 +276,8 @@ const Hero: React.FC = () => {
               <Mail className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
             </button>
           </div>
+            </>
+          )}
         </div>
       </div>
     </section>

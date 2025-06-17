@@ -71,9 +71,9 @@ export const cachedFetch = async <T>(
     return cached;
   }
 
-  // Add timeout to fetch - reduced to 5 seconds for faster failure
+  // Add timeout to fetch - increased to 15 seconds for better mobile network compatibility
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 5000);
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
   try {
     const response = await fetch(url, {
