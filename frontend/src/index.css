@@ -1035,7 +1035,7 @@
     --card-foreground: 220 26% 14%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 26% 14%;
-    --primary: 195 100% 35%;         /* Slightly darker tech blue for better visibility */
+    --primary: 142 76% 36%;         /* Modern green for better visibility */
     --primary-foreground: 0 0% 100%;
     --secondary: 47 96% 48%;         /* Slightly darker golden yellow */
     --secondary-foreground: 220 26% 14%;
@@ -1047,11 +1047,11 @@
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 88%;           /* Slightly darker border for better visibility */
     --input: 220 13% 91%;
-    --ring: 195 100% 35%;
+    --ring: 142 76% 36%;
     --radius: 0.75rem;
     
     /* Light theme glow colors - enhanced for visibility */
-    --glow-primary: 195, 100%, 35%;  /* Darker tech blue */
+    --glow-primary: 142, 76%, 36%;  /* Modern green */
     --glow-secondary: 47, 96%, 48%;  /* Darker golden yellow */
     --glow-accent: 158, 64%, 48%;    /* Darker mint green */
   }
@@ -1064,7 +1064,7 @@
     --card-foreground: 220 14% 96%;
     --popover: 220 26% 8%;
     --popover-foreground: 220 14% 96%;
-    --primary: 195 100% 50%;         /* Bright tech blue */
+    --primary: 142 76% 50%;         /* Bright tech green */
     --primary-foreground: 220 26% 8%;
     --secondary: 47 96% 60%;         /* Bright golden */
     --secondary-foreground: 220 26% 8%;
@@ -1076,10 +1076,10 @@
     --destructive-foreground: 220 14% 96%;
     --border: 220 26% 18%;
     --input: 220 26% 18%;
-    --ring: 195 100% 50%;
+    --ring: 142 76% 50%;
     
     /* Dark theme glow colors */
-    --glow-primary: 195, 100%, 50%;  /* Bright tech blue */
+    --glow-primary: 142, 76%, 50%;  /* Bright tech green */
     --glow-secondary: 47, 96%, 60%;  /* Bright golden */
     --glow-accent: 158, 64%, 58%;    /* Bright mint */
   }
