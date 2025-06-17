@@ -72,7 +72,7 @@ const FunCentre: React.FC = () => {
         
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {settings.games.ticTacToe.enabled && (
-            <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift hover:shadow-lg hover:shadow-blue-500/20" style={{border: '1px solid rgba(59, 130, 246, 0.3)', boxShadow: '0 0 15px rgba(59, 130, 246, 0.1)'}} onClick={() => setActiveGame('tic-tac-toe')}>
+            <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift hover:shadow-lg hover:shadow-green-500/20" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}} onClick={() => setActiveGame('tic-tac-toe')}>
               <CardHeader>
                 <CardTitle className="flex items-center text-foreground text-sm md:text-base lg:text-lg">
                   <Gamepad2 className="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" />
@@ -86,7 +86,7 @@ const FunCentre: React.FC = () => {
           )}
 
           {settings.games.memoryGame.enabled && (
-            <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift hover:shadow-lg hover:shadow-blue-500/20" style={{border: '1px solid rgba(59, 130, 246, 0.3)', boxShadow: '0 0 15px rgba(59, 130, 246, 0.1)'}} onClick={() => setActiveGame('memory-game')}>
+            <Card className="cursor-pointer hover:shadow-dark-lg transition-all duration-300 bg-dark-card backdrop-blur-sm hover-lift hover:shadow-lg hover:shadow-green-500/20" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}} onClick={() => setActiveGame('memory-game')}>
               <CardHeader>
                 <CardTitle className="flex items-center text-foreground text-sm md:text-base lg:text-lg">
                   <Trophy className="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" />
@@ -153,7 +153,7 @@ const TicTacToe: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
-      <Card className="w-full max-w-md" style={{border: '1px solid rgba(59, 130, 246, 0.3)', boxShadow: '0 0 15px rgba(59, 130, 246, 0.1)'}} onClick={(e) => e.stopPropagation()}>
+      <Card className="w-full max-w-md" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}} onClick={(e) => e.stopPropagation()}>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             Tic Tac Toe
@@ -262,7 +262,7 @@ const MemoryGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
-      <Card className="w-full max-w-lg" style={{border: '1px solid rgba(59, 130, 246, 0.3)', boxShadow: '0 0 15px rgba(59, 130, 246, 0.1)'}} onClick={(e) => e.stopPropagation()}>
+      <Card className="w-full max-w-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}} onClick={(e) => e.stopPropagation()}>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             Memory Game

@@ -118,7 +118,7 @@ const Projects: React.FC = () => {
         ) : (
           <div className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8">
             {projects.map((project) => (
-            <Card key={project._id} className="group bg-dark-card backdrop-blur-sm hover:transform hover:scale-[1.02] w-full max-w-sm" style={{border: '1px solid rgba(59, 130, 246, 0.3)', boxShadow: '0 0 15px rgba(59, 130, 246, 0.1)'}}>
+            <Card key={project._id} className="group bg-dark-card backdrop-blur-sm hover:transform hover:scale-[1.02] w-full max-w-sm" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
               <CardHeader>
                 {project.imageUrl && (
                   <div className="w-full h-32 md:h-40 lg:h-48 bg-muted rounded-md mb-4 overflow-hidden">
