@@ -120,7 +120,7 @@ const Contact: React.FC = () => {
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">CONTACT ME</h2>
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
-          <Card className="bg-dark-card backdrop-blur-sm border-2 border-white/30 hover:border-cyan-400 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
+          <Card className="bg-dark-card backdrop-blur-sm border-2 border-slate-400 hover:border-cyan-400 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
             <CardHeader className="pb-6">
               <CardTitle className="text-foreground uppercase-spaced text-lg md:text-xl lg:text-2xl font-semibold">
                 CONTACT INFO
@@ -192,7 +192,7 @@ const Contact: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-dark-card backdrop-blur-sm border-2 border-white/30 hover:border-cyan-400 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
+          <Card className="bg-dark-card backdrop-blur-sm border-2 border-slate-400 hover:border-cyan-400 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
             <CardHeader className="pb-6">
               <CardTitle className="text-foreground uppercase-spaced text-lg md:text-xl lg:text-2xl font-semibold">
                 SEND ME A MESSAGE
