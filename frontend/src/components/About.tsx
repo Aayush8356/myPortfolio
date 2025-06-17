@@ -107,7 +107,7 @@ const About: React.FC = () => {
             </Card>
           </div>
 
-          <Card className="mb-8 md:mb-10 bg-dark-card backdrop-blur-sm hover:border-cyan-300" style={{border: '2px solid #06b6d4'}} transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg">
+          <Card className="mb-8 md:mb-10 bg-dark-card backdrop-blur-sm hover:border-cyan-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '2px solid #06b6d4'}}>
             <CardHeader className="pb-4">
               <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
                 SKILLS & TECHNOLOGIES
