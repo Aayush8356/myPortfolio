@@ -116,7 +116,7 @@ const Projects: React.FC = () => {
             <p className="text-muted-foreground text-lg">No projects available yet. Check back soon!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 justify-items-center">
             {projects.map((project) => (
             <Card key={project._id} className="group bg-dark-card backdrop-blur-sm hover:transform hover:scale-[1.02]">
               <CardHeader>
