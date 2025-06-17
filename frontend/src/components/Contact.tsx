@@ -26,16 +26,16 @@ const Contact: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [contactDetails, setContactDetails] = useState<ContactDetails>({
-    email: 'your.email@example.com',
+    email: 'aayush@meetaayush.com',
     phone: '+1 (555) 123-4567',
-    location: 'Your City, Country',
-    linkedin: '',
-    github: '',
+    location: 'India',
+    linkedin: 'https://linkedin.com/in/aayush-gupta',
+    github: 'https://github.com/Aayush8356',
     twitter: '',
     resume: ''
   });
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
-  const [contactLoading, setContactLoading] = useState(true);
+  const [contactLoading, setContactLoading] = useState(false); // Show defaults immediately
   const [contactError, setContactError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,6 +44,7 @@ const Contact: React.FC = () => {
 
   const fetchContactDetails = async () => {
     try {
+      // Don't set loading state - show defaults immediately
       setContactError(null);
       
       // Use aggressive caching for contact details (15 minutes)
@@ -58,17 +59,8 @@ const Contact: React.FC = () => {
     } catch (error) {
       console.error('Error fetching contact details:', error);
       
-      // Show error but keep default contact info working
-      if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          setContactError('Connection timeout. Using default contact info.');
-        } else {
-          setContactError('Using default contact info.');
-        }
-      }
-      // Don't show error in UI, just use defaults
-    } finally {
-      setContactLoading(false);
+      // Keep using default contact info - no error message to user
+      setContactError(null); // Don't show error to user
     }
   };
 
@@ -137,11 +129,7 @@ const Contact: React.FC = () => {
                 <ContactSkeleton />
               ) : (
                 <>
-                  {contactError && (
-                    <div className="text-xs text-muted-foreground italic mb-3 md:mb-4 p-2 bg-muted/30 rounded">
-                      {contactError}
-                    </div>
-                  )}
+                  {/* Remove error display - use graceful fallbacks instead */}
                   <div className="flex items-center space-x-2 md:space-x-3">
                     <Mail className="w-4 h-4 md:w-5 md:h-5 contact-icon-email flex-shrink-0" />
                     <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base break-all">

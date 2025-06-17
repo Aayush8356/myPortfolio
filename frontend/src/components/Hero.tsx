@@ -46,10 +46,10 @@ const Hero: React.FC = () => {
     resumeButtonText: 'Resume'
   });
   
-  // Loading states
-  const [isLoadingHero, setIsLoadingHero] = useState(true);
-  const [isLoadingContact, setIsLoadingContact] = useState(true);
-  const [isLoadingResume, setIsLoadingResume] = useState(true);
+  // Loading states - Hero should show immediately with defaults
+  const [isLoadingHero, setIsLoadingHero] = useState(false); // Don't block Hero display
+  const [isLoadingContact, setIsLoadingContact] = useState(false); // Show basic content immediately  
+  const [isLoadingResume, setIsLoadingResume] = useState(true); // Only resume needs loading state
 
   const texts = [heroContent.name, heroContent.title];
 
@@ -72,7 +72,7 @@ const Hero: React.FC = () => {
 
   const fetchContactDetails = async () => {
     try {
-      setIsLoadingContact(true);
+      // Don't set loading state - show defaults immediately
       const response = await fetch(`${API_BASE_URL}/contact-details`);
       if (response.ok) {
         const data = await response.json();
@@ -80,14 +80,13 @@ const Hero: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching contact details:', error);
-    } finally {
-      setIsLoadingContact(false);
+      // Keep using default contact details - no loading state needed
     }
   };
 
   const fetchHeroContent = async () => {
     try {
-      setIsLoadingHero(true);
+      // Don't set loading state - show defaults immediately
       const response = await fetch(`${API_BASE_URL}/hero`);
       if (response.ok) {
         const data = await response.json();
@@ -95,8 +94,7 @@ const Hero: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching hero content:', error);
-    } finally {
-      setIsLoadingHero(false);
+      // Keep using default hero content - no loading state needed
     }
   };
 
@@ -196,7 +194,8 @@ const Hero: React.FC = () => {
       
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          {(isLoadingHero || isLoadingContact) ? (
+          {/* Always show Hero content immediately - no skeleton needed */}
+          {false ? (
             <HeroSkeleton />
           ) : (
             <>
