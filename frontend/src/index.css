@@ -135,14 +135,31 @@
   animation: grid-flow 20s linear infinite;
 }
 
+/* Light mode tech grid with better visibility */
+:root .tech-grid {
+  background-image: 
+    linear-gradient(hsla(var(--primary), 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, hsla(var(--primary), 0.2) 1px, transparent 1px);
+}
+
 .code-pattern {
   background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%230284c7' fill-opacity='0.05'%3E%3Cpath d='M8 8h4v4H8zM20 8h4v4h-4zM32 8h4v4h-4zM8 20h4v4H8zM20 20h4v4h-4zM32 20h4v4h-4zM8 32h4v4H8zM20 32h4v4h-4zM32 32h4v4h-4z'/%3E%3C/g%3E%3C/svg%3E");
   animation: code-drift 25s linear infinite;
 }
 
+/* Light mode code pattern with better visibility */
+:root .code-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%230284c7' fill-opacity='0.12'%3E%3Cpath d='M8 8h4v4H8zM20 8h4v4h-4zM32 8h4v4h-4zM8 20h4v4H8zM20 20h4v4h-4zM32 20h4v4h-4zM8 32h4v4H8zM20 32h4v4h-4zM32 32h4v4h-4z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 .tech-circuit {
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2334d399' stroke-width='1' stroke-opacity='0.1'%3E%3Cpath d='M10 10h40v40H10z'/%3E%3Cpath d='M20 20h20v20H20z'/%3E%3Ccircle cx='30' cy='30' r='5'/%3E%3Cpath d='M30 10v10M30 40v10M10 30h10M40 30h10'/%3E%3C/g%3E%3C/svg%3E");
   animation: circuit-pulse 15s ease-in-out infinite;
+}
+
+/* Light mode circuit pattern with better visibility */
+:root .tech-circuit {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2334d399' stroke-width='1.5' stroke-opacity='0.25'%3E%3Cpath d='M10 10h40v40H10z'/%3E%3Cpath d='M20 20h20v20H20z'/%3E%3Ccircle cx='30' cy='30' r='5'/%3E%3Cpath d='M30 10v10M30 40v10M10 30h10M40 30h10'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Mobile responsive background patterns */
@@ -197,6 +214,16 @@
   animation: float-server 8s ease-in-out infinite;
 }
 
+/* Light mode server object */
+:root .tech-objects::before {
+  background: linear-gradient(135deg, hsla(var(--secondary), 0.25), hsla(var(--accent), 0.2));
+  border: 1px solid hsla(var(--secondary), 0.3);
+  box-shadow: 
+    0 4px 20px hsla(var(--secondary), 0.3),
+    inset 0 0 15px hsla(var(--secondary), 0.15),
+    0 0 30px hsla(var(--secondary), 0.1);
+}
+
 /* Mobile tech server object */
 @media (max-width: 768px) {
   .tech-objects::before {
@@ -234,6 +261,14 @@
   color: hsla(var(--primary), 0.2);
   text-shadow: 0 0 20px hsla(var(--primary), 0.3);
   animation: code-glow 6s ease-in-out infinite;
+}
+
+/* Light mode code brackets */
+:root .tech-objects::after {
+  color: hsla(var(--primary), 0.4);
+  text-shadow: 
+    0 0 15px hsla(var(--primary), 0.4),
+    0 2px 4px hsla(var(--primary), 0.2);
 }
 
 /* Mobile code brackets */
@@ -275,6 +310,19 @@
   animation: terminal-flicker 10s ease-in-out infinite;
 }
 
+/* Light mode terminal window */
+:root .terminal-window {
+  background: linear-gradient(135deg, 
+    hsla(var(--background), 0.95), 
+    hsla(var(--primary), 0.15)
+  );
+  border: 1.5px solid hsla(var(--primary), 0.4);
+  box-shadow: 
+    0 8px 25px hsla(var(--primary), 0.25),
+    0 0 15px hsla(var(--primary), 0.15),
+    inset 0 1px 0 hsla(var(--background), 0.8);
+}
+
 /* Mobile responsive terminal */
 @media (max-width: 768px) {
   .terminal-window {
@@ -310,6 +358,15 @@
   text-shadow: 0 0 5px hsla(var(--accent), 0.5);
 }
 
+/* Light mode terminal text */
+:root .terminal-window::before {
+  color: hsla(var(--accent), 1);
+  text-shadow: 
+    0 0 8px hsla(var(--accent), 0.6),
+    0 1px 2px hsla(var(--accent), 0.3);
+  font-weight: 600;
+}
+
 /* Mobile terminal text */
 @media (max-width: 768px) {
   .terminal-window::before {
@@ -336,6 +393,11 @@
   left: 8px;
   font-size: 6px;
   color: hsla(var(--secondary), 0.6);
+}
+
+/* Light mode terminal dots */
+:root .terminal-window::after {
+  color: hsla(var(--secondary), 0.8);
 }
 
 /* Mobile terminal dots */
@@ -373,6 +435,19 @@
   animation: data-flow 3s ease-in-out infinite;
 }
 
+/* Light mode API connection */
+:root .api-connection {
+  width: 3px;
+  background: linear-gradient(
+    180deg, 
+    transparent,
+    hsla(var(--accent), 0.8),
+    hsla(var(--secondary), 0.6),
+    transparent
+  );
+  box-shadow: 0 0 10px hsla(var(--accent), 0.3);
+}
+
 /* Mobile API connection */
 @media (max-width: 768px) {
   .api-connection {
@@ -401,6 +476,15 @@
   font-weight: bold;
   color: hsla(var(--accent), 0.7);
   text-shadow: 0 0 10px hsla(var(--accent), 0.5);
+}
+
+/* Light mode API text */
+:root .api-connection::before {
+  color: hsla(var(--accent), 1);
+  text-shadow: 
+    0 0 8px hsla(var(--accent), 0.6),
+    0 1px 2px hsla(var(--accent), 0.3);
+  font-weight: 700;
 }
 
 /* Mobile API text */
@@ -495,6 +579,13 @@
   opacity: 0.6;
 }
 
+/* Light mode particles - more visible */
+:root .particle {
+  opacity: 0.8;
+  width: 4px;
+  height: 4px;
+}
+
 .dark .particle {
   width: 4px;
   height: 4px;
@@ -507,6 +598,33 @@
   left: 10%;
   animation: float-particle-1 8s ease-in-out infinite;
   box-shadow: 0 0 6px hsla(var(--glow-primary), 0.4);
+}
+
+/* Light mode particle-1 */
+:root .particle-1 {
+  background: hsla(var(--glow-primary), 0.8);
+  box-shadow: 0 0 10px hsla(var(--glow-primary), 0.6);
+}
+
+/* Light mode particles for all */
+:root .particle-2 {
+  background: hsla(var(--glow-secondary), 0.7);
+  box-shadow: 0 0 8px hsla(var(--glow-secondary), 0.5);
+}
+
+:root .particle-3 {
+  background: hsla(var(--glow-accent), 0.6);
+  box-shadow: 0 0 6px hsla(var(--glow-accent), 0.4);
+}
+
+:root .particle-4 {
+  background: hsla(var(--glow-primary), 0.5);
+  box-shadow: 0 0 12px hsla(var(--glow-primary), 0.3);
+}
+
+:root .particle-5 {
+  background: hsla(var(--glow-secondary), 0.4);
+  box-shadow: 0 0 8px hsla(var(--glow-secondary), 0.3);
 }
 
 .dark .particle-1 {
@@ -716,6 +834,18 @@
   transform: skewX(-15deg);
 }
 
+/* Light mode light beam - more visible */
+:root .light-beam {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsla(var(--glow-primary), 0.08) 40%,
+    hsla(var(--glow-secondary), 0.12) 50%,
+    hsla(var(--glow-accent), 0.08) 60%,
+    transparent
+  );
+}
+
 .dark .light-beam {
   background: linear-gradient(
     90deg,
@@ -899,31 +1029,31 @@
 @layer base {
   :root {
     /* Fullstack Developer Theme - Light Mode */
-    --background: 0 0% 100%;          /* Pure white */
+    --background: 0 0% 98%;          /* Subtle off-white for better contrast */
     --foreground: 220 26% 14%;        /* Deep slate */
     --card: 0 0% 100%;               /* White cards */
     --card-foreground: 220 26% 14%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 26% 14%;
-    --primary: 195 100% 39%;         /* Tech blue (#0284c7) */
+    --primary: 195 100% 35%;         /* Slightly darker tech blue for better visibility */
     --primary-foreground: 0 0% 100%;
-    --secondary: 47 96% 53%;         /* Golden yellow (#f59e0b) */
+    --secondary: 47 96% 48%;         /* Slightly darker golden yellow */
     --secondary-foreground: 220 26% 14%;
-    --muted: 220 14% 96%;
+    --muted: 220 14% 94%;            /* Slightly darker muted for better contrast */
     --muted-foreground: 220 9% 46%;
-    --accent: 158 64% 52%;           /* Mint green (#34d399) */
+    --accent: 158 64% 48%;           /* Slightly darker mint green */
     --accent-foreground: 220 26% 14%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
+    --border: 220 13% 88%;           /* Slightly darker border for better visibility */
     --input: 220 13% 91%;
-    --ring: 195 100% 39%;
+    --ring: 195 100% 35%;
     --radius: 0.75rem;
     
-    /* Light theme glow colors */
-    --glow-primary: 195, 100%, 39%;  /* Tech blue */
-    --glow-secondary: 47, 96%, 53%;  /* Golden yellow */
-    --glow-accent: 158, 64%, 52%;    /* Mint green */
+    /* Light theme glow colors - enhanced for visibility */
+    --glow-primary: 195, 100%, 35%;  /* Darker tech blue */
+    --glow-secondary: 47, 96%, 48%;  /* Darker golden yellow */
+    --glow-accent: 158, 64%, 48%;    /* Darker mint green */
   }
 
   .dark {
@@ -952,6 +1082,44 @@
     --glow-primary: 195, 100%, 50%;  /* Bright tech blue */
     --glow-secondary: 47, 96%, 60%;  /* Bright golden */
     --glow-accent: 158, 64%, 58%;    /* Bright mint */
+  }
+}
+
+/* Light Mode Dark Cards Enhancement */
+:root .bg-dark-card {
+  background: linear-gradient(135deg, 
+    hsla(var(--background), 0.8), 
+    hsla(var(--muted), 0.4)
+  );
+  border: 1px solid hsla(var(--border), 0.6);
+  box-shadow: 
+    0 4px 12px hsla(var(--foreground), 0.08),
+    0 2px 4px hsla(var(--foreground), 0.04);
+}
+
+/* Light Mode Animation Enhancements */
+:root @keyframes circuit-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.5; }
+}
+
+:root @keyframes code-glow {
+  0%, 100% { 
+    text-shadow: 0 0 15px hsla(var(--primary), 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    text-shadow: 0 0 25px hsla(var(--primary), 0.7), 0 0 35px hsla(var(--secondary), 0.4);
+    transform: scale(1.05);
+  }
+}
+
+:root @keyframes terminal-flicker {
+  0%, 100% { 
+    box-shadow: 0 8px 25px hsla(var(--primary), 0.25), 0 0 15px hsla(var(--primary), 0.15);
+  }
+  50% { 
+    box-shadow: 0 12px 35px hsla(var(--primary), 0.35), 0 0 25px hsla(var(--primary), 0.25);
   }
 }
 
