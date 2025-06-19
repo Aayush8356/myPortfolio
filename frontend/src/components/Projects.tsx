@@ -105,7 +105,7 @@ const Projects: React.FC = () => {
 
   const scrollLeft = () => {
     if (!scrollContainerRef.current) return;
-    const cardWidth = 384; // max-w-sm (24rem = 384px) + gap
+    const cardWidth = 408; // max-w-sm (384px) + gap (24px) = 408px
     scrollContainerRef.current.scrollBy({
       left: -cardWidth,
       behavior: 'smooth'
@@ -114,7 +114,7 @@ const Projects: React.FC = () => {
 
   const scrollRight = () => {
     if (!scrollContainerRef.current) return;
-    const cardWidth = 384; // max-w-sm (24rem = 384px) + gap
+    const cardWidth = 408; // max-w-sm (384px) + gap (24px) = 408px  
     scrollContainerRef.current.scrollBy({
       left: cardWidth,
       behavior: 'smooth'
@@ -203,7 +203,7 @@ const Projects: React.FC = () => {
               className={`
                 group bg-dark-card backdrop-blur-sm hover:transform hover:scale-[1.02] 
                 ${projects.length > 3 
-                  ? 'flex-shrink-0 w-80' 
+                  ? 'flex-shrink-0 w-full max-w-sm' 
                   : 'w-full max-w-sm'
                 }
               `}
