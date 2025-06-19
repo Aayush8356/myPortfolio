@@ -129,7 +129,7 @@ const Projects: React.FC = () => {
     updateScrollIndicators();
   }, [projects]);
 
-  // Add keyboard shortcut for force refresh (debugging)
+  // Add keyboard shortcut for force refresh and listen for admin updates
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'R') {
@@ -139,8 +139,18 @@ const Projects: React.FC = () => {
       }
     };
 
+    const handleForceRefresh = (e: CustomEvent) => {
+      console.log('Admin updated projects, forcing refresh...', e.detail);
+      fetchProjects(true);
+    };
+
     document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener('forceProjectRefresh', handleForceRefresh as EventListener);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+      window.removeEventListener('forceProjectRefresh', handleForceRefresh as EventListener);
+    };
   }, []);
 
 
@@ -172,28 +182,43 @@ const Projects: React.FC = () => {
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
           
           {/* Navigation arrows - positioned in top right */}
-          {projects.length > 3 && (
-            <div className="absolute top-0 right-0 flex gap-2 z-20">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={scrollLeft}
-                disabled={!canScrollLeft}
-                className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={scrollRight}
-                disabled={!canScrollRight}
-                className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
+          <div className="absolute top-0 right-0 flex gap-2 z-20">
+            {projects.length > 3 && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={scrollLeft}
+                  disabled={!canScrollLeft}
+                  className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={scrollRight}
+                  disabled={!canScrollRight}
+                  className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </>
+            )}
+            {/* Debug refresh button - remove in production */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                console.log('Manual refresh triggered');
+                fetchProjects(true);
+              }}
+              className="p-2 bg-red-500/20 backdrop-blur-sm border-red-500/30 hover:border-red-500 hover:bg-red-500/10"
+              title="Debug: Force Refresh Projects"
+            >
+              🔄
+            </Button>
+          </div>
         </div>
         
         {projects.length === 0 ? (

@@ -426,8 +426,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     
     setProjects(updatedProjects);
     
-    // Update cache with the new data instead of clearing it
-    updateProjectsCache(updatedProjects);
+    // Clear all project-related cache completely to force fresh fetch
+    clearProjectsCache();
+    
+    // Also dispatch a custom event to force refresh across the app
+    window.dispatchEvent(new CustomEvent('forceProjectRefresh', { 
+      detail: { projects: updatedProjects }
+    }));
     
     setShowProjectEditor(false);
     setEditingProject(null);
