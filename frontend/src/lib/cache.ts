@@ -121,10 +121,10 @@ export const preCacheData = async (baseUrl: string) => {
   try {
     // Pre-cache projects and contact details simultaneously with consistent cache keys
     const results = await Promise.allSettled([
-      cachedFetch(`${baseUrl}/projects`, {}, 'projects-list', 900),
-      cachedFetch(`${baseUrl}/contact-details`, {}, 'contact-details', 900),
-      cachedFetch(`${baseUrl}/about`, {}, 'about-content', 900),
-      cachedFetch(`${baseUrl}/hero`, {}, 'hero-content', 900)
+      cachedFetch(`${baseUrl}/projects`, {}, 'projects-list', 60), // 1 minute for projects
+      cachedFetch(`${baseUrl}/contact-details`, {}, 'contact-details', 300), // 5 minutes for contact
+      cachedFetch(`${baseUrl}/about`, {}, 'about-content', 300), // 5 minutes for about
+      cachedFetch(`${baseUrl}/hero`, {}, 'hero-content', 300) // 5 minutes for hero
     ]);
     
     console.log('Pre-cache results:', results.map((r, i) => ({
@@ -153,6 +153,13 @@ export const clearProjectsCache = () => {
   apiCache.delete('projects-list');
   apiCache.delete('projects-list_stale');
   console.log('Cleared projects cache');
+};
+
+export const updateProjectsCache = (projects: any[]) => {
+  // Update cache with fresh data instead of clearing it
+  apiCache.set('projects-list', projects, 900); // 15 minutes
+  apiCache.set('projects-list_stale', projects, 2700); // 45 minutes for stale
+  console.log('Updated projects cache with fresh data');
 };
 
 export const clearAllCache = () => {

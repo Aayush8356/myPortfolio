@@ -6,7 +6,7 @@ import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL, BLOB_BASE_URL } from '../../config/api';
 import { useToast, ToastContainer } from '../ui/toast';
-import { clearProjectsCache, invalidateCache } from '../../lib/cache';
+import { clearProjectsCache, updateProjectsCache, invalidateCache } from '../../lib/cache';
 
 interface Project {
   _id: string;
@@ -185,26 +185,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  const fetchProjects = async (forceRefresh = false) => {
+  const fetchProjects = async () => {
     try {
-      // Add cache-busting parameter to force fresh data
-      const url = forceRefresh 
-        ? `${API_BASE_URL}/projects?_=${Date.now()}`
-        : `${API_BASE_URL}/projects`;
-        
-      const response = await fetch(url, {
-        // Add no-cache headers to ensure fresh data
-        headers: forceRefresh ? {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        } : {}
-      });
-      
+      const response = await fetch(`${API_BASE_URL}/projects`);
       if (response.ok) {
         const data = await response.json();
         setProjects(data);
-        console.log('Projects fetched:', data.length, forceRefresh ? '(force refresh)' : '(normal)');
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -375,12 +361,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       });
 
       if (response.ok) {
-        // Clear projects cache to ensure fresh data on reload
-        clearProjectsCache();
-        // Force refresh from database to ensure consistency
-        await fetchProjects(true);
-        // Notify other components that projects have been updated
-        document.dispatchEvent(new CustomEvent('projectsUpdated'));
+        const updatedProjects = projects.filter(p => p._id !== id);
+        setProjects(updatedProjects);
+        // Update cache with the new data instead of clearing it
+        updateProjectsCache(updatedProjects);
         toast.success('Project deleted successfully', 'The project has been removed from your portfolio.');
       } else {
         toast.error('Failed to delete project', 'Please try again.');
@@ -432,18 +416,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     }
   };
 
-  const handleProjectSave = async (project: Project) => {
-    // Clear projects cache to ensure fresh data on reload
-    clearProjectsCache();
+  const handleProjectSave = (project: Project) => {
+    let updatedProjects;
+    if (editingProject) {
+      updatedProjects = projects.map(p => p._id === project._id ? project : p);
+    } else {
+      updatedProjects = [project, ...projects];
+    }
     
-    // Small delay to ensure database write completes
-    await new Promise(resolve => setTimeout(resolve, 100));
+    setProjects(updatedProjects);
     
-    // Force refresh from database to get the actual saved data
-    await fetchProjects(true);
-    
-    // Notify other components that projects have been updated
-    document.dispatchEvent(new CustomEvent('projectsUpdated'));
+    // Update cache with the new data instead of clearing it
+    updateProjectsCache(updatedProjects);
     
     setShowProjectEditor(false);
     setEditingProject(null);
