@@ -47,6 +47,16 @@
                   hsla(var(--glow-accent), 0.08) 60%,
                   hsl(var(--background)) 100%);
   }
+
+  /* Custom scrollbar styles for project carousel */
+  .projects-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .projects-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
   
   .card-nebula {
     background: linear-gradient(135deg, 

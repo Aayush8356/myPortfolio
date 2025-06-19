@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Github, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { API_BASE_URL, ASSETS_BASE_URL } from '../config/api';
 import { cachedFetch } from '../lib/cache';
 import { ProjectSkeleton } from './ui/skeleton';
@@ -53,6 +53,9 @@ const defaultProjects: Project[] = [
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(defaultProjects); // Start with defaults
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   // Remove unused loading states since we show defaults immediately
   // const [loading, setLoading] = useState(false);
   // const [error, setError] = useState<string | null>(null);
@@ -79,13 +82,49 @@ const Projects: React.FC = () => {
       );
       
       setProjects(data);
+      // Update scroll indicators after projects load
+      setTimeout(updateScrollIndicators, 100);
     } catch (error) {
       console.error('Error fetching projects:', error);
       
       // Keep using default projects - no error message shown to user
       // The defaults will provide good UX while API is unavailable
+      setTimeout(updateScrollIndicators, 100);
     }
   };
+
+  const updateScrollIndicators = () => {
+    if (!scrollContainerRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    setCanScrollLeft(container.scrollLeft > 0);
+    setCanScrollRight(
+      container.scrollLeft < container.scrollWidth - container.clientWidth
+    );
+  };
+
+  const scrollLeft = () => {
+    if (!scrollContainerRef.current) return;
+    const cardWidth = 384; // max-w-sm (24rem = 384px) + gap
+    scrollContainerRef.current.scrollBy({
+      left: -cardWidth,
+      behavior: 'smooth'
+    });
+  };
+
+  const scrollRight = () => {
+    if (!scrollContainerRef.current) return;
+    const cardWidth = 384; // max-w-sm (24rem = 384px) + gap
+    scrollContainerRef.current.scrollBy({
+      left: cardWidth,
+      behavior: 'smooth'
+    });
+  };
+
+  // Update scroll indicators when projects change
+  useEffect(() => {
+    updateScrollIndicators();
+  }, [projects]);
 
 
   // Only show skeleton for initial load when no projects available (currently disabled)
@@ -112,16 +151,68 @@ const Projects: React.FC = () => {
     <section id="projects" className="py-12 md:py-20 bg-background relative">
       <div className="absolute inset-0 dark-grid opacity-20"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
+        <div className="relative">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">PROJECTS</h2>
+          
+          {/* Navigation arrows - positioned in top right */}
+          {projects.length > 3 && (
+            <div className="absolute top-0 right-0 flex gap-2 z-20">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={scrollLeft}
+                disabled={!canScrollLeft}
+                className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={scrollRight}
+                disabled={!canScrollRight}
+                className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+        </div>
         
         {projects.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">No projects available yet. Check back soon!</p>
           </div>
         ) : (
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8">
+          <div 
+            ref={scrollContainerRef}
+            onScroll={updateScrollIndicators}
+            className={`
+              ${projects.length > 3 
+                ? 'flex overflow-x-auto gap-6 pb-4 -mx-4 px-4 projects-scroll' 
+                : 'flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8'
+              }
+            `}
+            style={{
+              scrollSnapType: projects.length > 3 ? 'x-mandatory' : undefined
+            }}
+          >
             {projects.map((project) => (
-            <Card key={project._id} className="group bg-dark-card backdrop-blur-sm hover:transform hover:scale-[1.02] w-full max-w-sm" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
+            <Card 
+              key={project._id} 
+              className={`
+                group bg-dark-card backdrop-blur-sm hover:transform hover:scale-[1.02] 
+                ${projects.length > 3 
+                  ? 'flex-shrink-0 w-80' 
+                  : 'w-full max-w-sm'
+                }
+              `}
+              style={{
+                scrollSnapAlign: projects.length > 3 ? 'start' : undefined,
+                border: '1px solid rgba(34, 197, 94, 0.3)', 
+                boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'
+              }}
+            >
               <CardHeader>
                 {project.imageUrl && (
                   <div className="w-full h-32 md:h-40 lg:h-48 bg-muted rounded-md mb-4 overflow-hidden">
