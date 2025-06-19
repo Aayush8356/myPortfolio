@@ -6,6 +6,7 @@ import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL, BLOB_BASE_URL } from '../../config/api';
 import { useToast, ToastContainer } from '../ui/toast';
+import { clearProjectsCache, invalidateCache } from '../../lib/cache';
 
 interface Project {
   _id: string;
@@ -361,6 +362,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
       if (response.ok) {
         setProjects(projects.filter(p => p._id !== id));
+        // Clear projects cache to ensure fresh data on reload
+        clearProjectsCache();
         toast.success('Project deleted successfully', 'The project has been removed from your portfolio.');
       } else {
         toast.error('Failed to delete project', 'Please try again.');
@@ -418,6 +421,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     } else {
       setProjects([project, ...projects]);
     }
+    // Clear projects cache to ensure fresh data on reload
+    clearProjectsCache();
     setShowProjectEditor(false);
     setEditingProject(null);
   };

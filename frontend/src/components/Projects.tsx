@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Github, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { API_BASE_URL, ASSETS_BASE_URL } from '../config/api';
-import { cachedFetch } from '../lib/cache';
+import { cachedFetch, clearProjectsCache } from '../lib/cache';
 import { ProjectSkeleton } from './ui/skeleton';
 
 interface Project {
@@ -69,8 +69,13 @@ const Projects: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (forceRefresh = false) => {
     try {
+      // Clear cache if force refresh is requested
+      if (forceRefresh) {
+        clearProjectsCache();
+      }
+      
       // Don't set loading state - show defaults immediately
       
       // Use more aggressive caching (15 minutes) since projects don't change often
@@ -125,6 +130,20 @@ const Projects: React.FC = () => {
   useEffect(() => {
     updateScrollIndicators();
   }, [projects]);
+
+  // Add keyboard shortcut for force refresh (debugging)
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+        e.preventDefault();
+        console.log('Force refreshing projects...');
+        fetchProjects(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, []);
 
 
   // Only show skeleton for initial load when no projects available (currently disabled)

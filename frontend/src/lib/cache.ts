@@ -147,3 +147,23 @@ export const getCacheKey = (endpoint: string): string => {
   };
   return keyMap[endpoint] || endpoint;
 };
+
+// Cache invalidation functions
+export const clearProjectsCache = () => {
+  apiCache.delete('projects-list');
+  apiCache.delete('projects-list_stale');
+  console.log('Cleared projects cache');
+};
+
+export const clearAllCache = () => {
+  apiCache.clear();
+  console.log('Cleared all cache');
+};
+
+export const invalidateCache = (keys: string[]) => {
+  keys.forEach(key => {
+    apiCache.delete(key);
+    apiCache.delete(key + '_stale');
+  });
+  console.log('Invalidated cache for keys:', keys);
+};
