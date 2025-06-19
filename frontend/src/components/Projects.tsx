@@ -69,7 +69,6 @@ const Projects: React.FC = () => {
   const fetchProjects = async () => {
     try {
       // Don't set loading state - show defaults immediately
-      setError(null);
       
       // Use more aggressive caching (15 minutes) since projects don't change often
       const data = await cachedFetch<Project[]>(
@@ -85,7 +84,6 @@ const Projects: React.FC = () => {
       
       // Keep using default projects - no error message shown to user
       // The defaults will provide good UX while API is unavailable
-      setError(null); // Don't show error to user
     }
   };
 
