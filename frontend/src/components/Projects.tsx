@@ -78,15 +78,34 @@ const Projects: React.FC = () => {
       
       // Don't set loading state - show defaults immediately
       
-      // Use more aggressive caching (15 minutes) since projects don't change often
-      const data = await cachedFetch<Project[]>(
-        `${API_BASE_URL}/projects`,
-        {},
-        'projects-list',
-        900 // 15 minute cache
-      );
+      if (forceRefresh) {
+        // For force refresh, bypass cache completely
+        const url = `${API_BASE_URL}/projects?_=${Date.now()}`;
+        const response = await fetch(url, {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setProjects(data);
+          console.log('Projects force refreshed:', data.length);
+        }
+      } else {
+        // Use more aggressive caching (15 minutes) since projects don't change often
+        const data = await cachedFetch<Project[]>(
+          `${API_BASE_URL}/projects`,
+          {},
+          'projects-list',
+          900 // 15 minute cache
+        );
+        
+        setProjects(data);
+      }
       
-      setProjects(data);
       // Update scroll indicators after projects load
       setTimeout(updateScrollIndicators, 100);
     } catch (error) {
@@ -131,7 +150,7 @@ const Projects: React.FC = () => {
     updateScrollIndicators();
   }, [projects]);
 
-  // Add keyboard shortcut for force refresh (debugging)
+  // Add keyboard shortcut for force refresh (debugging) and listen for admin updates
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'R') {
@@ -141,8 +160,18 @@ const Projects: React.FC = () => {
       }
     };
 
+    const handleProjectUpdate = () => {
+      console.log('Project update event received, force refreshing...');
+      fetchProjects(true);
+    };
+
     document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
+    document.addEventListener('projectsUpdated', handleProjectUpdate);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+      document.removeEventListener('projectsUpdated', handleProjectUpdate);
+    };
   }, []);
 
 
