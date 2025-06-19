@@ -86,14 +86,12 @@ function App() {
 
     document.addEventListener('keydown', handleKeyDown);
     
-    // Pre-cache data for faster loading
-    const timer = setTimeout(() => {
-      preCacheData(API_BASE_URL);
-    }, 1000); // Pre-cache after 1 second to not block initial render
+    // Pre-cache data immediately for faster loading - run in background
+    // This ensures cache is populated before components try to fetch
+    preCacheData(API_BASE_URL).catch(console.error);
     
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      clearTimeout(timer);
     };
   }, []);
 

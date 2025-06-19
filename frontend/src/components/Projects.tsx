@@ -53,12 +53,17 @@ const defaultProjects: Project[] = [
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(defaultProjects); // Start with defaults
-  const [loading, setLoading] = useState(false); // Show defaults immediately
-  const [error, setError] = useState<string | null>(null);
+  // Remove unused loading states since we show defaults immediately
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Start fetching immediately, no delay
-    fetchProjects();
+    // Small delay to allow pre-cache to complete first, then fetch
+    const timer = setTimeout(() => {
+      fetchProjects();
+    }, 100); // 100ms delay to let pre-cache finish first
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const fetchProjects = async () => {
@@ -85,8 +90,8 @@ const Projects: React.FC = () => {
   };
 
 
-  // Only show skeleton for initial load when no projects available
-  if (loading && projects.length === 0) {
+  // Only show skeleton for initial load when no projects available (currently disabled)
+  if (false && projects.length === 0) {
     return (
       <section id="projects" className="py-12 md:py-20 bg-background relative">
         <div className="absolute inset-0 dark-grid opacity-20"></div>

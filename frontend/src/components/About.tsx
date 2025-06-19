@@ -15,7 +15,8 @@ interface AboutContent {
 }
 
 const About: React.FC = () => {
-  const [hasUploadedResume, setHasUploadedResume] = useState(false);
+  // Remove unused variable since resume functionality is handled by API
+  // const [hasUploadedResume, setHasUploadedResume] = useState(false);
   const [aboutContent, setAboutContent] = useState<AboutContent>({
     backgroundTitle: 'BACKGROUND',
     backgroundContent: "I'm Aayush Gupta, a passionate full-stack developer with expertise in modern web technologies. I love creating efficient, scalable applications that provide excellent user experiences. My journey in tech started with curiosity and has evolved into a commitment to continuous learning and building innovative solutions.",
@@ -26,8 +27,13 @@ const About: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchAboutContent();
-    checkResumeStatus();
+    // Small delay to allow pre-cache to complete first
+    const timer = setTimeout(() => {
+      fetchAboutContent();
+      checkResumeStatus();
+    }, 100); // 100ms delay to let pre-cache finish first
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const fetchAboutContent = async () => {
@@ -35,8 +41,8 @@ const About: React.FC = () => {
       const data = await cachedFetch<AboutContent>(
         `${API_BASE_URL}/about`,
         {},
-        'about-content',
-        600 // 10 minute cache for about content
+        'about-content', // Consistent with pre-cache
+        900 // 15 minute cache for about content (consistent with pre-cache)
       );
       setAboutContent(data);
     } catch (error) {
@@ -53,12 +59,12 @@ const About: React.FC = () => {
         'resume-status',
         60 // 1 minute cache for resume status
       );
-      setHasUploadedResume(data.hasResume);
+      // setHasUploadedResume(data.hasResume);
     } catch (error) {
       if (error instanceof Error && error.name !== 'AbortError') {
         console.error('Error checking resume status:', error);
       }
-      setHasUploadedResume(false);
+      // setHasUploadedResume(false);
     }
   };
 

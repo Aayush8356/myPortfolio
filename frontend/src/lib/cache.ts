@@ -98,6 +98,9 @@ export const cachedFetch = async <T>(
     const extendedTTL = url.includes('/projects') || url.includes('/contact-details') ? 900 : ttlSeconds; // 15 minutes for projects/contact
     apiCache.set(key, data, extendedTTL);
     
+    // Also store as stale cache for future fallback
+    apiCache.set(key + '_stale', data, extendedTTL * 3); // Keep stale cache 3x longer
+    
     return data;
   } catch (error) {
     clearTimeout(timeoutId);
@@ -113,16 +116,34 @@ export const cachedFetch = async <T>(
   }
 };
 
-// Function to pre-cache common data
+// Function to pre-cache common data with consistent cache keys
 export const preCacheData = async (baseUrl: string) => {
   try {
-    // Pre-cache projects and contact details simultaneously
-    await Promise.allSettled([
+    // Pre-cache projects and contact details simultaneously with consistent cache keys
+    const results = await Promise.allSettled([
       cachedFetch(`${baseUrl}/projects`, {}, 'projects-list', 900),
       cachedFetch(`${baseUrl}/contact-details`, {}, 'contact-details', 900),
-      cachedFetch(`${baseUrl}/about`, {}, 'about-content', 1800)
+      cachedFetch(`${baseUrl}/about`, {}, 'about-content', 900),
+      cachedFetch(`${baseUrl}/hero`, {}, 'hero-content', 900)
     ]);
+    
+    console.log('Pre-cache results:', results.map((r, i) => ({
+      endpoint: ['projects', 'contact-details', 'about', 'hero'][i],
+      status: r.status,
+      reason: r.status === 'rejected' ? r.reason?.message : 'success'
+    })));
   } catch (error) {
     console.warn('Pre-caching failed:', error);
   }
+};
+
+// Helper function to get consistent cache keys
+export const getCacheKey = (endpoint: string): string => {
+  const keyMap: Record<string, string> = {
+    'projects': 'projects-list',
+    'contact-details': 'contact-details',
+    'about': 'about-content',
+    'hero': 'hero-content'
+  };
+  return keyMap[endpoint] || endpoint;
 };

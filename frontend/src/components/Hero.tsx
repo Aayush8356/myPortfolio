@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
 import { HeroSkeleton } from './ui/skeleton';
+import { cachedFetch } from '../lib/cache';
 
 interface ContactDetails {
   email: string;
@@ -47,19 +48,28 @@ const Hero: React.FC = () => {
   });
   
   // Loading states - Hero should show immediately with defaults
-  const [isLoadingHero, setIsLoadingHero] = useState(false); // Don't block Hero display
-  const [isLoadingContact, setIsLoadingContact] = useState(false); // Show basic content immediately  
+  // Remove unused loading states since we show defaults immediately
+  // const [isLoadingHero, setIsLoadingHero] = useState(false);
+  // const [isLoadingContact, setIsLoadingContact] = useState(false);
   const [isLoadingResume, setIsLoadingResume] = useState(true); // Only resume needs loading state
 
   const texts = [heroContent.name, heroContent.title];
 
   useEffect(() => {
-    fetchContactDetails();
-    fetchHeroContent();
-    checkResumeStatus();
+    // Small delay to allow pre-cache to complete first
+    const timer = setTimeout(() => {
+      fetchContactDetails();
+      fetchHeroContent();
+      checkResumeStatus();
+    }, 100); // 100ms delay to let pre-cache finish first
+    
     // Check resume status periodically
     const resumeInterval = setInterval(checkResumeStatus, 30000);
-    return () => clearInterval(resumeInterval);
+    
+    return () => {
+      clearTimeout(timer);
+      clearInterval(resumeInterval);
+    };
   }, []);
 
   useEffect(() => {
@@ -73,11 +83,14 @@ const Hero: React.FC = () => {
   const fetchContactDetails = async () => {
     try {
       // Don't set loading state - show defaults immediately
-      const response = await fetch(`${API_BASE_URL}/contact-details`);
-      if (response.ok) {
-        const data = await response.json();
-        setContactDetails(data);
-      }
+      // Use consistent caching with Contact component
+      const data = await cachedFetch<ContactDetails>(
+        `${API_BASE_URL}/contact-details`,
+        {},
+        'contact-details', // Consistent with pre-cache and Contact component
+        900 // 15 minute cache
+      );
+      setContactDetails(data);
     } catch (error) {
       console.error('Error fetching contact details:', error);
       // Keep using default contact details - no loading state needed
@@ -87,11 +100,14 @@ const Hero: React.FC = () => {
   const fetchHeroContent = async () => {
     try {
       // Don't set loading state - show defaults immediately
-      const response = await fetch(`${API_BASE_URL}/hero`);
-      if (response.ok) {
-        const data = await response.json();
-        setHeroContent(data);
-      }
+      // Use consistent caching with pre-cache
+      const data = await cachedFetch<HeroContent>(
+        `${API_BASE_URL}/hero`,
+        {},
+        'hero-content', // Consistent with pre-cache
+        900 // 15 minute cache
+      );
+      setHeroContent(data);
     } catch (error) {
       console.error('Error fetching hero content:', error);
       // Keep using default hero content - no loading state needed

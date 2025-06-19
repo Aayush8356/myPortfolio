@@ -35,23 +35,28 @@ const Contact: React.FC = () => {
     resume: ''
   });
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
-  const [contactLoading, setContactLoading] = useState(false); // Show defaults immediately
-  const [contactError, setContactError] = useState<string | null>(null);
+  // Remove unused loading states since we show defaults immediately
+  // const [contactLoading, setContactLoading] = useState(false);
+  // const [contactError, setContactError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([fetchContactDetails(), checkResumeStatus()]);
+    // Small delay to allow pre-cache to complete first
+    const timer = setTimeout(() => {
+      Promise.all([fetchContactDetails(), checkResumeStatus()]);
+    }, 100); // 100ms delay to let pre-cache finish first
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const fetchContactDetails = async () => {
     try {
       // Don't set loading state - show defaults immediately
-      setContactError(null);
       
-      // Use aggressive caching for contact details (15 minutes)
+      // Use consistent cache key and aggressive caching for contact details (15 minutes)
       const data = await cachedFetch<ContactDetails>(
         `${API_BASE_URL}/contact-details`,
         {},
-        'contact-details',
+        'contact-details', // Consistent with pre-cache
         900 // 15 minute cache
       );
       
@@ -60,7 +65,6 @@ const Contact: React.FC = () => {
       console.error('Error fetching contact details:', error);
       
       // Keep using default contact info - no error message to user
-      setContactError(null); // Don't show error to user
     }
   };
 
@@ -127,7 +131,7 @@ const Contact: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 md:space-y-6">
-              {contactLoading ? (
+              {false ? (
                 <ContactSkeleton />
               ) : (
                 <>
