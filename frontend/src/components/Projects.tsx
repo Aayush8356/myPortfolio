@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Github, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { API_BASE_URL, ASSETS_BASE_URL } from '../config/api';
-import { cachedFetch, clearProjectsCache } from '../lib/cache';
+import { cachedFetch, clearProjectsCache, updateProjectsCache } from '../lib/cache';
 import { ProjectSkeleton } from './ui/skeleton';
 
 interface Project {
@@ -52,7 +52,7 @@ const defaultProjects: Project[] = [
 ];
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>(defaultProjects); // Start with defaults
+  const [projects, setProjects] = useState<Project[]>([]); // Start empty, fetch immediately
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -61,28 +61,41 @@ const Projects: React.FC = () => {
   // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Small delay to allow pre-cache to complete first, then fetch
-    const timer = setTimeout(() => {
-      fetchProjects();
-    }, 100); // 100ms delay to let pre-cache finish first
-    
-    return () => clearTimeout(timer);
+    // Fetch immediately on component mount
+    fetchProjects();
   }, []);
 
   const fetchProjects = async (forceRefresh = false) => {
     try {
-      // Clear cache if force refresh is requested
-      if (forceRefresh) {
-        clearProjectsCache();
-      }
+      let data: Project[];
       
-      // Use cached fetch with shorter cache time for better consistency
-      const data = await cachedFetch<Project[]>(
-        `${API_BASE_URL}/projects`,
-        {},
-        'projects-list',
-        60 // 1 minute cache for faster updates
-      );
+      if (forceRefresh) {
+        // For force refresh, bypass cache completely
+        clearProjectsCache();
+        const response = await fetch(`${API_BASE_URL}/projects`, {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        data = await response.json();
+        // Update cache with fresh data
+        updateProjectsCache(data);
+      } else {
+        // Use cached fetch with very short cache time for immediate updates
+        data = await cachedFetch<Project[]>(
+          `${API_BASE_URL}/projects`,
+          {},
+          'projects-list',
+          1 // 1 second cache for immediate updates
+        );
+      }
       
       setProjects(data);
       // Update scroll indicators after projects load
@@ -90,8 +103,10 @@ const Projects: React.FC = () => {
     } catch (error) {
       console.error('Error fetching projects:', error);
       
-      // Keep using default projects - no error message shown to user
-      // The defaults will provide good UX while API is unavailable
+      // Only use defaults if no projects are currently loaded
+      if (projects.length === 0) {
+        setProjects(defaultProjects);
+      }
       setTimeout(updateScrollIndicators, 100);
     }
   };
@@ -140,8 +155,20 @@ const Projects: React.FC = () => {
     };
 
     const handleForceRefresh = (e: CustomEvent) => {
-      console.log('Admin updated projects, forcing refresh...', e.detail);
-      fetchProjects(true);
+      console.log('Projects: Received forceProjectRefresh event');
+      console.log('Projects: Event detail:', e.detail);
+      console.log('Projects: Current projects state:', projects);
+      
+      if (e.detail && e.detail.projects) {
+        console.log('Projects: Using projects data from event:', e.detail.projects);
+        // Use the updated projects data directly from the event
+        setProjects(e.detail.projects);
+        setTimeout(updateScrollIndicators, 100);
+      } else {
+        console.log('Projects: No projects data in event, fetching...');
+        // Fallback to fetching if no data in event
+        fetchProjects(true);
+      }
     };
 
     document.addEventListener('keydown', handleKeyPress);
@@ -205,16 +232,16 @@ const Projects: React.FC = () => {
                 </Button>
               </>
             )}
-            {/* Debug refresh button - remove in production */}
+            {/* Temporary debug button - remove after testing */}
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                console.log('Manual refresh triggered');
+                console.log('Force refresh - bypassing all cache');
                 fetchProjects(true);
               }}
-              className="p-2 bg-red-500/20 backdrop-blur-sm border-red-500/30 hover:border-red-500 hover:bg-red-500/10"
-              title="Debug: Force Refresh Projects"
+              className="p-2 bg-blue-500/20 backdrop-blur-sm border-blue-500/30 hover:border-blue-500 hover:bg-blue-500/10"
+              title="Force Refresh (bypasses cache)"
             >
               🔄
             </Button>

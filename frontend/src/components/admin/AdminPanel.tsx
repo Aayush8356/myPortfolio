@@ -417,23 +417,33 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
   };
 
   const handleProjectSave = (project: Project) => {
+    console.log('AdminPanel: handleProjectSave called with project:', project);
+    console.log('AdminPanel: Current editingProject:', editingProject);
+    console.log('AdminPanel: Current projects array:', projects);
+    
     let updatedProjects;
     if (editingProject) {
+      console.log('AdminPanel: Updating existing project');
       updatedProjects = projects.map(p => p._id === project._id ? project : p);
     } else {
+      console.log('AdminPanel: Adding new project');
       updatedProjects = [project, ...projects];
     }
     
+    console.log('AdminPanel: Updated projects array:', updatedProjects);
     setProjects(updatedProjects);
     
-    // Clear all project-related cache completely to force fresh fetch
-    clearProjectsCache();
+    // Update cache with fresh data instead of clearing
+    console.log('AdminPanel: Updating projects cache');
+    updateProjectsCache(updatedProjects);
     
-    // Also dispatch a custom event to force refresh across the app
+    // Also dispatch a custom event with the updated data
+    console.log('AdminPanel: Dispatching forceProjectRefresh event');
     window.dispatchEvent(new CustomEvent('forceProjectRefresh', { 
       detail: { projects: updatedProjects }
     }));
     
+    console.log('AdminPanel: Closing project editor');
     setShowProjectEditor(false);
     setEditingProject(null);
   };
@@ -946,13 +956,31 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold">Manage Projects</h2>
-              <Button onClick={() => {
-                setEditingProject(null);
-                setShowProjectEditor(true);
-              }}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Project
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    console.log('Test: Direct handleProjectSave call');
+                    const testProject = {
+                      _id: 'test-' + Date.now(),
+                      title: 'Test Project',
+                      description: 'This is a test project',
+                      technologies: ['React', 'Test'],
+                      featured: false
+                    };
+                    handleProjectSave(testProject);
+                  }}
+                >
+                  Test Save
+                </Button>
+                <Button onClick={() => {
+                  setEditingProject(null);
+                  setShowProjectEditor(true);
+                }}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Project
+                </Button>
+              </div>
             </div>
 
             <div className="grid gap-4">

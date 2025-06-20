@@ -113,6 +113,10 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
     setLoading(true);
     setError('');
 
+    console.log('ProjectEditor: Starting submit process');
+    console.log('ProjectEditor: Form data:', formData);
+    console.log('ProjectEditor: Existing project:', project);
+
     try {
       const projectData = {
         title: formData.title,
@@ -130,6 +134,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
       
       const method = project ? 'PUT' : 'POST';
 
+      console.log('ProjectEditor: Making API request to:', url, 'with method:', method);
+      console.log('ProjectEditor: Project data being sent:', projectData);
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -139,14 +146,20 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
         body: JSON.stringify(projectData),
       });
 
+      console.log('ProjectEditor: API response status:', response.status);
+
       if (response.ok) {
         const savedProject = await response.json();
+        console.log('ProjectEditor: API response successful, saved project:', savedProject);
+        console.log('ProjectEditor: Calling onSave callback with:', savedProject);
         onSave(savedProject);
       } else {
         const data = await response.json();
+        console.error('ProjectEditor: API error response:', data);
         setError(data.message || 'Failed to save project');
       }
     } catch (error) {
+      console.error('ProjectEditor: Network error:', error);
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
@@ -171,7 +184,10 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
             </div>
           )}
           
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={(e) => {
+            console.log('ProjectEditor: Form onSubmit triggered');
+            handleSubmit(e);
+          }} className="space-y-4">
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-2">
                 Title *
@@ -343,7 +359,12 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
             </div>
             
             <div className="flex gap-3 pt-4">
-              <Button type="submit" disabled={loading} className="flex-1">
+              <Button 
+                type="submit" 
+                disabled={loading} 
+                className="flex-1"
+                onClick={() => console.log('ProjectEditor: Submit button clicked')}
+              >
                 {loading ? (
                   'Saving...'
                 ) : (
