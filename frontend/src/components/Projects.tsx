@@ -63,6 +63,13 @@ const Projects: React.FC = () => {
   useEffect(() => {
     // Fetch immediately on component mount
     fetchProjects();
+    
+    // Auto-refresh every 5 seconds to pick up admin changes
+    const autoRefreshInterval = setInterval(() => {
+      fetchProjects(false); // Use cached data but refresh if cache expired
+    }, 5000);
+    
+    return () => clearInterval(autoRefreshInterval);
   }, []);
 
   const fetchProjects = async (forceRefresh = false) => {
@@ -232,19 +239,6 @@ const Projects: React.FC = () => {
                 </Button>
               </>
             )}
-            {/* Temporary debug button - remove after testing */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                console.log('Force refresh - bypassing all cache');
-                fetchProjects(true);
-              }}
-              className="p-2 bg-blue-500/20 backdrop-blur-sm border-blue-500/30 hover:border-blue-500 hover:bg-blue-500/10"
-              title="Force Refresh (bypasses cache)"
-            >
-              🔄
-            </Button>
           </div>
         </div>
         
