@@ -17,48 +17,46 @@ interface Project {
   featured: boolean;
 }
 
-// Default/fallback projects for better UX
+// Default/fallback projects for better UX - using real project data
 const defaultProjects: Project[] = [
   {
-    _id: '1',
-    title: 'Full Stack Portfolio',
-    description: 'A modern, responsive portfolio website built with React, TypeScript, and Node.js. Features include dark/light mode, admin panel, and contact management.',
-    technologies: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'Tailwind CSS'],
-    githubUrl: 'https://github.com/Aayush8356/myPortfolio',
-    liveUrl: 'https://meetaayush.com',
+    _id: 'default-1',
+    title: 'Wandarlog',
+    description: 'Plan, travel and share your adventures. A comprehensive travel planning platform built with modern web technologies.',
+    technologies: ['ReactJs', 'NodeJS', 'TailwindCSS', 'TypeScript', 'MongoDB'],
+    githubUrl: 'https://github.com/Aayush8356/wanderlust',
+    liveUrl: 'https://wanderlust-lilac-five.vercel.app/',
     imageUrl: '',
     featured: true
   },
   {
-    _id: '2',
-    title: 'Tech Innovation Project',
-    description: 'Innovative project showcasing modern web development techniques and best practices.',
-    technologies: ['JavaScript', 'React', 'API Integration'],
-    githubUrl: '#',
-    liveUrl: '#',
+    _id: 'default-2',
+    title: 'Payment UI Component',
+    description: 'A payment UI Component that you can easily import to your project. Modern, responsive, and customizable.',
+    technologies: ['ReactJs', 'NodeJS', 'TailwindCSS', 'TypeScript', 'PostgreSQL'],
+    githubUrl: 'https://github.com/Aayush8356/payment-ui',
+    liveUrl: 'https://payment-ui-frontend-9gr7540uk-aayush8356s-projects.vercel.app',
     imageUrl: '',
     featured: false
   },
   {
-    _id: '3',
-    title: 'Web Development Solution',
-    description: 'Comprehensive web solution demonstrating full-stack development capabilities.',
-    technologies: ['Full Stack', 'Database', 'UI/UX'],
-    githubUrl: '#',
-    liveUrl: '#',
+    _id: 'default-3',
+    title: 'Web Food',
+    description: 'Food Delivery App with real-time ordering, payment integration, and delivery tracking.',
+    technologies: ['NextJs', 'NodeJS', 'MongoDB', 'Javascript'],
+    githubUrl: 'https://github.com/Aayush8356/webfood',
+    liveUrl: 'https://webfood.meetaayush.com',
     imageUrl: '',
-    featured: false
+    featured: true
   }
 ];
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]); // Start empty, fetch immediately
+  const [projects, setProjects] = useState<Project[]>(defaultProjects); // Start with defaults for better UX
+  const [loading, setLoading] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  // Remove unused loading states since we show defaults immediately
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch immediately on component mount
@@ -95,25 +93,28 @@ const Projects: React.FC = () => {
         // Update cache with fresh data
         updateProjectsCache(data);
       } else {
-        // Use cached fetch with very short cache time for immediate updates
+        // Use cached fetch with longer cache time for production stability
         data = await cachedFetch<Project[]>(
           `${API_BASE_URL}/projects`,
           {},
           'projects-list',
-          1 // 1 second cache for immediate updates
+          300 // 5 minutes cache for better reliability
         );
       }
       
-      setProjects(data);
+      // Only update if we got real data
+      if (data && data.length > 0) {
+        setProjects(data);
+      }
+      setLoading(false);
       // Update scroll indicators after projects load
       setTimeout(updateScrollIndicators, 100);
     } catch (error) {
       console.error('Error fetching projects:', error);
       
-      // Only use defaults if no projects are currently loaded
-      if (projects.length === 0) {
-        setProjects(defaultProjects);
-      }
+      // Keep showing default projects for better UX
+      // Don't change projects state on error - defaults are already loaded
+      setLoading(false);
       setTimeout(updateScrollIndicators, 100);
     }
   };
@@ -242,9 +243,11 @@ const Projects: React.FC = () => {
           </div>
         </div>
         
-        {projects.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No projects available yet. Check back soon!</p>
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            {[...Array(3)].map((_, i) => (
+              <ProjectSkeleton key={i} />
+            ))}
           </div>
         ) : (
           <div 
