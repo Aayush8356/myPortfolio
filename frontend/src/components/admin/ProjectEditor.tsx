@@ -23,8 +23,6 @@ interface ProjectEditorProps {
 }
 
 const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, onClose }) => {
-  console.log('ProjectEditor: Component mounted with project:', project);
-  console.log('ProjectEditor: onSave callback received:', typeof onSave);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -363,31 +361,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
             
             <div className="flex gap-3 pt-4">
               <Button 
-                type="button"
-                variant="outline" 
-                onClick={() => {
-                  console.log('ProjectEditor: Test onSave button clicked');
-                  const testProject = {
-                    _id: project?._id || 'test-123',
-                    title: formData.title || 'Test Project',
-                    description: formData.description || 'Test Description',
-                    technologies: formData.technologies.split(',').map(t => t.trim()).filter(t => t) || ['Test'],
-                    imageUrl: formData.imageUrl,
-                    githubUrl: formData.githubUrl,
-                    liveUrl: formData.liveUrl,
-                    featured: formData.featured
-                  };
-                  console.log('ProjectEditor: Calling onSave with test project:', testProject);
-                  onSave(testProject);
-                }}
-              >
-                Test Save
-              </Button>
-              <Button 
                 type="submit" 
                 disabled={loading} 
                 className="flex-1"
-                onClick={() => console.log('ProjectEditor: Submit button clicked')}
               >
                 {loading ? (
                   'Saving...'

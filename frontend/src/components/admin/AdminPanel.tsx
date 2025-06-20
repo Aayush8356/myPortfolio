@@ -956,31 +956,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold">Manage Projects</h2>
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    console.log('Test: Direct handleProjectSave call');
-                    const testProject = {
-                      _id: 'test-' + Date.now(),
-                      title: 'Test Project',
-                      description: 'This is a test project',
-                      technologies: ['React', 'Test'],
-                      featured: false
-                    };
-                    handleProjectSave(testProject);
-                  }}
-                >
-                  Test Save
-                </Button>
-                <Button onClick={() => {
-                  setEditingProject(null);
-                  setShowProjectEditor(true);
-                }}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Project
-                </Button>
-              </div>
+              <Button onClick={() => {
+                setEditingProject(null);
+                setShowProjectEditor(true);
+              }}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Project
+              </Button>
             </div>
 
             <div className="grid gap-4">
