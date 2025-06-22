@@ -40,12 +40,8 @@ const Contact: React.FC = () => {
   // const [contactError, setContactError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Small delay to allow pre-cache to complete first
-    const timer = setTimeout(() => {
-      Promise.all([fetchContactDetails(), checkResumeStatus()]);
-    }, 100); // 100ms delay to let pre-cache finish first
-    
-    return () => clearTimeout(timer);
+    // Fetch data immediately - no artificial delay
+    Promise.all([fetchContactDetails(), checkResumeStatus()]);
   }, []);
 
   const fetchContactDetails = async () => {
@@ -60,7 +56,7 @@ const Contact: React.FC = () => {
         900 // 15 minute cache
       );
       
-      setContactDetails(data);
+      setContactDetails(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
       console.error('Error fetching contact details:', error);
       

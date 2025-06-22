@@ -27,11 +27,11 @@ interface HeroContent {
 
 const Hero: React.FC = () => {
   const [contactDetails, setContactDetails] = useState<ContactDetails>({
-    email: '',
-    phone: '',
-    location: '',
-    linkedin: '',
-    github: '',
+    email: 'aayush@meetaayush.com',
+    phone: '+1 (555) 123-4567',
+    location: 'India',
+    linkedin: 'https://linkedin.com/in/aayush-gupta',
+    github: 'https://github.com/Aayush8356',
     twitter: '',
     resume: ''
   });
@@ -51,23 +51,20 @@ const Hero: React.FC = () => {
   // Remove unused loading states since we show defaults immediately
   // const [isLoadingHero, setIsLoadingHero] = useState(false);
   // const [isLoadingContact, setIsLoadingContact] = useState(false);
-  const [isLoadingResume, setIsLoadingResume] = useState(true); // Only resume needs loading state
+  // const [isLoadingResume, setIsLoadingResume] = useState(true); // Only resume needs loading state
 
   const texts = [heroContent.name, heroContent.title];
 
   useEffect(() => {
-    // Small delay to allow pre-cache to complete first
-    const timer = setTimeout(() => {
-      fetchContactDetails();
-      fetchHeroContent();
-      checkResumeStatus();
-    }, 100); // 100ms delay to let pre-cache finish first
+    // Fetch data immediately - no artificial delay
+    fetchContactDetails();
+    fetchHeroContent();
+    checkResumeStatus();
     
     // Check resume status periodically
     const resumeInterval = setInterval(checkResumeStatus, 30000);
     
     return () => {
-      clearTimeout(timer);
       clearInterval(resumeInterval);
     };
   }, []);
@@ -90,7 +87,7 @@ const Hero: React.FC = () => {
         'contact-details', // Consistent with pre-cache and Contact component
         900 // 15 minute cache
       );
-      setContactDetails(data);
+      setContactDetails(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
       console.error('Error fetching contact details:', error);
       // Keep using default contact details - no loading state needed
@@ -107,7 +104,7 @@ const Hero: React.FC = () => {
         'hero-content', // Consistent with pre-cache
         900 // 15 minute cache
       );
-      setHeroContent(data);
+      setHeroContent(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
       console.error('Error fetching hero content:', error);
       // Keep using default hero content - no loading state needed
@@ -116,7 +113,6 @@ const Hero: React.FC = () => {
 
   const checkResumeStatus = async () => {
     try {
-      setIsLoadingResume(true);
       const response = await fetch(`${API_BASE_URL}/resume/current`);
       if (response.ok) {
         const data = await response.json();
@@ -128,8 +124,6 @@ const Hero: React.FC = () => {
     } catch (error) {
       console.error('Error checking resume status:', error);
       setHasUploadedResume(false);
-    } finally {
-      setIsLoadingResume(false);
     }
   };
 

@@ -27,13 +27,9 @@ const About: React.FC = () => {
   });
 
   useEffect(() => {
-    // Small delay to allow pre-cache to complete first
-    const timer = setTimeout(() => {
-      fetchAboutContent();
-      checkResumeStatus();
-    }, 100); // 100ms delay to let pre-cache finish first
-    
-    return () => clearTimeout(timer);
+    // Fetch data immediately - no artificial delay
+    fetchAboutContent();
+    checkResumeStatus();
   }, []);
 
   const fetchAboutContent = async () => {
@@ -44,7 +40,7 @@ const About: React.FC = () => {
         'about-content', // Consistent with pre-cache
         900 // 15 minute cache for about content (consistent with pre-cache)
       );
-      setAboutContent(data);
+      setAboutContent(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
       console.error('Error fetching about content:', error);
       // Keep default content on error
@@ -53,7 +49,7 @@ const About: React.FC = () => {
 
   const checkResumeStatus = async () => {
     try {
-      const data = await cachedFetch<{hasResume: boolean}>(
+      await cachedFetch<{hasResume: boolean}>(
         `${API_BASE_URL}/resume/current`,
         {},
         'resume-status',
@@ -74,8 +70,27 @@ const About: React.FC = () => {
   };
 
   const downloadResume = async () => {
-    // Always use backend API which handles both uploaded and fallback resumes
-    window.open(`${API_BASE_URL}/resume/download`, '_blank');
+    try {
+      // Try backend first
+      const response = await fetch(`${API_BASE_URL}/resume/current`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.hasResume) {
+          window.open(`${API_BASE_URL}/resume/download`, '_blank');
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Backend resume check failed, using static fallback');
+    }
+    
+    // Fallback to static resume
+    const link = document.createElement('a');
+    link.href = '/resume.pdf';
+    link.download = 'Aayush_Gupta_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (

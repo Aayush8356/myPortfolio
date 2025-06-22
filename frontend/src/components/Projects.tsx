@@ -53,7 +53,7 @@ const defaultProjects: Project[] = [
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(defaultProjects); // Start with defaults for better UX
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Don't show loading since we have defaults
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);

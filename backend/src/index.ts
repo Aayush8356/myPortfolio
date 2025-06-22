@@ -38,6 +38,15 @@ if (!fs.existsSync(uploadsPath)) {
 app.use('/uploads', express.static(uploadsPath));
 
 
+// Health check endpoint for cache warming
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);

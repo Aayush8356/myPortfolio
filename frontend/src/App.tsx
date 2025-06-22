@@ -9,7 +9,7 @@ import Contact from './components/Contact';
 import FunCentre from './components/FunCentre';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminPanel from './components/admin/AdminPanel';
-import { preCacheData } from './lib/cache';
+import { preCacheData, warmCache } from './lib/cache';
 import { API_BASE_URL } from './config/api';
 
 // Main Portfolio Component with Dark Nebula theme
@@ -86,9 +86,15 @@ function App() {
 
     document.addEventListener('keydown', handleKeyDown);
     
-    // Pre-cache data immediately for faster loading - run in background
-    // This ensures cache is populated before components try to fetch
-    preCacheData(API_BASE_URL).catch(console.error);
+    // Aggressive cache warming for production to handle cold starts
+    if (process.env.NODE_ENV === 'production') {
+      warmCache(API_BASE_URL);
+    } else {
+      // Simple pre-cache for development
+      preCacheData(API_BASE_URL).then(() => {
+        console.log('Pre-cache completed successfully');
+      }).catch(console.error);
+    }
     
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
