@@ -1038,32 +1038,32 @@
 
 @layer base {
   :root {
-    /* Fullstack Developer Theme - Light Mode */
-    --background: 0 0% 98%;          /* Subtle off-white for better contrast */
-    --foreground: 220 26% 14%;        /* Deep slate */
+    /* Fullstack Developer Theme - Light Mode - WCAG AA Compliant */
+    --background: 0 0% 100%;          /* Pure white for maximum contrast */
+    --foreground: 220 30% 12%;        /* Darker text for 7:1 contrast ratio */
     --card: 0 0% 100%;               /* White cards */
-    --card-foreground: 220 26% 14%;
+    --card-foreground: 220 30% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 26% 14%;
-    --primary: 142 76% 36%;         /* Modern green for better visibility */
+    --popover-foreground: 220 30% 12%;
+    --primary: 142 85% 28%;          /* Darker green for 4.5:1 contrast on white */
     --primary-foreground: 0 0% 100%;
-    --secondary: 47 96% 48%;         /* Slightly darker golden yellow */
-    --secondary-foreground: 220 26% 14%;
-    --muted: 220 14% 94%;            /* Slightly darker muted for better contrast */
-    --muted-foreground: 220 9% 46%;
-    --accent: 158 64% 48%;           /* Slightly darker mint green */
-    --accent-foreground: 220 26% 14%;
-    --destructive: 0 84% 60%;
+    --secondary: 45 100% 35%;        /* Darker golden for accessibility */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 14% 96%;            /* Lighter muted background */
+    --muted-foreground: 220 15% 35%; /* Darker muted text for 4.5:1 contrast */
+    --accent: 158 70% 35%;           /* Darker mint for accessibility */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 45%;        /* Darker red for better contrast */
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 88%;           /* Slightly darker border for better visibility */
-    --input: 220 13% 91%;
-    --ring: 142 76% 36%;
+    --border: 220 13% 85%;           /* Darker border for visibility */
+    --input: 220 13% 90%;            /* Darker input backgrounds */
+    --ring: 142 85% 28%;
     --radius: 0.75rem;
     
-    /* Light theme glow colors - enhanced for visibility */
-    --glow-primary: 142, 76%, 36%;  /* Modern green */
-    --glow-secondary: 47, 96%, 48%;  /* Darker golden yellow */
-    --glow-accent: 158, 64%, 48%;    /* Darker mint green */
+    /* Light theme glow colors - professional and accessible */
+    --glow-primary: 142, 85%, 28%;   /* Darker green */
+    --glow-secondary: 45, 100%, 35%; /* Darker golden */
+    --glow-accent: 158, 70%, 35%;    /* Darker mint */
   }
 
   .dark {
@@ -1332,5 +1332,202 @@ code {
   100% { 
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Reduced Motion Support for Accessibility Compliance */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations and transitions for users who prefer reduced motion */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Remove specific animations that could be problematic */
+  .animate-glow-pulse,
+  .animate-float-nebula,
+  .animate-pulse-slow,
+  .animate-spin-slow,
+  .animate-subtle-float,
+  .animate-fade-in,
+  .animate-slide-up-delayed,
+  .animate-slide-up-delayed-2,
+  .animate-slide-up-delayed-3,
+  .animate-slide-up-delayed-4,
+  .animate-slide-up-delayed-5 {
+    animation: none !important;
+  }
+  
+  /* Remove background animations */
+  .star-field::before,
+  .tech-grid,
+  .code-pattern,
+  .tech-circuit,
+  .light-beam,
+  .particle,
+  .particle-1,
+  .particle-2,
+  .particle-3,
+  .particle-4,
+  .particle-5 {
+    animation: none !important;
+  }
+  
+  /* Remove floating elements animations */
+  .tech-objects::before,
+  .tech-objects::after,
+  .terminal-window,
+  .api-connection {
+    animation: none !important;
+  }
+  
+  /* Simplify hover effects to just opacity/color changes */
+  .hover-lift:hover {
+    transform: none !important;
+  }
+  
+  .hover\:scale-105:hover,
+  .hover\:scale-110:hover {
+    transform: none !important;
+  }
+  
+  /* Keep essential focus indicators for keyboard navigation */
+  button:focus,
+  a:focus,
+  input:focus,
+  textarea:focus,
+  [tabindex]:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  
+  /* Ensure smooth scrolling is disabled */
+  html {
+    scroll-behavior: auto !important;
+  }
+  
+  /* Remove auto-playing animations but keep user-initiated ones */
+  .projects-scroll {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --border: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --secondary: 0 0% 0%;
+    --accent: 0 0% 0%;
+  }
+  
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --border: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --secondary: 0 0% 100%;
+    --accent: 0 0% 100%;
+  }
+  
+  /* Remove all glow effects in high contrast mode */
+  .glow-primary,
+  .glow-secondary,
+  .glow-accent,
+  .glow-text-primary,
+  .glow-text-secondary,
+  .glow-text-accent {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Ensure all text has maximum contrast */
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    text-shadow: none !important;
+  }
+  
+  /* Remove gradient backgrounds */
+  .text-gradient {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  .nebula-gradient {
+    background: hsl(var(--background)) !important;
+  }
+}
+
+/* Transparency Reduction for Better Readability */
+@media (prefers-reduced-transparency: reduce) {
+  /* Remove backdrop blur and transparency effects */
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg {
+    backdrop-filter: none !important;
+  }
+  
+  .bg-background\/80,
+  .bg-card\/20,
+  .bg-dark-card\/50 {
+    background-color: hsl(var(--background)) !important;
+  }
+  
+  /* Make cards fully opaque */
+  .bg-dark-card {
+    background: hsl(var(--card)) !important;
+    opacity: 1 !important;
+  }
+  
+  /* Remove semi-transparent overlays */
+  .dark-grid {
+    background-image: none !important;
+  }
+  
+  .light-beam {
+    display: none !important;
+  }
+}
+
+/* Line Clamp Utilities */
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.line-clamp-4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.line-clamp-5 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+.line-clamp-6 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+}
+
+/* Testimonials specific styles */
+@media (max-width: 768px) {
+  .line-clamp-6 {
+    -webkit-line-clamp: 4;
   }
 }

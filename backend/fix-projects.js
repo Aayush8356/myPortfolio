@@ -1,23 +1,33 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import Project from '../models/Project';
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-dotenv.config();
+// Define the Project schema
+const projectSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  technologies: [String],
+  imageUrl: String,
+  githubUrl: String,
+  liveUrl: String,
+  featured: { type: Boolean, default: false }
+}, { timestamps: true });
 
-const createProjects = async () => {
+const Project = mongoose.model('Project', projectSchema);
+
+const fixProjects = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio');
+    console.log('Connecting to MongoDB...');
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('Connected successfully!');
     
-    // Check if projects already exist
-    const existingProjects = await Project.countDocuments();
+    // Clear existing projects
+    console.log('Removing old projects...');
+    await Project.deleteMany({});
+    console.log('Old projects removed.');
     
-    if (existingProjects > 0) {
-      console.log('Projects already exist in database');
-      return;
-    }
-
-    // Create real projects that match frontend defaults
-    const sampleProjects = [
+    // Add real projects
+    console.log('Adding real projects...');
+    const realProjects = [
       {
         title: 'Wandarlog',
         description: 'Plan, travel and share your adventures. A comprehensive travel planning platform built with modern web technologies.',
@@ -46,19 +56,26 @@ const createProjects = async () => {
         featured: true
       }
     ];
-
-    await Project.insertMany(sampleProjects);
-    console.log('Sample projects created successfully');
-    console.log('Projects added:');
-    sampleProjects.forEach((project, index) => {
+    
+    await Project.insertMany(realProjects);
+    console.log('✅ Real projects added successfully!');
+    
+    // Verify projects
+    const count = await Project.countDocuments();
+    console.log(`Total projects in database: ${count}`);
+    
+    const projects = await Project.find({}, 'title featured');
+    console.log('\nProjects in database:');
+    projects.forEach((project, index) => {
       console.log(`${index + 1}. ${project.title} (Featured: ${project.featured})`);
     });
     
   } catch (error) {
-    console.error('Error creating projects:', error);
+    console.error('❌ Error fixing projects:', error);
   } finally {
     await mongoose.disconnect();
+    console.log('Disconnected from MongoDB');
   }
 };
 
-createProjects();
+fixProjects();

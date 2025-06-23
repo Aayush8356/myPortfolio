@@ -36,7 +36,6 @@ const Hero: React.FC = () => {
     resume: ''
   });
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
-  const [currentText, setCurrentText] = useState(0);
   const [heroContent, setHeroContent] = useState<HeroContent>({
     greeting: "Hi, I'm",
     name: 'AAYUSH GUPTA',
@@ -46,14 +45,6 @@ const Hero: React.FC = () => {
     secondaryButtonText: 'Get In Touch',
     resumeButtonText: 'Resume'
   });
-  
-  // Loading states - Hero should show immediately with defaults
-  // Remove unused loading states since we show defaults immediately
-  // const [isLoadingHero, setIsLoadingHero] = useState(false);
-  // const [isLoadingContact, setIsLoadingContact] = useState(false);
-  // const [isLoadingResume, setIsLoadingResume] = useState(true); // Only resume needs loading state
-
-  const texts = [heroContent.name, heroContent.title];
 
   useEffect(() => {
     // Fetch data immediately - no artificial delay
@@ -69,13 +60,6 @@ const Hero: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const textInterval = setInterval(() => {
-      setCurrentText((prev) => (prev + 1) % texts.length);
-    }, 3000); // Switch every 3 seconds
-
-    return () => clearInterval(textInterval);
-  }, [texts.length]);
 
   const fetchContactDetails = async () => {
     try {
@@ -212,16 +196,13 @@ const Hero: React.FC = () => {
               
           <div className="mb-4 md:mb-6">
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground mb-2 md:mb-4 animate-fade-in dark:glow-text-secondary">{heroContent.greeting}</p>
-            <div className="h-12 md:h-16 lg:h-20 flex items-center justify-center overflow-hidden">
-              <h1 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold uppercase-spaced transition-all duration-700 ease-in-out transform ${
-                currentText === 0 
-                  ? 'text-foreground translate-y-0 opacity-100 dark:glow-text-primary' 
-                  : currentText === 1 
-                  ? 'text-primary translate-y-0 opacity-100 dark:glow-text-accent dark:animate-glow-pulse' 
-                  : 'translate-y-full opacity-0'
-              }`}>
-                {texts[currentText]}
+            <div className="text-center">
+              <h1 className="text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold uppercase-spaced text-foreground dark:glow-text-primary mb-2">
+                {heroContent.name}
               </h1>
+              <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold uppercase-spaced text-primary dark:glow-text-accent">
+                {heroContent.title}
+              </h2>
             </div>
           </div>
           <div className="overflow-hidden">

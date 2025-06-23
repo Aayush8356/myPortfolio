@@ -19,11 +19,11 @@ const About: React.FC = () => {
   // const [hasUploadedResume, setHasUploadedResume] = useState(false);
   const [aboutContent, setAboutContent] = useState<AboutContent>({
     backgroundTitle: 'BACKGROUND',
-    backgroundContent: "I'm Aayush Gupta, a passionate full-stack developer with expertise in modern web technologies. I love creating efficient, scalable applications that provide excellent user experiences. My journey in tech started with curiosity and has evolved into a commitment to continuous learning and building innovative solutions.",
-    experienceTitle: 'EXPERIENCE',
-    experienceContent: "With experience in both frontend and backend development, I specialize in the MERN stack and modern frameworks. I enjoy working on challenging projects that push the boundaries of what's possible on the web.",
-    skills: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Tailwind CSS', 'Next.js', 'Python', 'AWS', 'Docker', 'Git'],
-    resumeDescription: "Download or preview my complete resume to learn more about my experience and qualifications."
+    backgroundContent: "I'm Aayush Gupta, a Full Stack Developer with 1+ year of hands-on experience building web applications using the MERN stack (MongoDB, Express.js, React.js, and Node.js). I hold a Bachelor's degree in Computer Science and Engineering from Chandigarh University (2020–2024), and my journey as a developer has been shaped through self-driven learning, building solo projects, and solving real-world problems through software.",
+    experienceTitle: 'PHILOSOPHY & FOCUS',
+    experienceContent: "My core motivation lies in identifying real-world challenges and crafting scalable, user-focused solutions through web applications. I continuously push myself to learn emerging technologies, improve system design skills, and deepen my understanding of full-stack development. I'm currently focused on expanding my backend expertise, exploring DevOps tools, and contributing to impactful software solutions.",
+    skills: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Tailwind CSS', 'Next.js', 'JavaScript', 'HTML/CSS', 'Git', 'AWS', 'Docker', 'Vercel', 'Render'],
+    resumeDescription: "Download or preview my complete resume to learn more about my experience, education, and technical qualifications."
   });
 
   useEffect(() => {

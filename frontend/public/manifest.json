@@ -1,6 +1,7 @@
 {
   "short_name": "Aayush Portfolio",
-  "name": "Aayush Gupta - Portfolio",
+  "name": "Aayush Gupta - Full Stack Developer Portfolio",
+  "description": "Computer Science Engineer specializing in React, Node.js, TypeScript, and MongoDB development",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,16 +11,23 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "maskable any"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "maskable any"
     }
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait-primary",
+  "theme_color": "#22c55e",
+  "background_color": "#ffffff",
+  "categories": ["portfolio", "developer", "technology"],
+  "lang": "en",
+  "scope": "/",
+  "id": "aayush-portfolio"
 }

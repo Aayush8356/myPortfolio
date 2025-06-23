@@ -8,6 +8,11 @@ export interface IProject extends Document {
   githubUrl?: string;
   liveUrl?: string;
   featured: boolean;
+  challenge?: string;
+  solution?: string;
+  impact?: string;
+  duration?: string;
+  team?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -43,6 +48,31 @@ const projectSchema = new Schema({
   featured: {
     type: Boolean,
     default: false
+  },
+  challenge: {
+    type: String,
+    maxlength: 1000,
+    default: ''
+  },
+  solution: {
+    type: String,
+    maxlength: 1500,
+    default: ''
+  },
+  impact: {
+    type: String,
+    maxlength: 1000,
+    default: ''
+  },
+  duration: {
+    type: String,
+    maxlength: 50,
+    default: ''
+  },
+  team: {
+    type: String,
+    maxlength: 100,
+    default: ''
   }
 }, {
   timestamps: true

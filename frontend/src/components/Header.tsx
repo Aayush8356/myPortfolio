@@ -131,10 +131,34 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
             ABOUT
           </button>
           <button
+            onClick={() => scrollToSection('skills')}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+          >
+            SKILLS
+          </button>
+          <button
+            onClick={() => scrollToSection('experience')}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+          >
+            EXPERIENCE
+          </button>
+          <button
             onClick={() => scrollToSection('projects')}
             className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
           >
             PROJECTS
+          </button>
+          <button
+            onClick={() => scrollToSection('testimonials')}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+          >
+            TESTIMONIALS
+          </button>
+          <button
+            onClick={() => scrollToSection('blog')}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+          >
+            BLOG
           </button>
           <button
             onClick={() => scrollToSection('contact')}
@@ -184,10 +208,34 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
               About
             </button>
             <button
+              onClick={() => scrollToSection('skills')}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+            >
+              Skills
+            </button>
+            <button
+              onClick={() => scrollToSection('experience')}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+            >
+              Experience
+            </button>
+            <button
               onClick={() => scrollToSection('projects')}
               className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
             >
               Projects
+            </button>
+            <button
+              onClick={() => scrollToSection('testimonials')}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+            >
+              Testimonials
+            </button>
+            <button
+              onClick={() => scrollToSection('blog')}
+              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+            >
+              Blog
             </button>
             <button
               onClick={() => scrollToSection('contact')}

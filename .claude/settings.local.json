@@ -28,7 +28,13 @@
       "Bash(node:*)",
       "Bash(ls:*)",
       "Bash(git commit:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(npm run dev:*)",
+      "Bash(cat:*)",
+      "Bash(npm run seed:*)",
+      "Bash(npx:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }

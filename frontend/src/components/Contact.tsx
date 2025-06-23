@@ -87,6 +87,23 @@ const Contact: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess(false);
+
+    // Basic frontend validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setError('Please fill in all fields.');
+      setLoading(false);
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/contact`, {
@@ -97,17 +114,32 @@ const Contact: React.FC = () => {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         setSuccess(true);
         setFormData({ name: '', email: '', message: '' });
-        setTimeout(() => setSuccess(false), 5000);
+        
+        // Show different success messages based on email status
+        if (data.emailSent) {
+          setError(''); // Clear any previous errors
+        } else {
+          // Still successful but email wasn't sent
+          console.log('Message saved but email not sent:', data.message);
+        }
+        
+        setTimeout(() => setSuccess(false), 8000); // Show success longer
       } else {
-        throw new Error('Failed to send message');
+        throw new Error(data.message || 'Failed to send message');
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setError('Failed to send message. Please check your connection and try again.');
-      setTimeout(() => setError(''), 5000);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Failed to send message. Please check your connection and try again.');
+      }
+      setTimeout(() => setError(''), 8000);
     } finally {
       setLoading(false);
     }
@@ -201,7 +233,13 @@ const Contact: React.FC = () => {
             <CardContent>
               {success && (
                 <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 rounded-md">
-                  Message sent successfully! I'll get back to you soon.
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-600 dark:text-green-400">✓</span>
+                    <div>
+                      <p className="font-semibold">Message sent successfully!</p>
+                      <p className="text-sm mt-1">You should receive a confirmation email shortly. I'll get back to you within 24-48 hours.</p>
+                    </div>
+                  </div>
                 </div>
               )}
               
