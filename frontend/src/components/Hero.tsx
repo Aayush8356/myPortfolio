@@ -147,31 +147,31 @@ const Hero: React.FC = () => {
       <div className="code-rain"></div>
       
       <div className="container mx-auto px-4 text-center relative z-10">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto py-12 md:py-16 lg:py-20">
           {/* Always show Hero content immediately - no skeleton needed */}
           {false ? (
             <HeroSkeleton />
           ) : (
             <>
               
-          <div className="mb-6">
-            <p className="text-lg text-muted-foreground mb-4">{heroContent.greeting}</p>
-            <div className="text-center">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
+          <div className="mb-8 md:mb-12">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-6 md:mb-8">{heroContent.greeting}</p>
+            <div className="text-center space-y-4">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground">
                 {heroContent.name}
               </h1>
-              <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold text-primary">
                 {heroContent.title}
               </h2>
             </div>
           </div>
-          <div>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+          <div className="mb-10 md:mb-16">
+            <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
               {heroContent.description}
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 md:mb-12 px-4 sm:px-0">
+          <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center mb-12 md:mb-16 px-4 sm:px-0">
             <Button
               size="lg"
               onClick={() => scrollToSection('projects')}
@@ -198,7 +198,7 @@ const Hero: React.FC = () => {
             </Button>
           </div>
 
-          <div className="flex justify-center space-x-6">
+          <div className="flex justify-center space-x-8 md:space-x-10">
             {contactDetails.github && (
               <a
                 href={contactDetails.github}
@@ -206,7 +206,7 @@ const Hero: React.FC = () => {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors duration-300"
               >
-                <Github className="w-6 h-6" />
+                <Github className="w-7 h-7 md:w-8 md:h-8" />
               </a>
             )}
             {contactDetails.linkedin && (
@@ -216,14 +216,14 @@ const Hero: React.FC = () => {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors duration-300"
               >
-                <Linkedin className="w-6 h-6" />
+                <Linkedin className="w-7 h-7 md:w-8 md:h-8" />
               </a>
             )}
             <button
               onClick={() => scrollToSection('contact')}
               className="text-muted-foreground hover:text-primary transition-colors duration-300"
             >
-              <Mail className="w-6 h-6" />
+              <Mail className="w-7 h-7 md:w-8 md:h-8" />
             </button>
           </div>
             </>

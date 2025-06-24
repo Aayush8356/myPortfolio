@@ -85,20 +85,6 @@ const Skills: React.FC = () => {
     }
   };
 
-  const getLevelWidth = (level: Skill['level']) => {
-    switch (level) {
-      case 'Expert':
-        return 'w-full';
-      case 'Advanced':
-        return 'w-4/5';
-      case 'Intermediate':
-        return 'w-3/5';
-      case 'Beginner':
-        return 'w-2/5';
-      default:
-        return 'w-2/5';
-    }
-  };
 
   const getLevelPercentage = (level: Skill['level']) => {
     switch (level) {
