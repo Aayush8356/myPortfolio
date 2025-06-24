@@ -8,7 +8,7 @@ export const useSectionVisibility = () => {
   useSEO(seoConfigs[activeSection as keyof typeof seoConfigs] || seoConfigs.home);
 
   useEffect(() => {
-    const sections = ['hero', 'about', 'skills', 'experience', 'education', 'projects', 'testimonials', 'blog', 'contact'];
+    const sections = ['home', 'about', 'skills', 'experience', 'education', 'projects', 'contact'];
     
     const observerOptions = {
       root: null,
@@ -23,14 +23,12 @@ export const useSectionVisibility = () => {
           
           // Map section IDs to SEO config keys
           const seoKeyMap: { [key: string]: string } = {
-            'hero': 'home',
+            'home': 'home',
             'about': 'about',
             'skills': 'skills',
             'experience': 'about',
             'education': 'about',
             'projects': 'projects',
-            'testimonials': 'about',
-            'blog': 'about',
             'contact': 'contact'
           };
           

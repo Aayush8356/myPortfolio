@@ -8,10 +8,7 @@ import Skills from './components/Skills';
 import Experience from './components/Experience';
 import Education from './components/Education';
 import Projects from './components/Projects';
-import Testimonials from './components/Testimonials';
-import Blog from './components/Blog';
 import Contact from './components/Contact';
-import FunCentre from './components/FunCentre';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminPanel from './components/admin/AdminPanel';
 import { preCacheData, warmCache } from './lib/cache';
@@ -33,14 +30,11 @@ const Portfolio: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
         <Experience />
         <Education />
         <Projects />
-        <Testimonials />
-        <Blog />
         <Contact />
-        <FunCentre />
       </main>
-      <footer className="bg-card/20 py-8 text-center text-muted-foreground border-t border-glow relative z-10">
+      <footer className="bg-card/20 py-8 text-center text-muted-foreground border-t border-border relative z-10">
         <div className="container mx-auto px-4">
-          <p className="glow-text-primary">&copy; {new Date().getFullYear()} Aayush Gupta. Built with React, TypeScript, and Tailwind CSS.</p>
+          <p>&copy; {new Date().getFullYear()} Aayush Gupta. Built with React, TypeScript, and Tailwind CSS.</p>
         </div>
       </footer>
     </div>

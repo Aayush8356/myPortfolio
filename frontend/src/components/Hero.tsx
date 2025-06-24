@@ -139,52 +139,12 @@ const Hero: React.FC = () => {
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden pt-16 md:pt-0">
-      {/* Tech Background Grid */}
-      <div className="absolute inset-0 tech-grid opacity-30"></div>
-      
-      {/* Code Pattern Overlay */}
-      <div className="absolute inset-0 code-pattern opacity-20"></div>
-      
-      {/* Circuit Pattern */}
-      <div className="absolute inset-0 tech-circuit opacity-25"></div>
-      
-      {/* Dynamic Light Gradients */}
-      <div className="absolute inset-0 opacity-20 dark:opacity-30">
-        {/* Primary tech blue light */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-radial from-primary/30 dark:from-primary/40 via-primary/10 dark:via-primary/20 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
-        
-        {/* Secondary golden light */}
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-radial from-secondary/25 dark:from-secondary/35 via-secondary/8 dark:via-secondary/15 to-transparent rounded-full blur-3xl animate-float-nebula"></div>
-        
-        {/* Accent mint light */}
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-radial from-accent/20 dark:from-accent/30 via-accent/5 dark:via-accent/10 to-transparent rounded-full blur-3xl animate-glow-pulse"></div>
-        
-        {/* Moving spotlight effect */}
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-conic from-primary/5 dark:from-primary/10 via-transparent to-secondary/5 dark:to-secondary/10 animate-spin-slow opacity-30 dark:opacity-50"></div>
-      </div>
-      
-      {/* Tech Objects */}
-      <div className="absolute inset-0 tech-objects pointer-events-none"></div>
-      
-      {/* Terminal Window */}
-      <div className="terminal-window pointer-events-none"></div>
-      
-      {/* API Connection Line */}
-      <div className="api-connection pointer-events-none"></div>
-      
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="particle particle-1"></div>
-        <div className="particle particle-2"></div>
-        <div className="particle particle-3"></div>
-        <div className="particle particle-4"></div>
-        <div className="particle particle-5"></div>
-      </div>
-      
-      {/* Sweeping light beam */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="light-beam"></div>
-      </div>
+      {/* Magical Background Effects */}
+      <div className="absolute inset-0 hero-gradient"></div>
+      <div className="absolute inset-0 animated-grid opacity-40"></div>
+      <div className="hero-spotlight"></div>
+      <div className="floating-shapes"></div>
+      <div className="code-rain"></div>
       
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -194,28 +154,28 @@ const Hero: React.FC = () => {
           ) : (
             <>
               
-          <div className="mb-4 md:mb-6">
-            <p className="text-base md:text-lg lg:text-xl text-muted-foreground mb-2 md:mb-4 animate-fade-in dark:glow-text-secondary">{heroContent.greeting}</p>
+          <div className="mb-6">
+            <p className="text-lg text-muted-foreground mb-4">{heroContent.greeting}</p>
             <div className="text-center">
-              <h1 className="text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold uppercase-spaced text-foreground dark:glow-text-primary mb-2">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
                 {heroContent.name}
               </h1>
-              <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold uppercase-spaced text-primary dark:glow-text-accent">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary">
                 {heroContent.title}
               </h2>
             </div>
           </div>
-          <div className="overflow-hidden">
-            <p className="text-sm md:text-lg lg:text-xl xl:text-2xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed animate-slide-up-delayed-3 px-2 md:px-0">
+          <div>
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
               {heroContent.description}
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 lg:gap-6 justify-center items-center mb-8 md:mb-12 animate-slide-up-delayed-4 px-4 sm:px-0">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 md:mb-12 px-4 sm:px-0">
             <Button
               size="lg"
               onClick={() => scrollToSection('projects')}
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl dark:glow-primary dark:hover:glow-accent transition-all duration-300 uppercase-spaced text-xs md:text-sm dark:animate-float-nebula"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 btn-ripple"
             >
               {heroContent.primaryButtonText}
             </Button>
@@ -223,7 +183,7 @@ const Hero: React.FC = () => {
               variant="outline"
               size="lg"
               onClick={() => scrollToSection('contact')}
-              className="w-full sm:w-auto border-primary/20 hover:border-secondary text-foreground hover:text-secondary hover:bg-secondary/10 dark:border-glow dark:hover:glow-secondary transition-all duration-300 uppercase-spaced text-xs md:text-sm"
+              className="w-full sm:w-auto border-primary hover:border-primary/70 text-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 btn-ripple"
             >
               {heroContent.secondaryButtonText}
             </Button>
@@ -231,22 +191,22 @@ const Hero: React.FC = () => {
               variant="outline"
               size="lg"
               onClick={downloadResume}
-              className="w-full sm:w-auto border-accent/20 hover:border-accent text-foreground hover:text-accent hover:bg-accent/10 dark:border-glow dark:hover:glow-accent transition-all duration-300 uppercase-spaced text-xs md:text-sm"
+              className="w-full sm:w-auto border-accent hover:border-accent/70 text-foreground hover:text-accent hover:bg-accent/10 transition-all duration-300 btn-ripple"
             >
-              <Download className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+              <Download className="w-4 h-4 mr-2" />
               {heroContent.resumeButtonText}
             </Button>
           </div>
 
-          <div className="flex justify-center space-x-4 md:space-x-6 lg:space-x-8 animate-slide-up-delayed-5">
+          <div className="flex justify-center space-x-6">
             {contactDetails.github && (
               <a
                 href={contactDetails.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground social-github hover-lift"
+                className="text-muted-foreground hover:text-primary transition-colors duration-300"
               >
-                <Github className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
+                <Github className="w-6 h-6" />
               </a>
             )}
             {contactDetails.linkedin && (
@@ -254,16 +214,16 @@ const Hero: React.FC = () => {
                 href={contactDetails.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground social-linkedin hover-lift"
+                className="text-muted-foreground hover:text-primary transition-colors duration-300"
               >
-                <Linkedin className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
+                <Linkedin className="w-6 h-6" />
               </a>
             )}
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-muted-foreground social-email hover-lift"
+              className="text-muted-foreground hover:text-primary transition-colors duration-300"
             >
-              <Mail className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
+              <Mail className="w-6 h-6" />
             </button>
           </div>
             </>

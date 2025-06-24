@@ -117,60 +117,42 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
           </h1>
         </div>
 
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
           <button
             onClick={() => scrollToSection('home')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
           >
             HOME
           </button>
           <button
             onClick={() => scrollToSection('about')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
           >
             ABOUT
           </button>
           <button
             onClick={() => scrollToSection('skills')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
           >
             SKILLS
           </button>
           <button
             onClick={() => scrollToSection('experience')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
           >
             EXPERIENCE
           </button>
           <button
             onClick={() => scrollToSection('projects')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
           >
             PROJECTS
           </button>
           <button
-            onClick={() => scrollToSection('testimonials')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
-          >
-            TESTIMONIALS
-          </button>
-          <button
-            onClick={() => scrollToSection('blog')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
-          >
-            BLOG
-          </button>
-          <button
             onClick={() => scrollToSection('contact')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
           >
             CONTACT
-          </button>
-          <button
-            onClick={() => scrollToSection('fun-centre')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold`}
-          >
-            FUN CENTRE
           </button>
           <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="hover:bg-muted transition-all duration-300">
             {darkMode ? <Sun className={`h-5 w-5 ${getNavbarTextColor()}`} /> : <Moon className={`h-5 w-5 ${getNavbarTextColor()}`} />}
@@ -226,28 +208,10 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
               Projects
             </button>
             <button
-              onClick={() => scrollToSection('testimonials')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
-            >
-              Testimonials
-            </button>
-            <button
-              onClick={() => scrollToSection('blog')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
-            >
-              Blog
-            </button>
-            <button
               onClick={() => scrollToSection('contact')}
               className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
             >
               Contact
-            </button>
-            <button
-              onClick={() => scrollToSection('fun-centre')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
-            >
-              Fun Centre
             </button>
           </nav>
         </div>

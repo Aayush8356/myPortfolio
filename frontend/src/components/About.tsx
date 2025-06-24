@@ -98,12 +98,12 @@ const About: React.FC = () => {
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">ABOUT ME</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient">ABOUT ME</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 mb-8 md:mb-12">
             <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
               <CardHeader className="pb-4">
-                <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
+                <CardTitle className="text-foreground text-lg font-semibold">
                   {aboutContent.backgroundTitle}
                 </CardTitle>
               </CardHeader>
@@ -116,7 +116,7 @@ const About: React.FC = () => {
 
             <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
               <CardHeader className="pb-4">
-                <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
+                <CardTitle className="text-foreground text-lg font-semibold">
                   {aboutContent.experienceTitle}
                 </CardTitle>
               </CardHeader>

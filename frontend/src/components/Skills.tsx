@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface Skill {
@@ -9,6 +9,10 @@ interface Skill {
 }
 
 const Skills: React.FC = () => {
+  const [, setIsVisible] = useState(false);
+  const [animatedBars, setAnimatedBars] = useState<Set<string>>(new Set());
+  const sectionRef = useRef<HTMLElement>(null);
+
   const skills: Skill[] = [
     // Frontend
     { name: 'React', level: 'Intermediate', years: '1+ years', category: 'Frontend' },
@@ -37,6 +41,34 @@ const Skills: React.FC = () => {
   ];
 
   const categories = ['Frontend', 'Backend', 'Database', 'Tools', 'Cloud'] as const;
+
+  // Intersection Observer for scroll-triggered animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Animate skill bars with staggered delay
+          skills.forEach((skill, index) => {
+            setTimeout(() => {
+              setAnimatedBars(prev => {
+                const newSet = new Set(prev);
+                newSet.add(skill.name);
+                return newSet;
+              });
+            }, index * 100);
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const getLevelColor = (level: Skill['level']) => {
     switch (level) {
@@ -68,12 +100,22 @@ const Skills: React.FC = () => {
     }
   };
 
+  const getLevelPercentage = (level: Skill['level']) => {
+    switch (level) {
+      case 'Expert': return 95;
+      case 'Advanced': return 80;
+      case 'Intermediate': return 65;
+      case 'Beginner': return 40;
+      default: return 20;
+    }
+  };
+
   return (
-    <section id="skills" className="py-12 md:py-20 bg-background relative">
+    <section ref={sectionRef} id="skills" className="py-12 md:py-20 bg-background relative page-transition">
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient-animate">
             SKILLS & EXPERTISE
           </h2>
           
@@ -82,9 +124,9 @@ const Skills: React.FC = () => {
               const categorySkills = skills.filter(skill => skill.category === category);
               
               return (
+                <div key={category} className="card-3d">
                 <Card 
-                  key={category}
-                  className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg"
+                  className="card-3d-inner glass-morphism hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg"
                   style={{
                     border: '1px solid rgba(34, 197, 94, 0.3)',
                     boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'
@@ -109,24 +151,11 @@ const Skills: React.FC = () => {
                         <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
                           <span>{skill.years}</span>
                         </div>
-                        <div className="w-full bg-muted/30 rounded-full h-2">
+                        <div className="skill-bar-container">
                           <div 
-                            className={`h-2 rounded-full transition-all duration-500 ${getLevelWidth(skill.level)}`}
+                            className="skill-bar-fill"
                             style={{
-                              background: (() => {
-                                switch (skill.level) {
-                                  case 'Expert':
-                                    return 'linear-gradient(90deg, #10b981, #059669)';
-                                  case 'Advanced':
-                                    return 'linear-gradient(90deg, #3b82f6, #1d4ed8)';
-                                  case 'Intermediate':
-                                    return 'linear-gradient(90deg, #f59e0b, #d97706)';
-                                  case 'Beginner':
-                                    return 'linear-gradient(90deg, #6b7280, #4b5563)';
-                                  default:
-                                    return 'linear-gradient(90deg, #6b7280, #4b5563)';
-                                }
-                              })(),
+                              width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level)}%` : '0%'
                             }}
                           />
                         </div>
@@ -134,6 +163,7 @@ const Skills: React.FC = () => {
                     ))}
                   </CardContent>
                 </Card>
+                </div>
               );
             })}
           </div>
