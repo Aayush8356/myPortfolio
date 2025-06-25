@@ -6,7 +6,7 @@ import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL, BLOB_BASE_URL } from '../../config/api';
 import { useToast, ToastContainer } from '../ui/toast';
-import { clearProjectsCache, updateProjectsCache, invalidateCache } from '../../lib/cache';
+import { updateProjectsCache } from '../../lib/cache';
 
 interface Project {
   _id: string;

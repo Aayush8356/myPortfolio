@@ -128,7 +128,7 @@ const Education: React.FC = () => {
     <section id="education" className="py-12 md:py-20 bg-background relative">
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">
             EDUCATION & CERTIFICATIONS
           </h2>

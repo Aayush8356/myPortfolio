@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Github, ExternalLink, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Clock, Users, Target, Lightbulb, TrendingUp } from 'lucide-react';
@@ -79,19 +79,7 @@ const Projects: React.FC = () => {
   const [expandedProjects, setExpandedProjects] = useState<Set<string>>(new Set());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Fetch immediately on component mount
-    fetchProjects();
-    
-    // Auto-refresh every 5 seconds to pick up admin changes
-    const autoRefreshInterval = setInterval(() => {
-      fetchProjects(false); // Use cached data but refresh if cache expired
-    }, 5000);
-    
-    return () => clearInterval(autoRefreshInterval);
-  }, []);
-
-  const fetchProjects = async (forceRefresh = false) => {
+  const fetchProjects = useCallback(async (forceRefresh = false) => {
     try {
       let data: Project[];
       
@@ -138,7 +126,19 @@ const Projects: React.FC = () => {
       setLoading(false);
       setTimeout(updateScrollIndicators, 100);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Fetch immediately on component mount
+    fetchProjects();
+    
+    // Auto-refresh every 5 seconds to pick up admin changes
+    const autoRefreshInterval = setInterval(() => {
+      fetchProjects(false); // Use cached data but refresh if cache expired
+    }, 5000);
+    
+    return () => clearInterval(autoRefreshInterval);
+  }, [fetchProjects]);
 
   const updateScrollIndicators = () => {
     if (!scrollContainerRef.current) return;
@@ -217,7 +217,7 @@ const Projects: React.FC = () => {
       document.removeEventListener('keydown', handleKeyPress);
       window.removeEventListener('forceProjectRefresh', handleForceRefresh as EventListener);
     };
-  }, []);
+  }, [fetchProjects, projects]);
 
 
   // Only show skeleton for initial load when no projects available (currently disabled)

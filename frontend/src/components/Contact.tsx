@@ -151,7 +151,7 @@ const Contact: React.FC = () => {
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">CONTACT ME</h2>
         
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
           <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
             <CardHeader className="pb-6">
               <CardTitle className="text-foreground uppercase-spaced text-lg md:text-xl lg:text-2xl font-semibold">

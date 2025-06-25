@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface Skill {
@@ -9,11 +9,11 @@ interface Skill {
 }
 
 const Skills: React.FC = () => {
-  const [, setIsVisible] = useState(false);
   const [animatedBars, setAnimatedBars] = useState<Set<string>>(new Set());
+  const [hasTriggered, setHasTriggered] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  const skills: Skill[] = [
+  const skills: Skill[] = useMemo(() => [
     // Frontend
     { name: 'React', level: 'Intermediate', years: '1+ years', category: 'Frontend' },
     { name: 'TypeScript', level: 'Beginner', years: '6 months', category: 'Frontend' },
@@ -38,29 +38,37 @@ const Skills: React.FC = () => {
     { name: 'Vercel', level: 'Intermediate', years: '1+ years', category: 'Cloud' },
     { name: 'Render', level: 'Intermediate', years: '1+ years', category: 'Cloud' },
     { name: 'AWS', level: 'Beginner', years: 'Just started', category: 'Cloud' },
-  ];
+  ], []);
 
   const categories = ['Frontend', 'Backend', 'Database', 'Tools', 'Cloud'] as const;
+
+  // Clear state on mount to ensure fresh start
+  useEffect(() => {
+    setAnimatedBars(new Set());
+    setHasTriggered(false);
+  }, []);
 
   // Intersection Observer for scroll-triggered animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
+        if (entry.isIntersecting && !hasTriggered) {
+          setHasTriggered(true);
+          
           // Animate skill bars with staggered delay
           skills.forEach((skill, index) => {
             setTimeout(() => {
               setAnimatedBars(prev => {
                 const newSet = new Set(prev);
                 newSet.add(skill.name);
+                console.log(`Skill ${skill.name} animated. Width: ${getLevelPercentage(skill.level)}%`);
                 return newSet;
               });
-            }, index * 100);
+            }, index * 150); // Slightly longer delay for better effect
           });
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.4 }
     );
 
     if (sectionRef.current) {
@@ -68,7 +76,7 @@ const Skills: React.FC = () => {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, []); // Only run once on mount
 
   const getLevelColor = (level: Skill['level']) => {
     switch (level) {
@@ -100,8 +108,8 @@ const Skills: React.FC = () => {
     <section ref={sectionRef} id="skills" className="py-12 md:py-20 bg-background relative page-transition">
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient-animate">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">
             SKILLS & EXPERTISE
           </h2>
           
@@ -111,7 +119,7 @@ const Skills: React.FC = () => {
               
               return (
                 <div key={category} className="card-3d">
-                <Card 
+                <Card
                   className="card-3d-inner glass-morphism hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg"
                   style={{
                     border: '1px solid rgba(34, 197, 94, 0.3)',
@@ -143,6 +151,8 @@ const Skills: React.FC = () => {
                             style={{
                               width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level)}%` : '0%'
                             }}
+                            data-skill={skill.name}
+                            data-animated={animatedBars.has(skill.name) ? 'true' : 'false'}
                           />
                         </div>
                       </div>
