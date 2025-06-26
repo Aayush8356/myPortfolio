@@ -53,6 +53,7 @@ const Skills: React.FC = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasTriggered) {
+          console.log('Skills section visible, starting animation');
           setHasTriggered(true);
           
           // Animate skill bars with staggered delay
@@ -61,7 +62,7 @@ const Skills: React.FC = () => {
               setAnimatedBars(prev => {
                 const newSet = new Set(prev);
                 newSet.add(skill.name);
-                console.log(`Skill ${skill.name} animated. Width: ${getLevelPercentage(skill.level)}%`);
+                console.log(`Added ${skill.name} (${skill.level}) to animated bars. Should be ${getLevelPercentage(skill.level)}%. Total: ${newSet.size}`);
                 return newSet;
               });
             }, index * 150); // Slightly longer delay for better effect
@@ -149,10 +150,12 @@ const Skills: React.FC = () => {
                           <div 
                             className="skill-bar-fill"
                             style={{
-                              width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level)}%` : '0%'
+                              width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level)}%` : '0%',
+                              minHeight: '8px' // Ensure bars are visible
                             }}
                             data-skill={skill.name}
                             data-animated={animatedBars.has(skill.name) ? 'true' : 'false'}
+                            title={`${skill.name}: ${animatedBars.has(skill.name) ? getLevelPercentage(skill.level) : 0}%`}
                           />
                         </div>
                       </div>

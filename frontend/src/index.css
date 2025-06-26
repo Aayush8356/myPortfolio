@@ -174,7 +174,8 @@
 /* Interactive Skill Bars with Animated Fill */
 .skill-bar-container {
   position: relative;
-  background: hsla(var(--muted), 0.3);
+  background: rgba(128, 128, 128, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;
   height: 8px;
@@ -186,56 +187,24 @@
   position: relative;
   transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
   background: linear-gradient(90deg, 
-    hsla(var(--primary), 0.8) 0%,
-    hsla(var(--accent), 0.9) 50%,
-    hsla(var(--primary), 0.8) 100%);
+    #22c55e 0%,
+    #10b981 50%,
+    #22c55e 100%);
   background-size: 200% 100%;
   animation: skill-shimmer 3s infinite;
   box-shadow: 
-    0 0 12px hsla(var(--primary), 0.4),
+    0 0 12px rgba(34, 197, 94, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   overflow: hidden;
 }
 
-.skill-bar-fill::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(255, 255, 255, 0.4) 50%, 
-    transparent 100%);
-  animation: skill-highlight 2.5s ease-out 0.5s;
-  animation-fill-mode: forwards;
-}
 
-.skill-bar-fill::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 2px;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 0 10px 10px 0;
-}
 
 @keyframes skill-shimmer {
   0%, 100% { background-position: 200% 0; }
   50% { background-position: -200% 0; }
 }
 
-@keyframes skill-highlight {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
 
 /* Card Tilt Effect (3D) */
 .card-3d {
