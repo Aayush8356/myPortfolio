@@ -124,7 +124,7 @@ const Experience: React.FC = () => {
                 )}
                 
                 <Card 
-                  className={`bg-dark-card backdrop-blur-sm hover:shadow-lg transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg border ${getTypeColor(experience.type)} ${experience.current ? 'ring-2 ring-primary/20' : ''}`}
+                  className={`bg-dark-card backdrop-blur-sm hover:shadow-lg transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg border hover:border-primary/30 ${getTypeColor(experience.type)}`}
                 >
                   <CardHeader className="pb-4">
                     <div className="flex items-start gap-4">

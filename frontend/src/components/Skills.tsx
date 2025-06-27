@@ -65,11 +65,14 @@ const Skills: React.FC = () => {
                 console.log(`Added ${skill.name} (${skill.level}) to animated bars. Should be ${getLevelPercentage(skill.level)}%. Total: ${newSet.size}`);
                 return newSet;
               });
-            }, index * 150); // Slightly longer delay for better effect
+            }, index * (window.innerWidth < 768 ? 100 : 150)); // Faster on mobile
           });
         }
       },
-      { threshold: 0.4 }
+      { 
+        threshold: window.innerWidth < 768 ? 0.2 : 0.4,
+        rootMargin: '0px 0px -10% 0px'
+      }
     );
 
     if (sectionRef.current) {
@@ -82,15 +85,15 @@ const Skills: React.FC = () => {
   const getLevelColor = (level: Skill['level']) => {
     switch (level) {
       case 'Expert':
-        return 'bg-green-500 text-white';
+        return 'bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800';
       case 'Advanced':
-        return 'bg-blue-500 text-white';
+        return 'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800';
       case 'Intermediate':
-        return 'bg-yellow-500 text-black';
+        return 'bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800';
       case 'Beginner':
-        return 'bg-gray-500 text-white';
+        return 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800/30 dark:text-slate-300 dark:border-slate-700';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800/30 dark:text-slate-300 dark:border-slate-700';
     }
   };
 
@@ -114,37 +117,34 @@ const Skills: React.FC = () => {
             SKILLS & EXPERTISE
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category) => {
               const categorySkills = skills.filter(skill => skill.category === category);
               
               return (
-                <div key={category} className="card-3d">
-                <Card
-                  className="card-3d-inner glass-morphism hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg"
+                <Card key={category}
+                  className="bg-card/50 backdrop-blur-sm border border-border/20 hover:border-primary/30 transition-all duration-300 rounded-xl h-full"
                   style={{
                     border: '1px solid rgba(34, 197, 94, 0.3)',
                     boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'
                   }}
                 >
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg font-semibold text-center">
+                  <CardHeader className="pb-4 border-b border-border/10">
+                    <CardTitle className="text-foreground text-lg font-bold text-center tracking-wide">
                       {category}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="pt-4 space-y-4">
                     {categorySkills.map((skill) => (
-                      <div key={skill.name} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm md:text-base font-medium text-foreground">
-                            {skill.name}
-                          </span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getLevelColor(skill.level)}`}>
+                      <div key={skill.name} className="space-y-3 p-3 rounded-lg bg-background/30 border border-border/10 hover:bg-background/50 transition-colors">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-semibold text-foreground">{skill.name}</h4>
+                            <span className="text-xs text-muted-foreground">{skill.years}</span>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getLevelColor(skill.level)} shadow-sm`}>
                             {skill.level}
                           </span>
-                        </div>
-                        <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
-                          <span>{skill.years}</span>
                         </div>
                         <div className="skill-bar-container">
                           <div 
@@ -162,31 +162,31 @@ const Skills: React.FC = () => {
                     ))}
                   </CardContent>
                 </Card>
-                </div>
               );
             })}
           </div>
           
           {/* Skills Summary */}
-          <div className="mt-8 md:mt-12 text-center">
-            <Card className="bg-dark-card/50 backdrop-blur-sm border border-green-500/30 shadow-lg">
+          <div className="mt-6 md:mt-8 text-center">
+            <Card className="bg-card/30 backdrop-blur-sm border border-border/20 shadow-lg">
               <CardContent className="pt-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <h3 className="text-xl font-bold text-center mb-6 text-foreground">Quick Stats</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                   <div>
-                    <div className="text-2xl md:text-3xl font-bold text-green-500">4+</div>
-                    <div className="text-sm text-muted-foreground">Years Experience</div>
+                    <div className="text-3xl font-bold text-primary">4+</div>
+                    <div className="text-sm text-muted-foreground font-medium">Years Experience</div>
                   </div>
                   <div>
-                    <div className="text-2xl md:text-3xl font-bold text-blue-500">18+</div>
-                    <div className="text-sm text-muted-foreground">Technologies</div>
+                    <div className="text-3xl font-bold text-blue-500">18+</div>
+                    <div className="text-sm text-muted-foreground font-medium">Technologies</div>
                   </div>
                   <div>
-                    <div className="text-2xl md:text-3xl font-bold text-yellow-500">3+</div>
-                    <div className="text-sm text-muted-foreground">Live Projects</div>
+                    <div className="text-3xl font-bold text-amber-500">3+</div>
+                    <div className="text-sm text-muted-foreground font-medium">Live Projects</div>
                   </div>
                   <div>
-                    <div className="text-2xl md:text-3xl font-bold text-purple-500">Full Stack</div>
-                    <div className="text-sm text-muted-foreground">Developer</div>
+                    <div className="text-3xl font-bold text-purple-500">Full Stack</div>
+                    <div className="text-sm text-muted-foreground font-medium">Developer</div>
                   </div>
                 </div>
               </CardContent>
