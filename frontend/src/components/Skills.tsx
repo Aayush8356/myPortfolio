@@ -117,54 +117,63 @@ const Skills: React.FC = () => {
             SKILLS & EXPERTISE
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category) => {
-              const categorySkills = skills.filter(skill => skill.category === category);
-              
-              return (
-                <Card key={category}
-                  className="bg-card/50 backdrop-blur-sm border border-border/20 hover:border-primary/30 transition-all duration-300 rounded-xl h-full"
-                  style={{
-                    border: '1px solid rgba(34, 197, 94, 0.3)',
-                    boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'
-                  }}
-                >
-                  <CardHeader className="pb-4 border-b border-border/10">
-                    <CardTitle className="text-foreground text-lg font-bold text-center tracking-wide">
-                      {category}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-4 space-y-4">
-                    {categorySkills.map((skill) => (
-                      <div key={skill.name} className="space-y-3 p-3 rounded-lg bg-background/30 border border-border/10 hover:bg-background/50 transition-colors">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-semibold text-foreground">{skill.name}</h4>
-                            <span className="text-xs text-muted-foreground">{skill.years}</span>
-                          </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getLevelColor(skill.level)} shadow-sm`}>
-                            {skill.level}
-                          </span>
-                        </div>
-                        <div className="skill-bar-container">
-                          <div 
-                            className="skill-bar-fill"
-                            style={{
-                              width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level)}%` : '0%',
-                              minHeight: '8px' // Ensure bars are visible
-                            }}
-                            data-skill={skill.name}
-                            data-animated={animatedBars.has(skill.name) ? 'true' : 'false'}
-                            title={`${skill.name}: ${animatedBars.has(skill.name) ? getLevelPercentage(skill.level) : 0}%`}
-                          />
-                        </div>
+          {/* Single Unified Skills Container */}
+          <Card className="bg-card/30 backdrop-blur-sm border border-primary/20 shadow-2xl rounded-2xl overflow-hidden">
+            <CardContent className="p-6 md:p-8">
+              {/* Skills Grid by Category */}
+              <div className="space-y-8">
+                {categories.map((category) => {
+                  const categorySkills = skills.filter(skill => skill.category === category);
+                  
+                  return (
+                    <div key={category} className="space-y-4">
+                      {/* Category Header */}
+                      <div className="flex items-center gap-3 pb-3 border-b border-border/20">
+                        <div className="w-2 h-2 rounded-full bg-primary"></div>
+                        <h3 className="text-lg font-bold text-foreground tracking-wide uppercase">
+                          {category}
+                        </h3>
+                        <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent"></div>
                       </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                      
+                      {/* Skills in this category */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {categorySkills.map((skill) => (
+                          <div key={skill.name} className="group p-4 rounded-lg bg-background/20 border border-border/10 hover:border-primary/30 hover:bg-background/30 transition-all duration-300">
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
+                                  {skill.name}
+                                </h4>
+                                <span className="text-xs text-muted-foreground">{skill.years}</span>
+                              </div>
+                              <span className={`px-2 py-1 rounded-md text-xs font-medium ${getLevelColor(skill.level)} shadow-sm ml-2 flex-shrink-0`}>
+                                {skill.level}
+                              </span>
+                            </div>
+                            
+                            {/* Skill Bar */}
+                            <div className="skill-bar-container">
+                              <div 
+                                className="skill-bar-fill"
+                                style={{
+                                  width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level)}%` : '0%',
+                                  minHeight: '6px'
+                                }}
+                                data-skill={skill.name}
+                                data-animated={animatedBars.has(skill.name) ? 'true' : 'false'}
+                                title={`${skill.name}: ${animatedBars.has(skill.name) ? getLevelPercentage(skill.level) : 0}%`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
           
           {/* Skills Summary */}
           <div className="mt-6 md:mt-8 text-center">
