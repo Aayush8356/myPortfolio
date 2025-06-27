@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Eye, Download } from 'lucide-react';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, PRODUCTION_DOMAIN } from '../config/api';
 import { cachedFetch } from '../lib/cache';
 
 interface AboutContent {
@@ -63,32 +63,13 @@ const About: React.FC = () => {
   };
 
   const openResumePreview = async () => {
-    // Always use backend API which handles both uploaded and fallback resumes
-    window.open(`${API_BASE_URL}/resume/preview`, '_blank');
+    // Use custom domain for consistent branding
+    window.open(`${PRODUCTION_DOMAIN}/blob/resume`, '_blank');
   };
 
   const downloadResume = async () => {
-    try {
-      // Try backend first
-      const response = await fetch(`${API_BASE_URL}/resume/current`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.hasResume) {
-          window.open(`${API_BASE_URL}/resume/download`, '_blank');
-          return;
-        }
-      }
-    } catch (error) {
-      console.warn('Backend resume check failed, using static fallback');
-    }
-    
-    // Fallback to static resume
-    const link = document.createElement('a');
-    link.href = '/resume.pdf';
-    link.download = 'Aayush_Gupta_Resume.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Always use the custom domain for consistent branding
+    window.open(`${PRODUCTION_DOMAIN}/api/resume/download`, '_blank');
   };
 
   return (

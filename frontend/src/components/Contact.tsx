@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, FileText } from 'lucide-react';
-import { API_BASE_URL, BLOB_BASE_URL } from '../config/api';
+import { API_BASE_URL, BLOB_BASE_URL, PRODUCTION_DOMAIN } from '../config/api';
 import { cachedFetch } from '../lib/cache';
 import { ContactSkeleton } from './ui/skeleton';
 
@@ -210,7 +210,7 @@ const Contact: React.FC = () => {
                   )}
                   {(hasUploadedResume || contactDetails.resume) && (
                     <a 
-                      href={hasUploadedResume ? `${BLOB_BASE_URL}/resume` : contactDetails.resume} 
+                      href={`${PRODUCTION_DOMAIN}/blob/resume`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-muted-foreground contact-icon-default hover-lift"

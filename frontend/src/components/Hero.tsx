@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, PRODUCTION_DOMAIN } from '../config/api';
 import { HeroSkeleton } from './ui/skeleton';
 import { cachedFetch } from '../lib/cache';
 
@@ -119,21 +119,8 @@ const Hero: React.FC = () => {
   };
 
   const downloadResume = async () => {
-    // Recheck status before downloading to ensure we have the latest state
-    await checkResumeStatus();
-    
-    if (hasUploadedResume) {
-      // Direct backend URL - this works reliably
-      window.open(`${API_BASE_URL}/resume/download`, '_blank');
-    } else {
-      // Fallback to static resume in public folder
-      const link = document.createElement('a');
-      link.href = '/resume.pdf';
-      link.download = 'Aayush_Gupta_Resume.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    // Always use the custom domain for a consistent user experience
+    window.open(`${PRODUCTION_DOMAIN}/api/resume/download`, '_blank');
   };
 
   // Premium particle animation system
