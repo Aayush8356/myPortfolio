@@ -1,0 +1,35 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://portfolio-backend-fm3n.onrender.com/api/$1"
+    },
+    {
+      "source": "/blob/(.*)",
+      "destination": "https://portfolio-backend-fm3n.onrender.com/blob/$1"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "https://portfolio-backend-fm3n.onrender.com/assets/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ]
+}
