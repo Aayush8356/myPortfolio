@@ -112,7 +112,7 @@ router.get('/current', async (req, res) => {
   }
 });
 
-// Preview resume (opens in browser) - optimized with caching
+// Preview resume (opens in browser) - serves PDF directly through custom domain
 router.get('/preview', async (req, res) => {
   try {
     // Set cache headers for better performance
@@ -121,26 +121,24 @@ router.get('/preview', async (req, res) => {
     const contactDetails = await ContactDetails.findOne().lean();
     
     if (contactDetails && contactDetails.resume) {
-      // If it's a Vercel Blob URL, redirect directly for better performance
+      // If it's a Vercel Blob URL, fetch and serve through our domain
       if (contactDetails.resume.startsWith('https://')) {
         try {
-          // Test blob accessibility with timeout
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-          
-          const response = await fetch(contactDetails.resume, { 
-            method: 'HEAD',
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
+          const response = await fetch(contactDetails.resume);
           
           if (response.ok) {
-            // Redirect to blob URL for direct viewing
-            return res.redirect(contactDetails.resume);
+            const buffer = await response.arrayBuffer();
+            
+            // Serve PDF directly through our domain
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
+            res.setHeader('Content-Length', buffer.byteLength.toString());
+            
+            return res.send(Buffer.from(buffer));
           }
         } catch (fetchError) {
           const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown error';
-          console.warn('Blob URL check failed, serving error page:', errorMessage);
+          console.warn('Blob fetch failed:', errorMessage);
         }
       }
       
@@ -180,32 +178,28 @@ router.get('/preview', async (req, res) => {
   }
 });
 
-// Download resume - optimized with direct blob access
+// Download resume - serves directly through custom domain
 router.get('/download', async (req, res) => {
   try {
     const contactDetails = await ContactDetails.findOne().lean();
     
     if (contactDetails && contactDetails.resume) {
-      // If it's a Vercel Blob URL, redirect for direct download
+      // If it's a Vercel Blob URL, fetch and serve through our domain
       if (contactDetails.resume.startsWith('https://')) {
         try {
-          // Add download disposition to the URL redirect
-          const downloadUrl = contactDetails.resume + '?download=1';
-          return res.redirect(downloadUrl);
-        } catch (fetchError) {
-          console.error('Error with blob download redirect:', fetchError);
-          // Fallback to fetch method
-          try {
-            const response = await fetch(contactDetails.resume);
-            if (response.ok) {
-              const buffer = await response.arrayBuffer();
-              res.setHeader('Content-Type', 'application/pdf');
-              res.setHeader('Content-Disposition', 'attachment; filename="Aayush_Gupta_Resume.pdf"');
-              return res.send(Buffer.from(buffer));
-            }
-          } catch (fallbackError) {
-            console.error('Fallback download also failed:', fallbackError);
+          const response = await fetch(contactDetails.resume);
+          if (response.ok) {
+            const buffer = await response.arrayBuffer();
+            
+            // Serve download directly through our domain
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename="Aayush_Gupta_Resume.pdf"');
+            res.setHeader('Content-Length', buffer.byteLength.toString());
+            
+            return res.send(Buffer.from(buffer));
           }
+        } catch (fetchError) {
+          console.error('Error fetching blob for download:', fetchError);
         }
       }
       

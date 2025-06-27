@@ -14,27 +14,51 @@ router.get('/blob/*', async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Blob path is required' });
     }
 
-    // Handle resume requests
+    // Handle resume requests - serve directly through custom domain
     if (blobPath === 'resume' || blobPath === 'resume.pdf') {
       try {
         const contactDetails = await ContactDetails.findOne().lean();
         
         if (contactDetails && contactDetails.resume) {
-          // If it's a Vercel Blob URL, redirect directly
+          // If it's a Vercel Blob URL, fetch and serve through our domain
           if (contactDetails.resume.startsWith('https://')) {
-            return res.redirect(contactDetails.resume);
+            try {
+              const response = await fetch(contactDetails.resume);
+              
+              if (response.ok) {
+                const buffer = await response.arrayBuffer();
+                
+                // Serve PDF directly through our custom domain
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
+                res.setHeader('Content-Length', buffer.byteLength.toString());
+                res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+                
+                return res.send(Buffer.from(buffer));
+              }
+            } catch (fetchError) {
+              console.warn('Blob fetch failed in proxy:', fetchError);
+            }
           }
           
-          // If it's a local file, redirect to the API endpoint
+          // If it's a local file, serve directly
           if (contactDetails.resume.startsWith('/uploads/')) {
-            return res.redirect('/api/resume/preview');
+            const path = require('path');
+            const fs = require('fs');
+            const resumePath = path.join(__dirname, '../../uploads/resume.pdf');
+            
+            if (fs.existsSync(resumePath)) {
+              res.setHeader('Content-Type', 'application/pdf');
+              res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
+              return res.sendFile(resumePath);
+            }
           }
         }
         
         return res.status(404).json({ message: 'Resume not found' });
       } catch (error) {
         console.error('Resume proxy error:', error);
-        return res.redirect('/api/resume/preview'); // Fallback to API endpoint
+        return res.status(500).json({ message: 'Resume proxy error' });
       }
     }
 
