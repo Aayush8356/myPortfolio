@@ -10,7 +10,6 @@ interface AboutContent {
   backgroundContent: string;
   experienceTitle: string;
   experienceContent: string;
-  skills: string[];
   resumeDescription: string;
 }
 
@@ -22,7 +21,6 @@ const About: React.FC = () => {
     backgroundContent: "I'm Aayush Gupta, a Full Stack Developer with 1+ year of hands-on experience building web applications using the MERN stack (MongoDB, Express.js, React.js, and Node.js). I hold a Bachelor's degree in Computer Science and Engineering from Chandigarh University (2020–2024), and my journey as a developer has been shaped through self-driven learning, building solo projects, and solving real-world problems through software.",
     experienceTitle: 'PHILOSOPHY & FOCUS',
     experienceContent: "My core motivation lies in identifying real-world challenges and crafting scalable, user-focused solutions through web applications. I continuously push myself to learn emerging technologies, improve system design skills, and deepen my understanding of full-stack development. I'm currently focused on expanding my backend expertise, exploring DevOps tools, and contributing to impactful software solutions.",
-    skills: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Tailwind CSS', 'Next.js', 'JavaScript', 'HTML/CSS', 'Git', 'AWS', 'Docker', 'Vercel', 'Render'],
     resumeDescription: "Download or preview my complete resume to learn more about my experience, education, and technical qualifications."
   });
 
@@ -98,12 +96,16 @@ const About: React.FC = () => {
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">ABOUT ME</h2>
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced animate-fade-in-up">
+            <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent bg-300% animate-gradient-x">
+              ABOUT ME
+            </span>
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 mb-8 md:mb-12">
-            <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
+            <Card className="bg-dark-card/80 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/20 transition-all duration-500 shadow-xl hover:shadow-2xl rounded-2xl border border-border/20 hover:border-primary/40 transform hover:scale-[1.02] hover:-translate-y-1 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
               <CardHeader className="pb-4">
-                <CardTitle className="text-foreground text-lg font-semibold">
+                <CardTitle className="text-foreground text-lg font-semibold group-hover:text-primary transition-colors duration-300">
                   {aboutContent.backgroundTitle}
                 </CardTitle>
               </CardHeader>
@@ -114,9 +116,9 @@ const About: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
+            <Card className="bg-dark-card/80 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/20 transition-all duration-500 shadow-xl hover:shadow-2xl rounded-2xl border border-border/20 hover:border-primary/40 transform hover:scale-[1.02] hover:-translate-y-1 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
               <CardHeader className="pb-4">
-                <CardTitle className="text-foreground text-lg font-semibold">
+                <CardTitle className="text-foreground text-lg font-semibold group-hover:text-primary transition-colors duration-300">
                   {aboutContent.experienceTitle}
                 </CardTitle>
               </CardHeader>
@@ -128,25 +130,6 @@ const About: React.FC = () => {
             </Card>
           </div>
 
-          <Card className="mb-8 md:mb-10 bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
-            <CardHeader className="pb-4">
-              <CardTitle className="text-foreground uppercase-spaced text-base md:text-lg lg:text-xl font-semibold">
-                SKILLS & TECHNOLOGIES
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-3 md:gap-4">
-                {aboutContent.skills.map((skill, index) => (
-                  <span
-                    key={index}
-                    className="px-4 md:px-5 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 bg-muted/80 text-foreground border border-border/30 hover:border-accent/50 hover:bg-accent/10 hover-lift"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
 
           <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
             <CardHeader className="pb-4">

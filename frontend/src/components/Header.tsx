@@ -81,9 +81,9 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   // Dynamic styling based on scroll position for better UX
   const getNavbarBackground = () => {
     if (isScrolled) {
-      return 'bg-background/98 backdrop-blur-lg shadow-lg';
+      return 'bg-background/90 backdrop-blur-xl shadow-2xl shadow-primary/5 border-primary/10';
     }
-    return 'bg-background/95 backdrop-blur-md';
+    return 'bg-background/80 backdrop-blur-lg border-transparent';
   };
 
   const getNavbarTextColor = () => {
@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   };
 
   const getHoverColor = () => {
-    return 'hover:text-primary';
+    return 'hover:text-primary hover:scale-105 hover:-translate-y-0.5';
   };
 
   const scrollToSection = (sectionId: string) => {
@@ -109,101 +109,104 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   return (
     <header className={`fixed top-0 w-full ${getNavbarBackground()} border-b ${getNavbarBorder()} z-50 ${
       isScrolled ? 'py-1 md:py-2' : 'py-2 md:py-3'
-    } ${isVisible ? 'translate-y-0' : '-translate-y-full'} transition-all duration-500 ease-in-out`}>
+    } ${isVisible ? 'translate-y-0' : '-translate-y-full'} transition-all duration-700 ease-in-out`}>
       <div className="container mx-auto px-3 md:px-4 flex justify-between items-center">
         <div className="flex items-center">
-          <h1 className={`text-lg md:text-xl lg:text-2xl font-bold ${getNavbarTextColor()} transition-colors duration-300 truncate`}>
-            {heroContent.name.length > 12 ? 'AAYUSH GUPTA' : heroContent.name}
+          <h1 className={`text-lg md:text-xl lg:text-2xl font-bold ${getNavbarTextColor()} transition-all duration-300 truncate hover:scale-105 cursor-pointer`}
+              onClick={() => scrollToSection('home')}>
+            <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent bg-300% animate-gradient-x">
+              {heroContent.name.length > 12 ? 'AAYUSH GUPTA' : heroContent.name}
+            </span>
           </h1>
         </div>
 
         <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
           <button
             onClick={() => scrollToSection('home')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm px-3 py-2 rounded-lg hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/25`}
           >
             HOME
           </button>
           <button
             onClick={() => scrollToSection('about')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm px-3 py-2 rounded-lg hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/25`}
           >
             ABOUT
           </button>
           <button
             onClick={() => scrollToSection('skills')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm px-3 py-2 rounded-lg hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/25`}
           >
             SKILLS
           </button>
           <button
             onClick={() => scrollToSection('experience')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm px-3 py-2 rounded-lg hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/25`}
           >
             EXPERIENCE
           </button>
           <button
             onClick={() => scrollToSection('projects')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm px-3 py-2 rounded-lg hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/25`}
           >
             PROJECTS
           </button>
           <button
             onClick={() => scrollToSection('contact')}
-            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm`}
+            className={`${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 font-semibold text-sm px-3 py-2 rounded-lg hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/25`}
           >
             CONTACT
           </button>
-          <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="hover:bg-muted transition-all duration-300">
-            {darkMode ? <Sun className={`h-5 w-5 ${getNavbarTextColor()}`} /> : <Moon className={`h-5 w-5 ${getNavbarTextColor()}`} />}
+          <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="hover:bg-primary/10 hover:scale-110 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 rounded-full">
+            {darkMode ? <Sun className={`h-5 w-5 ${getNavbarTextColor()} group-hover:rotate-180 transition-transform duration-300`} /> : <Moon className={`h-5 w-5 ${getNavbarTextColor()} group-hover:rotate-180 transition-transform duration-300`} />}
           </Button>
         </nav>
 
         <div className="md:hidden flex items-center space-x-2">
-          <Button variant="ghost" size="sm" onClick={toggleDarkMode} className="hover:bg-muted p-2">
-            {darkMode ? <Sun className={`h-4 w-4 ${getNavbarTextColor()}`} /> : <Moon className={`h-4 w-4 ${getNavbarTextColor()}`} />}
+          <Button variant="ghost" size="sm" onClick={toggleDarkMode} className="hover:bg-primary/10 hover:scale-110 transition-all duration-300 p-2 rounded-full">
+            {darkMode ? <Sun className={`h-4 w-4 ${getNavbarTextColor()} transition-transform duration-300`} /> : <Moon className={`h-4 w-4 ${getNavbarTextColor()} transition-transform duration-300`} />}
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="hover:bg-muted p-2"
+            className="hover:bg-primary/10 hover:scale-110 transition-all duration-300 p-2 rounded-full"
           >
-            {isMenuOpen ? <X className={`h-5 w-5 ${getNavbarTextColor()}`} /> : <Menu className={`h-5 w-5 ${getNavbarTextColor()}`} />}
+            {isMenuOpen ? <X className={`h-5 w-5 ${getNavbarTextColor()} transition-transform duration-300 rotate-90`} /> : <Menu className={`h-5 w-5 ${getNavbarTextColor()} transition-transform duration-300`} />}
           </Button>
         </div>
       </div>
 
       {isMenuOpen && (
-        <div className={`md:hidden ${getNavbarBackground()} border-t ${getNavbarBorder()} transition-all duration-300`}>
-          <nav className="container mx-auto px-3 md:px-4 py-3 md:py-4 flex flex-col space-y-2 md:space-y-3">
+        <div className={`md:hidden ${getNavbarBackground()} border-t ${getNavbarBorder()} transition-all duration-300 animate-fade-in-up`}>
+          <nav className="container mx-auto px-3 py-4 flex flex-col space-y-3">
             <button
               onClick={() => scrollToSection('home')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+              className={`text-left ${getNavbarTextColor()} hover:text-primary hover:bg-primary/10 transition-all duration-300 py-3 px-4 rounded-lg font-semibold text-sm border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/10 transform hover:translate-x-2`}
             >
-              Home
+              HOME
             </button>
             <button
               onClick={() => scrollToSection('about')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+              className={`text-left ${getNavbarTextColor()} hover:text-primary hover:bg-primary/10 transition-all duration-300 py-3 px-4 rounded-lg font-semibold text-sm border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/10 transform hover:translate-x-2`}
             >
-              About
+              ABOUT
             </button>
             <button
               onClick={() => scrollToSection('skills')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+              className={`text-left ${getNavbarTextColor()} hover:text-primary hover:bg-primary/10 transition-all duration-300 py-3 px-4 rounded-lg font-semibold text-sm border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/10 transform hover:translate-x-2`}
             >
-              Skills
+              SKILLS
             </button>
             <button
               onClick={() => scrollToSection('experience')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+              className={`text-left ${getNavbarTextColor()} hover:text-primary hover:bg-primary/10 transition-all duration-300 py-3 px-4 rounded-lg font-semibold text-sm border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/10 transform hover:translate-x-2`}
             >
-              Experience
+              EXPERIENCE
             </button>
             <button
               onClick={() => scrollToSection('projects')}
-              className={`text-left ${getNavbarTextColor()} ${getHoverColor()} transition-all duration-300 py-1 text-sm md:text-base`}
+              className={`text-left ${getNavbarTextColor()} hover:text-primary hover:bg-primary/10 transition-all duration-300 py-3 px-4 rounded-lg font-semibold text-sm border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/10 transform hover:translate-x-2`}
             >
               Projects
             </button>

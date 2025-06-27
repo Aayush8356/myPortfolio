@@ -62,7 +62,7 @@ const Skills: React.FC = () => {
               setAnimatedBars(prev => {
                 const newSet = new Set(prev);
                 newSet.add(skill.name);
-                console.log(`Added ${skill.name} (${skill.level}) to animated bars. Should be ${getLevelPercentage(skill.level)}%. Total: ${newSet.size}`);
+                console.log(`Added ${skill.name} (${skill.level}) to animated bars. Should be ${getLevelPercentage(skill.level, skill.years)}%. Total: ${newSet.size}`);
                 return newSet;
               });
             }, index * (window.innerWidth < 768 ? 100 : 150)); // Faster on mobile
@@ -98,13 +98,18 @@ const Skills: React.FC = () => {
   };
 
 
-  const getLevelPercentage = (level: Skill['level']) => {
+  const getLevelPercentage = (level: Skill['level'], years?: string) => {
+    // More accurate percentages based on actual proficiency
     switch (level) {
-      case 'Expert': return 95;
-      case 'Advanced': return 80;
-      case 'Intermediate': return 65;
-      case 'Beginner': return 40;
-      default: return 20;
+      case 'Expert': return 90;
+      case 'Advanced': return 75;
+      case 'Intermediate': return 55;
+      case 'Beginner': 
+        // Further adjust beginner based on experience description
+        if (years === 'Just started') return 15;
+        if (years === 'Basic') return 20;
+        return 30;
+      default: return 10;
     }
   };
 
@@ -113,12 +118,14 @@ const Skills: React.FC = () => {
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">
-            SKILLS & EXPERTISE
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced animate-fade-in-up">
+            <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent bg-300% animate-gradient-x">
+              SKILLS & EXPERTISE
+            </span>
           </h2>
           
           {/* Single Unified Skills Container */}
-          <Card className="bg-card/30 backdrop-blur-sm border border-primary/20 shadow-2xl rounded-2xl overflow-hidden">
+          <Card className="bg-card/30 backdrop-blur-sm border border-primary/20 shadow-2xl rounded-2xl overflow-hidden animate-fade-in-up" style={{animationDelay: '0.2s'}}>
             <CardContent className="p-6 md:p-8">
               {/* Skills Grid by Category */}
               <div className="space-y-8">
@@ -126,10 +133,10 @@ const Skills: React.FC = () => {
                   const categorySkills = skills.filter(skill => skill.category === category);
                   
                   return (
-                    <div key={category} className="space-y-4">
+                    <div key={category} className="space-y-4 animate-fade-in-up" style={{animationDelay: `${0.4 + categories.indexOf(category) * 0.1}s`}}>
                       {/* Category Header */}
                       <div className="flex items-center gap-3 pb-3 border-b border-border/20">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
                         <h3 className="text-lg font-bold text-foreground tracking-wide uppercase">
                           {category}
                         </h3>
@@ -137,17 +144,21 @@ const Skills: React.FC = () => {
                       </div>
                       
                       {/* Skills in this category */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {categorySkills.map((skill) => (
-                          <div key={skill.name} className="group p-4 rounded-lg bg-background/20 border border-border/10 hover:border-primary/30 hover:bg-background/30 transition-all duration-300">
-                            <div className="flex justify-between items-start mb-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                        {categorySkills.map((skill, skillIndex) => (
+                          <div 
+                            key={skill.name} 
+                            className="group p-3 sm:p-4 rounded-lg bg-background/20 border border-border/10 hover:border-primary/30 hover:bg-background/30 transition-all duration-300 animate-fade-in-up"
+                            style={{animationDelay: `${0.6 + skillIndex * 0.1}s`}}
+                          >
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-1 sm:gap-0">
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
+                                <h4 className="font-semibold text-foreground text-responsive-sm group-hover:text-primary transition-colors">
                                   {skill.name}
                                 </h4>
-                                <span className="text-xs text-muted-foreground">{skill.years}</span>
+                                <span className="text-responsive-xs text-muted-foreground">{skill.years}</span>
                               </div>
-                              <span className={`px-2 py-1 rounded-md text-xs font-medium ${getLevelColor(skill.level)} shadow-sm ml-2 flex-shrink-0`}>
+                              <span className={`px-2 py-1 rounded-md text-responsive-xs font-medium ${getLevelColor(skill.level)} shadow-sm sm:ml-2 flex-shrink-0 self-start`}>
                                 {skill.level}
                               </span>
                             </div>
@@ -157,12 +168,12 @@ const Skills: React.FC = () => {
                               <div 
                                 className="skill-bar-fill"
                                 style={{
-                                  width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level)}%` : '0%',
+                                  width: animatedBars.has(skill.name) ? `${getLevelPercentage(skill.level, skill.years)}%` : '0%',
                                   minHeight: '6px'
                                 }}
                                 data-skill={skill.name}
                                 data-animated={animatedBars.has(skill.name) ? 'true' : 'false'}
-                                title={`${skill.name}: ${animatedBars.has(skill.name) ? getLevelPercentage(skill.level) : 0}%`}
+                                title={`${skill.name}: ${animatedBars.has(skill.name) ? getLevelPercentage(skill.level, skill.years) : 0}%`}
                               />
                             </div>
                           </div>

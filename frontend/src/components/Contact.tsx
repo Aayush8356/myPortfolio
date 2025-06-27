@@ -149,12 +149,16 @@ const Contact: React.FC = () => {
     <section id="contact" className="py-12 md:py-20 bg-background relative">
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">CONTACT ME</h2>
+        <h2 className="text-responsive-4xl font-display font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced animate-fade-in-up">
+          <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent bg-300% animate-gradient-x">
+            CONTACT ME
+          </span>
+        </h2>
         
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
-          <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+          <Card className="bg-dark-card/80 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/20 transition-all duration-500 shadow-xl hover:shadow-2xl rounded-2xl border border-border/20 hover:border-primary/40 transform hover:scale-[1.02] hover:-translate-y-1 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
             <CardHeader className="pb-6">
-              <CardTitle className="text-foreground uppercase-spaced text-lg md:text-xl lg:text-2xl font-semibold">
+              <CardTitle className="text-foreground uppercase-spaced text-responsive-xl font-semibold">
                 CONTACT INFO
               </CardTitle>
             </CardHeader>
@@ -224,9 +228,9 @@ const Contact: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-dark-card backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-lg" style={{border: '1px solid rgba(34, 197, 94, 0.3)', boxShadow: '0 0 15px rgba(34, 197, 94, 0.1)'}}>
+          <Card className="bg-dark-card/80 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/20 transition-all duration-500 shadow-xl hover:shadow-2xl rounded-2xl border border-border/20 hover:border-primary/40 transform hover:scale-[1.02] hover:-translate-y-1 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
             <CardHeader className="pb-6">
-              <CardTitle className="text-foreground uppercase-spaced text-lg md:text-xl lg:text-2xl font-semibold">
+              <CardTitle className="text-foreground uppercase-spaced text-responsive-xl font-semibold">
                 SEND ME A MESSAGE
               </CardTitle>
             </CardHeader>
@@ -249,9 +253,9 @@ const Contact: React.FC = () => {
                 </div>
               )}
               
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-2">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="block text-responsive-sm font-medium text-foreground">
                     Name
                   </label>
                   <input
@@ -261,13 +265,13 @@ const Contact: React.FC = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-dark bg-muted/50 backdrop-blur-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300"
+                    className="w-full px-4 py-3 sm:py-4 border border-border/20 bg-muted/50 backdrop-blur-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary hover:border-primary/50 transition-all duration-300 text-responsive-base"
                     placeholder="Your name"
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-responsive-sm font-medium text-foreground">
                     Email
                   </label>
                   <input
@@ -277,13 +281,13 @@ const Contact: React.FC = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-dark bg-muted/50 backdrop-blur-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300"
+                    className="w-full px-4 py-3 sm:py-4 border border-border/20 bg-muted/50 backdrop-blur-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary hover:border-primary/50 transition-all duration-300 text-responsive-base"
                     placeholder="your.email@example.com"
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">
+                <div className="space-y-2">
+                  <label htmlFor="message" className="block text-responsive-sm font-medium text-foreground">
                     Message
                   </label>
                   <textarea
@@ -292,15 +296,22 @@ const Contact: React.FC = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    rows={4}
-                    className="w-full px-3 py-2 border border-dark bg-muted/50 backdrop-blur-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 resize-none"
+                    rows={5}
+                    className="w-full px-4 py-3 sm:py-4 border border-border/20 bg-muted/50 backdrop-blur-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary hover:border-primary/50 transition-all duration-300 resize-none text-responsive-base min-h-[120px]"
                     placeholder="Your message..."
                   />
                 </div>
                 
-                <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift">
+                <Button 
+                  type="submit" 
+                  disabled={loading} 
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 py-3 sm:py-4 text-responsive-base font-semibold tap-target"
+                >
                   {loading ? (
-                    'Sending...'
+                    <div className="flex items-center justify-center">
+                      <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
+                      Sending...
+                    </div>
                   ) : (
                     <>
                       <Send className="w-4 h-4 mr-2" />

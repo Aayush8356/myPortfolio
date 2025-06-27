@@ -20,8 +20,29 @@ const Portfolio: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
   // Track section visibility for dynamic SEO updates
   useSectionVisibility();
   
+  // Scroll progress indicator
+  const [scrollProgress, setScrollProgress] = useState(0);
+  
+  useEffect(() => {
+    const updateScrollProgress = () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      setScrollProgress(progress);
+    };
+    
+    window.addEventListener('scroll', updateScrollProgress);
+    return () => window.removeEventListener('scroll', updateScrollProgress);
+  }, []);
+  
   return (
     <div className="min-h-screen bg-background text-foreground nebula-gradient star-field relative">
+      {/* Premium Scroll Progress Indicator */}
+      <div 
+        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary via-blue-500 to-primary z-[100] transition-all duration-150 ease-out"
+        style={{ width: `${scrollProgress}%` }}
+      />
+      
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <main className="relative z-10">
         <Hero />

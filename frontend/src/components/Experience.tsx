@@ -111,13 +111,15 @@ const Experience: React.FC = () => {
       <div className="absolute inset-0 dark-grid opacity-30"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced">
-            EXPERIENCE & JOURNEY
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-gradient uppercase-spaced animate-fade-in-up">
+            <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent bg-300% animate-gradient-x">
+              EXPERIENCE & JOURNEY
+            </span>
           </h2>
           
           <div className="space-y-6 md:space-y-8">
             {experiences.map((experience, index) => (
-              <div key={experience.id} className="relative">
+              <div key={experience.id} className="relative animate-fade-in-up" style={{animationDelay: `${0.2 + index * 0.2}s`}}>
                 {/* Timeline Line */}
                 {index < experiences.length - 1 && (
                   <div className="absolute left-6 top-16 w-0.5 h-full bg-gradient-to-b from-primary/50 to-transparent hidden md:block" />
