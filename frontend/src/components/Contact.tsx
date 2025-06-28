@@ -168,43 +168,43 @@ const Contact: React.FC = () => {
               ) : (
                 <>
                   {/* Remove error display - use graceful fallbacks instead */}
-                  <div className="flex items-center space-x-2 md:space-x-3">
-                    <Mail className="w-4 h-4 md:w-5 md:h-5 contact-icon-email flex-shrink-0" />
-                    <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base break-all">
+                  <div className="flex items-start space-x-3 py-2">
+                    <Mail className="w-5 h-5 contact-icon-email flex-shrink-0 mt-1" />
+                    <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base break-all leading-6">
                       {contactDetails.email}
                     </a>
                   </div>
-                  <div className="flex items-center space-x-2 md:space-x-3">
-                    <Phone className="w-4 h-4 md:w-5 md:h-5 contact-icon-phone flex-shrink-0" />
-                    <a href={`tel:${contactDetails.phone}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base">
+                  <div className="flex items-start space-x-3 py-2">
+                    <Phone className="w-5 h-5 contact-icon-phone flex-shrink-0 mt-1" />
+                    <a href={`tel:${contactDetails.phone}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base leading-6">
                       {contactDetails.phone}
                     </a>
                   </div>
-                  <div className="flex items-center space-x-2 md:space-x-3">
-                    <MapPin className="w-4 h-4 md:w-5 md:h-5 contact-icon-location flex-shrink-0" />
-                    <span className="text-muted-foreground text-sm md:text-base">{contactDetails.location}</span>
+                  <div className="flex items-start space-x-3 py-2">
+                    <MapPin className="w-5 h-5 contact-icon-location flex-shrink-0 mt-1" />
+                    <span className="text-muted-foreground text-sm md:text-base leading-6">{contactDetails.location}</span>
                   </div>
                 </>
               )}
               
               {/* Social Links */}
               <div className="pt-4">
-                <div className="flex space-x-4 mb-4">
+                <div className="flex items-center justify-start gap-4 mb-4">
                   {contactDetails.linkedin && (
                     <a href={contactDetails.linkedin} target="_blank" rel="noopener noreferrer" 
-                       className="text-muted-foreground social-linkedin hover-lift">
+                       className="text-muted-foreground social-linkedin hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
                       <Linkedin className="w-5 h-5" />
                     </a>
                   )}
                   {contactDetails.github && (
                     <a href={contactDetails.github} target="_blank" rel="noopener noreferrer"
-                       className="text-muted-foreground social-github hover-lift">
+                       className="text-muted-foreground social-github hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
                       <Github className="w-5 h-5" />
                     </a>
                   )}
                   {contactDetails.twitter && (
                     <a href={contactDetails.twitter} target="_blank" rel="noopener noreferrer"
-                       className="text-muted-foreground social-twitter hover-lift">
+                       className="text-muted-foreground social-twitter hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
                       <Twitter className="w-5 h-5" />
                     </a>
                   )}
@@ -213,7 +213,7 @@ const Contact: React.FC = () => {
                       href={`${PRODUCTION_DOMAIN}/blob/resume`} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-muted-foreground contact-icon-default hover-lift"
+                      className="text-muted-foreground contact-icon-default hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300"
                       title="View Resume"
                     >
                       <FileText className="w-5 h-5" />

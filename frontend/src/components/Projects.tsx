@@ -458,43 +458,45 @@ const Projects: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border/20 p-6 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                {selectedProject.imageUrl && (
-                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
-                    <img
-                      src={selectedProject.imageUrl.startsWith('/projects') ? `${ASSETS_BASE_URL}${selectedProject.imageUrl}` : selectedProject.imageUrl}
-                      alt={selectedProject.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div>
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground">{selectedProject.title}</h2>
-                  <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                    {selectedProject.duration && (
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{selectedProject.duration}</span>
-                      </div>
-                    )}
-                    {selectedProject.team && (
-                      <div className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        <span>{selectedProject.team}</span>
-                      </div>
-                    )}
+            <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border/20 p-4 sm:p-6">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                  {selectedProject.imageUrl && (
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      <img
+                        src={selectedProject.imageUrl.startsWith('/projects') ? `${ASSETS_BASE_URL}${selectedProject.imageUrl}` : selectedProject.imageUrl}
+                        alt={selectedProject.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground leading-tight mb-2 break-words">{selectedProject.title}</h2>
+                    <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+                      {selectedProject.duration && (
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-4 h-4 flex-shrink-0" />
+                          <span className="whitespace-nowrap">{selectedProject.duration}</span>
+                        </div>
+                      )}
+                      {selectedProject.team && (
+                        <div className="flex items-center gap-1.5">
+                          <Users className="w-4 h-4 flex-shrink-0" />
+                          <span className="whitespace-nowrap">{selectedProject.team}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={closeProjectModal}
+                  className="p-2 hover:bg-muted rounded-full flex-shrink-0"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={closeProjectModal}
-                className="p-2 hover:bg-muted rounded-full"
-              >
-                <X className="w-5 h-5" />
-              </Button>
             </div>
 
             {/* Modal Body */}
