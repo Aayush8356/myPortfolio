@@ -345,7 +345,7 @@ const Projects: React.FC = () => {
                   </div>
                 )}
                 
-                <div className="p-6">{/* Content will be inside this container */}
+                <div className="p-6 pr-8">{/* Content will be inside this container with extra right padding */}
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                   <CardTitle className="text-base md:text-lg lg:text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
                     {project.title}
@@ -445,7 +445,7 @@ const Projects: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-2 justify-center sm:justify-center">
                   {project.githubUrl && (
                     <Button variant="outline" size="sm" asChild className="group/btn border-border/30 hover:border-primary/50 text-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 text-xs md:text-sm transform hover:scale-105 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 backdrop-blur-sm">
                       <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
