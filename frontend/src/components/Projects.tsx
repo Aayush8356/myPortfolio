@@ -157,6 +157,8 @@ const Projects: React.FC = () => {
       left: -cardWidth,
       behavior: 'smooth'
     });
+    // Update indicators after a short delay to account for smooth scrolling
+    setTimeout(updateScrollIndicators, 300);
   };
 
   const scrollRight = () => {
@@ -166,6 +168,8 @@ const Projects: React.FC = () => {
       left: cardWidth,
       behavior: 'smooth'
     });
+    // Update indicators after a short delay to account for smooth scrolling
+    setTimeout(updateScrollIndicators, 300);
   };
 
   const openProjectModal = (project: Project) => {
@@ -272,32 +276,6 @@ const Projects: React.FC = () => {
               PROJECTS
             </span>
           </h2>
-          
-          {/* Navigation arrows - positioned in top right */}
-          <div className="absolute top-0 right-0 flex gap-2 z-20">
-            {projects.length > 3 && (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={scrollLeft}
-                  disabled={!canScrollLeft}
-                  className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={scrollRight}
-                  disabled={!canScrollRight}
-                  className="p-2 bg-background/80 backdrop-blur-sm border-accent/30 hover:border-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </>
-            )}
-          </div>
         </div>
         
         {loading ? (
@@ -307,19 +285,64 @@ const Projects: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div 
-            ref={scrollContainerRef}
-            onScroll={updateScrollIndicators}
-            className={`
-              ${projects.length > 3 
-                ? 'flex overflow-x-auto gap-6 pb-4 -mx-4 px-4 projects-scroll' 
-                : 'flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8'
-              }
-            `}
-            style={{
-              scrollSnapType: projects.length > 3 ? 'x-mandatory' : undefined
-            }}
-          >
+          <div className="relative group/nav overflow-hidden">
+            {/* Left Blur Overlay - Only blur the partial overflow content */}
+            {projects.length > 3 && canScrollLeft && (
+              <div className="absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-r from-background/70 to-transparent" 
+                     style={{ backdropFilter: 'blur(6px)' }}></div>
+              </div>
+            )}
+
+            {/* Right Blur Overlay - Only blur the partial overflow content */}
+            {projects.length > 3 && canScrollRight && (
+              <div className="absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-l from-background/70 to-transparent" 
+                     style={{ backdropFilter: 'blur(6px)' }}></div>
+              </div>
+            )}
+
+            {/* Left Navigation Arrow */}
+            {projects.length > 3 && canScrollLeft && (
+              <div className="absolute left-2 top-1/2 -translate-y-1/2 z-20 hidden md:block opacity-0 group-hover/nav:opacity-100 transition-opacity duration-300">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={scrollLeft}
+                  className="w-10 h-10 rounded-full bg-background/95 backdrop-blur-sm border-primary/20 hover:border-primary/40 hover:bg-primary/5 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group/arrow"
+                >
+                  <ChevronLeft className="w-4 h-4 text-foreground group-hover/arrow:text-primary transition-colors duration-200" />
+                </Button>
+              </div>
+            )}
+
+            {/* Right Navigation Arrow */}
+            {projects.length > 3 && canScrollRight && (
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 z-20 hidden md:block opacity-0 group-hover/nav:opacity-100 transition-opacity duration-300">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={scrollRight}
+                  className="w-10 h-10 rounded-full bg-background/95 backdrop-blur-sm border-primary/20 hover:border-primary/40 hover:bg-primary/5 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group/arrow"
+                >
+                  <ChevronRight className="w-4 h-4 text-foreground group-hover/arrow:text-primary transition-colors duration-200" />
+                </Button>
+              </div>
+            )}
+
+            <div 
+              ref={scrollContainerRef}
+              onScroll={updateScrollIndicators}
+              className={`
+                ${projects.length > 3 
+                  ? 'flex overflow-x-auto gap-6 pb-4 -mx-4 px-4 projects-scroll' 
+                  : 'flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8'
+                }
+              `}
+              style={{
+                scrollSnapType: projects.length > 3 ? 'x-mandatory' : undefined
+              }}
+            >
             {projects.map((project, index) => {
               return (
             <Card 
@@ -331,9 +354,10 @@ const Projects: React.FC = () => {
                 transform hover:scale-[1.02] hover:-translate-y-2
                 shadow-lg hover:shadow-2xl hover:shadow-primary/10
                 animate-fade-in-up
+                flex flex-col
                 ${projects.length > 3 
-                  ? 'flex-shrink-0 w-full max-w-sm' 
-                  : 'w-full max-w-sm'
+                  ? 'flex-shrink-0 w-full max-w-sm h-[600px]' 
+                  : 'w-full max-w-sm h-[600px]'
                 }
               `}
               style={{
@@ -366,7 +390,7 @@ const Projects: React.FC = () => {
                   </div>
                 )}
                 
-                <div className="p-6 pr-8">{/* Content will be inside this container with extra right padding */}
+                <div className="p-6 pr-8 flex-1 flex flex-col">{/* Content will be inside this container with extra right padding and flex layout */}
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                   <CardTitle className="text-base md:text-lg lg:text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
                     {project.title}
@@ -395,7 +419,7 @@ const Projects: React.FC = () => {
                     )}
                   </div>
                 )}
-                <p className="text-muted-foreground mb-4 md:mb-5 text-sm md:text-base leading-relaxed">
+                <p className="text-muted-foreground mb-4 md:mb-5 text-sm md:text-base leading-relaxed flex-1">
                   {project.description}
                 </p>
                 
@@ -413,7 +437,7 @@ const Projects: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-2 justify-center sm:justify-center">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-2 justify-center sm:justify-center mt-auto">
                   {project.githubUrl && (
                     <Button variant="outline" size="sm" asChild className="group/btn border-border/30 hover:border-primary/50 text-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 text-xs md:text-sm transform hover:scale-105 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 backdrop-blur-sm">
                       <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
@@ -447,6 +471,7 @@ const Projects: React.FC = () => {
             </Card>
               );
             })}
+            </div>
           </div>
         )}
       </div>
