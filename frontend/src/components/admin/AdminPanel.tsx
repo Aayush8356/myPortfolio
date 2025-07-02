@@ -6,7 +6,7 @@ import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download
 import ProjectEditor from './ProjectEditor';
 import { API_BASE_URL, BLOB_BASE_URL } from '../../config/api';
 import { useToast, ToastContainer } from '../ui/toast';
-import { updateProjectsCache } from '../../lib/cache';
+import { updateProjectsCache, cachedFetch } from '../../lib/cache';
 
 interface Project {
   _id: string;
@@ -187,13 +187,27 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects`);
-      if (response.ok) {
-        const data = await response.json();
-        setProjects(data);
-      }
+      // Use cached fetch to ensure consistency with main Projects component
+      const data = await cachedFetch<Project[]>(
+        `${API_BASE_URL}/projects`,
+        {},
+        'projects-list',
+        300 // 5 minutes cache
+      );
+      setProjects(data);
+      console.log('AdminPanel: Fetched projects from cache:', data);
     } catch (error) {
       console.error('Error fetching projects:', error);
+      // Fallback to direct fetch
+      try {
+        const response = await fetch(`${API_BASE_URL}/projects`);
+        if (response.ok) {
+          const data = await response.json();
+          setProjects(data);
+        }
+      } catch (fallbackError) {
+        console.error('Error in fallback project fetch:', fallbackError);
+      }
     }
   };
 
@@ -416,7 +430,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     }
   };
 
-  const handleProjectSave = (project: Project) => {
+  const handleProjectSave = async (project: Project) => {
     console.log('AdminPanel: handleProjectSave called with project:', project);
     console.log('AdminPanel: Current editingProject:', editingProject);
     console.log('AdminPanel: Current projects array:', projects);
@@ -442,6 +456,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     window.dispatchEvent(new CustomEvent('forceProjectRefresh', { 
       detail: { projects: updatedProjects }
     }));
+    
+    // Fetch fresh data from API to ensure everything is in sync
+    console.log('AdminPanel: Fetching fresh projects from API');
+    setTimeout(() => {
+      fetchProjects();
+    }, 500); // Small delay to ensure DB is updated
     
     console.log('AdminPanel: Closing project editor');
     setShowProjectEditor(false);

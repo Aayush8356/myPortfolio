@@ -102,12 +102,12 @@ const Projects: React.FC = () => {
         // Update cache with fresh data
         updateProjectsCache(data);
       } else {
-        // Use cached fetch with longer cache time for production stability
+        // Use cached fetch with shorter cache time for admin responsiveness
         data = await cachedFetch<Project[]>(
           `${API_BASE_URL}/projects`,
           {},
           'projects-list',
-          300 // 5 minutes cache for better reliability
+          30 // 30 seconds cache for better responsiveness to admin changes
         );
       }
       
@@ -134,7 +134,7 @@ const Projects: React.FC = () => {
     
     // Auto-refresh every 5 seconds to pick up admin changes
     const autoRefreshInterval = setInterval(() => {
-      fetchProjects(false); // Use cached data but refresh if cache expired
+      fetchProjects(true); // Force fresh data to catch admin updates
     }, 5000);
     
     return () => clearInterval(autoRefreshInterval);
@@ -202,7 +202,8 @@ const Projects: React.FC = () => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'R') {
         e.preventDefault();
-        console.log('Force refreshing projects...');
+        console.log('Force refreshing projects with cache clear...');
+        clearProjectsCache();
         fetchProjects(true);
       }
     };
@@ -217,6 +218,13 @@ const Projects: React.FC = () => {
         // Use the updated projects data directly from the event
         setProjects(e.detail.projects);
         setTimeout(updateScrollIndicators, 100);
+        
+        // Also force a fresh fetch to ensure we have the latest data
+        setTimeout(() => {
+          console.log('Projects: Force fetching fresh data after event');
+          clearProjectsCache(); // Clear cache before fetching
+          fetchProjects(true);
+        }, 1000);
       } else {
         console.log('Projects: No projects data in event, fetching...');
         // Fallback to fetching if no data in event

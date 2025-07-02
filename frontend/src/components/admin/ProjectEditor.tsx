@@ -13,6 +13,11 @@ interface Project {
   githubUrl?: string;
   liveUrl?: string;
   featured: boolean;
+  challenge?: string;
+  solution?: string;
+  impact?: string;
+  duration?: string;
+  team?: string;
 }
 
 interface ProjectEditorProps {
@@ -31,7 +36,12 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
     imageUrl: '',
     githubUrl: '',
     liveUrl: '',
-    featured: false
+    featured: false,
+    challenge: '',
+    solution: '',
+    impact: '',
+    duration: '',
+    team: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -48,7 +58,12 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
         imageUrl: project.imageUrl || '',
         githubUrl: project.githubUrl || '',
         liveUrl: project.liveUrl || '',
-        featured: project.featured
+        featured: project.featured,
+        challenge: project.challenge || '',
+        solution: project.solution || '',
+        impact: project.impact || '',
+        duration: project.duration || '',
+        team: project.team || ''
       });
     }
   }, [project]);
@@ -117,6 +132,26 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
     console.log('ProjectEditor: Starting submit process');
     console.log('ProjectEditor: Form data:', formData);
     console.log('ProjectEditor: Existing project:', project);
+    console.log('ProjectEditor: Token length:', token ? token.length : 'NO_TOKEN');
+    
+    // Validation
+    if (!formData.title.trim()) {
+      setError('Title is required');
+      setLoading(false);
+      return;
+    }
+    
+    if (!formData.description.trim()) {
+      setError('Description is required');
+      setLoading(false);
+      return;
+    }
+    
+    if (!formData.technologies.trim()) {
+      setError('Technologies are required');
+      setLoading(false);
+      return;
+    }
 
     try {
       const projectData = {
@@ -126,7 +161,12 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
         imageUrl: formData.imageUrl,
         githubUrl: formData.githubUrl,
         liveUrl: formData.liveUrl,
-        featured: formData.featured
+        featured: formData.featured,
+        challenge: formData.challenge,
+        solution: formData.solution,
+        impact: formData.impact,
+        duration: formData.duration,
+        team: formData.team
       };
 
       const url = project 
@@ -153,11 +193,16 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
         const savedProject = await response.json();
         console.log('ProjectEditor: API response successful, saved project:', savedProject);
         console.log('ProjectEditor: Calling onSave callback with:', savedProject);
-        onSave(savedProject);
+        
+        // Add a small delay to ensure the callback is processed
+        setTimeout(() => {
+          onSave(savedProject);
+        }, 100);
       } else {
-        const data = await response.json();
-        console.error('ProjectEditor: API error response:', data);
-        setError(data.message || 'Failed to save project');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('ProjectEditor: API error response:', errorData);
+        console.error('ProjectEditor: Response status:', response.status, response.statusText);
+        setError(errorData.message || `Failed to save project (${response.status})`);
       }
     } catch (error) {
       console.error('ProjectEditor: Network error:', error);
@@ -345,7 +390,90 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
               />
             </div>
             
-            <div className="flex items-center space-x-2">
+            {/* Case Study Section */}
+            <div className="space-y-4 pt-4 border-t border-border">
+              <h3 className="text-lg font-semibold text-foreground">Case Study Details</h3>
+              <p className="text-sm text-muted-foreground">Add detailed case study information for better project presentation</p>
+              
+              <div>
+                <label htmlFor="challenge" className="block text-sm font-medium mb-2">
+                  Challenge
+                </label>
+                <textarea
+                  id="challenge"
+                  name="challenge"
+                  value={formData.challenge}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                  placeholder="What problem did this project solve? What challenges did you face?"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="solution" className="block text-sm font-medium mb-2">
+                  Solution
+                </label>
+                <textarea
+                  id="solution"
+                  name="solution"
+                  value={formData.solution}
+                  onChange={handleChange}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                  placeholder="How did you solve the problem? What technologies and approaches did you use?"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="impact" className="block text-sm font-medium mb-2">
+                  Impact & Results
+                </label>
+                <textarea
+                  id="impact"
+                  name="impact"
+                  value={formData.impact}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                  placeholder="What were the measurable results? Performance improvements, user metrics, etc."
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="duration" className="block text-sm font-medium mb-2">
+                    Project Duration
+                  </label>
+                  <input
+                    type="text"
+                    id="duration"
+                    name="duration"
+                    value={formData.duration}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="e.g., 3 months, 6 weeks"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="team" className="block text-sm font-medium mb-2">
+                    Team Size
+                  </label>
+                  <input
+                    type="text"
+                    id="team"
+                    name="team"
+                    value={formData.team}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="e.g., Solo Developer, 3 developers, 5-person team"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 pt-4 border-t border-border">
               <input
                 type="checkbox"
                 id="featured"
@@ -362,11 +490,18 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
             <div className="flex gap-3 pt-4">
               <Button 
                 type="submit" 
-                disabled={loading} 
+                disabled={loading || imageUploading} 
                 className="flex-1"
+                onClick={(e) => {
+                  console.log('ProjectEditor: Submit button clicked');
+                  // Don't prevent default here - let form handle it
+                }}
               >
                 {loading ? (
-                  'Saving...'
+                  <>
+                    <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                    Saving...
+                  </>
                 ) : (
                   <>
                     <Save className="w-4 h-4 mr-2" />
@@ -374,7 +509,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
                   </>
                 )}
               </Button>
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
                 Cancel
               </Button>
             </div>

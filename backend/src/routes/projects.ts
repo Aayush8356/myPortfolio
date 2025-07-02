@@ -59,7 +59,20 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.post('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
-    const { title, description, technologies, imageUrl, githubUrl, liveUrl, featured } = req.body;
+    const { 
+      title, 
+      description, 
+      technologies, 
+      imageUrl, 
+      githubUrl, 
+      liveUrl, 
+      featured,
+      challenge,
+      solution,
+      impact,
+      duration,
+      team
+    } = req.body;
 
     const project = new Project({
       title,
@@ -68,7 +81,12 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: 
       imageUrl,
       githubUrl,
       liveUrl,
-      featured: featured || false
+      featured: featured || false,
+      challenge: challenge || '',
+      solution: solution || '',
+      impact: impact || '',
+      duration: duration || '',
+      team: team || ''
     });
 
     await project.save();
@@ -80,11 +98,37 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: 
 
 router.put('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
-    const { title, description, technologies, imageUrl, githubUrl, liveUrl, featured } = req.body;
+    const { 
+      title, 
+      description, 
+      technologies, 
+      imageUrl, 
+      githubUrl, 
+      liveUrl, 
+      featured,
+      challenge,
+      solution,
+      impact,
+      duration,
+      team
+    } = req.body;
 
     const project = await Project.findByIdAndUpdate(
       req.params.id,
-      { title, description, technologies, imageUrl, githubUrl, liveUrl, featured },
+      { 
+        title, 
+        description, 
+        technologies, 
+        imageUrl, 
+        githubUrl, 
+        liveUrl, 
+        featured,
+        challenge: challenge || '',
+        solution: solution || '',
+        impact: impact || '',
+        duration: duration || '',
+        team: team || ''
+      },
       { new: true, runValidators: true }
     );
 
@@ -94,6 +138,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res
 
     res.json(project);
   } catch (error) {
+    console.error('PUT request error:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });
