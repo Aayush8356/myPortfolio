@@ -40,7 +40,6 @@ const About: React.FC = () => {
       );
       setAboutContent(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
-      console.error('Error fetching about content:', error);
       // Keep default content on error
     }
   };
@@ -56,7 +55,7 @@ const About: React.FC = () => {
       // setHasUploadedResume(data.hasResume);
     } catch (error) {
       if (error instanceof Error && error.name !== 'AbortError') {
-        console.error('Error checking resume status:', error);
+        // Resume status check failed
       }
       // setHasUploadedResume(false);
     }

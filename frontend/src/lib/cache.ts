@@ -57,7 +57,7 @@ class SimpleCache {
     try {
       localStorage.removeItem(`cache_${key}`);
     } catch (error) {
-      console.warn('Failed to remove from localStorage:', error);
+      // Failed to remove from localStorage
     }
   }
 
@@ -69,7 +69,7 @@ class SimpleCache {
         localStorage.removeItem(`cache_${key}`);
         localStorage.removeItem(`cache_${key}_stale`);
       } catch (error) {
-        console.warn('Failed to clear localStorage:', error);
+        // Failed to clear localStorage
       }
     });
   }
@@ -88,7 +88,7 @@ class SimpleCache {
     try {
       localStorage.setItem(`cache_${key}`, JSON.stringify(entry));
     } catch (error) {
-      console.warn('Failed to save to localStorage:', error);
+      // Failed to save to localStorage
     }
   }
 
@@ -104,7 +104,7 @@ class SimpleCache {
           }
         }
       } catch (error) {
-        console.warn('Failed to load from localStorage:', error);
+        // Failed to load from localStorage
       }
       return null;
     }
@@ -125,7 +125,7 @@ class SimpleCache {
           this.cache.set(`${pk}_stale`, staleEntry);
         }
       } catch (error) {
-        console.warn('Failed to load persistent cache:', error);
+        // Failed to load persistent cache
       }
     });
     
@@ -200,7 +200,7 @@ export const cachedFetch = async <T>(
     
     // Return stale cache if available on error
     if (staleCache) {
-      console.warn('Using stale cache due to error:', error);
+      // Using stale cache due to error
       return staleCache;
     }
     
@@ -238,10 +238,10 @@ const refreshInBackground = async (
       
       apiCache.set(key, data, extendedTTL);
       apiCache.set(key + '_stale', data, extendedTTL * 12);
-      console.log('Background refresh completed for:', key);
+      // Background refresh completed
     }
   } catch (error) {
-    console.warn('Background refresh failed for:', key, error);
+    // Background refresh failed
   }
 };
 
@@ -261,13 +261,13 @@ export const preCacheData = async (baseUrl: string, retryCount = 3) => {
           const data = await cachedFetch(endpoint.url, {}, endpoint.key, 900);
           return { endpoint: endpoint.name, status: 'success', attempt, data };
         } catch (error) {
-          console.warn(`Pre-cache attempt ${attempt}/${retryCount} failed for ${endpoint.name}:`, error);
+          // Pre-cache attempt failed
           
           if (attempt === retryCount) {
             // On final failure, check if we have stale data
             const staleData = apiCache.get(endpoint.key + '_stale');
             if (staleData) {
-              console.log(`Using existing stale data for ${endpoint.name}`);
+              // Using existing stale data
               return { endpoint: endpoint.name, status: 'stale', attempt, data: staleData };
             }
             throw error;
@@ -280,11 +280,7 @@ export const preCacheData = async (baseUrl: string, retryCount = 3) => {
     })
   );
 
-  console.log('Pre-cache results:', results.map((r, i) => ({
-    endpoint: endpoints[i].name,
-    status: r.status,
-    details: r.status === 'fulfilled' ? r.value : r.reason?.message
-  })));
+  // Pre-cache results processed
 
   // Schedule a background refresh for any failed endpoints
   const failedEndpoints = results
@@ -292,7 +288,7 @@ export const preCacheData = async (baseUrl: string, retryCount = 3) => {
     .filter(({ result }) => result.status === 'rejected');
 
   if (failedEndpoints.length > 0) {
-    console.log('Scheduling background refresh for failed endpoints:', failedEndpoints.map(f => f.endpoint.name));
+    // Scheduling background refresh for failed endpoints
     setTimeout(() => {
       failedEndpoints.forEach(({ endpoint }) => {
         refreshInBackground(endpoint.url, {}, endpoint.key, 900);
@@ -307,7 +303,7 @@ export const warmCache = async (baseUrl: string) => {
     return;
   }
 
-  console.log('Starting cache warming for production...');
+  // Starting cache warming for production
   
   // First, try to wake up the backend with a simple health check
   try {
@@ -315,9 +311,9 @@ export const warmCache = async (baseUrl: string) => {
       method: 'GET',
       headers: { 'Cache-Control': 'no-cache' }
     });
-    console.log('Backend health check:', healthResponse.status);
+    // Backend health check completed
   } catch (error) {
-    console.warn('Backend health check failed:', error);
+    // Backend health check failed
   }
 
   // Run pre-cache multiple times with delays to ensure backend is fully awake
@@ -325,11 +321,11 @@ export const warmCache = async (baseUrl: string) => {
   
   warmingAttempts.forEach((delay, index) => {
     setTimeout(async () => {
-      console.log(`Cache warming attempt ${index + 1}/${warmingAttempts.length}`);
+      // Cache warming attempt in progress
       try {
         await preCacheData(baseUrl, 2); // Reduced retries for warming
       } catch (error) {
-        console.warn(`Cache warming attempt ${index + 1} failed:`, error);
+        // Cache warming attempt failed
       }
     }, delay);
   });
@@ -350,20 +346,19 @@ export const getCacheKey = (endpoint: string): string => {
 export const clearProjectsCache = () => {
   apiCache.delete('projects-list');
   apiCache.delete('projects-list_stale');
-  console.log('Cleared projects cache');
+  // Projects cache cleared
 };
 
 export const updateProjectsCache = (projects: any[]) => {
   // Update cache with fresh data instead of clearing it
-  console.log('Cache: updateProjectsCache called with projects:', projects);
   apiCache.set('projects-list', projects, 300); // 5 minutes for normal cache
   apiCache.set('projects-list_stale', projects, 900); // 15 minutes for stale
-  console.log('Cache: Updated projects cache with fresh data');
+  // Projects cache updated with fresh data
 };
 
 export const clearAllCache = () => {
   apiCache.clear();
-  console.log('Cleared all cache');
+  // All cache cleared
 };
 
 export const invalidateCache = (keys: string[]) => {
@@ -371,5 +366,5 @@ export const invalidateCache = (keys: string[]) => {
     apiCache.delete(key);
     apiCache.delete(key + '_stale');
   });
-  console.log('Invalidated cache for keys:', keys);
+  // Cache invalidated for specified keys
 };

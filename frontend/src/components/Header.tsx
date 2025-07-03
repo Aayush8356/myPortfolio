@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
         setHeroContent(data);
       }
     } catch (error) {
-      console.error('Error fetching hero content:', error);
+      // Error fetching hero content
     }
   };
 

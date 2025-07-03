@@ -11,6 +11,7 @@ interface Skill {
 const Skills: React.FC = () => {
   const [animatedBars, setAnimatedBars] = useState<Set<string>>(new Set());
   const [hasTriggered, setHasTriggered] = useState(false);
+  const [showFallbackButton, setShowFallbackButton] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
   const skills: Skill[] = useMemo(() => [
@@ -42,31 +43,30 @@ const Skills: React.FC = () => {
 
   const categories = ['Frontend', 'Backend', 'Database', 'Tools', 'Cloud'] as const;
 
-  // Clear state on mount to ensure fresh start
+  // Animation trigger with proper dependencies and fallback
   useEffect(() => {
-    setAnimatedBars(new Set());
-    setHasTriggered(false);
-  }, []);
+    const startAnimation = () => {
+      if (hasTriggered) return;
+      
+      setHasTriggered(true);
+      
+      // Animate skill bars with staggered delay
+      skills.forEach((skill, index) => {
+        setTimeout(() => {
+          setAnimatedBars(prev => {
+            const newSet = new Set(prev);
+            newSet.add(skill.name);
+            return newSet;
+          });
+        }, index * (window.innerWidth < 768 ? 100 : 150));
+      });
+    };
 
-  // Intersection Observer for scroll-triggered animations
-  useEffect(() => {
+    // Intersection Observer for scroll-triggered animations
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasTriggered) {
-          console.log('Skills section visible, starting animation');
-          setHasTriggered(true);
-          
-          // Animate skill bars with staggered delay
-          skills.forEach((skill, index) => {
-            setTimeout(() => {
-              setAnimatedBars(prev => {
-                const newSet = new Set(prev);
-                newSet.add(skill.name);
-                console.log(`Added ${skill.name} (${skill.level}) to animated bars. Should be ${getLevelPercentage(skill.level, skill.years)}%. Total: ${newSet.size}`);
-                return newSet;
-              });
-            }, index * (window.innerWidth < 768 ? 100 : 150)); // Faster on mobile
-          });
+        if (entry.isIntersecting) {
+          startAnimation();
         }
       },
       { 
@@ -79,8 +79,32 @@ const Skills: React.FC = () => {
       observer.observe(sectionRef.current);
     }
 
-    return () => observer.disconnect();
-  }, []); // Only run once on mount
+    // Fallback: Auto-trigger animation after 3 seconds if not triggered
+    const fallbackTimeout = setTimeout(() => {
+      if (!hasTriggered) {
+        startAnimation();
+      }
+    }, 3000);
+
+    // Show manual trigger button after 5 seconds if still not animated
+    const buttonTimeout = setTimeout(() => {
+      if (!hasTriggered) {
+        setShowFallbackButton(true);
+      }
+    }, 5000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallbackTimeout);
+      clearTimeout(buttonTimeout);
+    };
+  }, [hasTriggered, skills]); // Include dependencies
+
+  // Reset animation state when component mounts
+  useEffect(() => {
+    setAnimatedBars(new Set());
+    setHasTriggered(false);
+  }, []);
 
   const getLevelColor = (level: Skill['level']) => {
     switch (level) {
@@ -113,6 +137,24 @@ const Skills: React.FC = () => {
     }
   };
 
+  const manualTrigger = () => {
+    if (hasTriggered) return;
+    
+    setHasTriggered(true);
+    setShowFallbackButton(false);
+    
+    // Animate skill bars with staggered delay
+    skills.forEach((skill, index) => {
+      setTimeout(() => {
+        setAnimatedBars(prev => {
+          const newSet = new Set(prev);
+          newSet.add(skill.name);
+          return newSet;
+        });
+      }, index * 80); // Faster animation for manual trigger
+    });
+  };
+
   return (
     <section ref={sectionRef} id="skills" className="py-12 md:py-20 bg-background relative page-transition">
       <div className="absolute inset-0 dark-grid opacity-30"></div>
@@ -123,6 +165,18 @@ const Skills: React.FC = () => {
               SKILLS & EXPERTISE
             </span>
           </h2>
+          
+          {/* Manual trigger button for users experiencing issues */}
+          {showFallbackButton && (
+            <div className="text-center mb-6">
+              <button
+                onClick={manualTrigger}
+                className="px-6 py-3 bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/50 rounded-lg transition-all duration-300 text-sm font-medium"
+              >
+                Click to Show Skill Levels
+              </button>
+            </div>
+          )}
           
           {/* Single Unified Skills Container */}
           <Card className="bg-card/30 backdrop-blur-sm border border-primary/20 shadow-2xl rounded-2xl overflow-hidden animate-fade-in-up" style={{animationDelay: '0.2s'}}>
@@ -173,7 +227,7 @@ const Skills: React.FC = () => {
                                 }}
                                 data-skill={skill.name}
                                 data-animated={animatedBars.has(skill.name) ? 'true' : 'false'}
-                                title={`${skill.name}: ${animatedBars.has(skill.name) ? getLevelPercentage(skill.level, skill.years) : 0}%`}
+                                title={`${skill.name}: ${getLevelPercentage(skill.level, skill.years)}%`}
                               />
                             </div>
                           </div>

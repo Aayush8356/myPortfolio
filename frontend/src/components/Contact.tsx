@@ -58,8 +58,6 @@ const Contact: React.FC = () => {
       
       setContactDetails(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
-      console.error('Error fetching contact details:', error);
-      
       // Keep using default contact info - no error message to user
     }
   };
@@ -72,7 +70,7 @@ const Contact: React.FC = () => {
         setHasUploadedResume(data.hasResume);
       }
     } catch (error) {
-      console.error('Error checking resume status:', error);
+      // Resume status check failed - use fallback
     }
   };
 
@@ -125,7 +123,6 @@ const Contact: React.FC = () => {
           setError(''); // Clear any previous errors
         } else {
           // Still successful but email wasn't sent
-          console.log('Message saved but email not sent:', data.message);
         }
         
         setTimeout(() => setSuccess(false), 8000); // Show success longer
@@ -133,7 +130,6 @@ const Contact: React.FC = () => {
         throw new Error(data.message || 'Failed to send message');
       }
     } catch (error) {
-      console.error('Error sending message:', error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
@@ -305,11 +301,11 @@ const Contact: React.FC = () => {
                 <Button 
                   type="submit" 
                   disabled={loading} 
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 py-3 sm:py-4 text-responsive-base font-semibold tap-target"
+                  className="w-full bg-primary hover:bg-primary/90 !text-slate-900 shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 py-3 sm:py-4 text-responsive-base font-semibold tap-target"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center">
-                      <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
+                      <div className="h-4 w-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mr-2" />
                       Sending...
                     </div>
                   ) : (

@@ -129,10 +129,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
     setLoading(true);
     setError('');
 
-    console.log('ProjectEditor: Starting submit process');
-    console.log('ProjectEditor: Form data:', formData);
-    console.log('ProjectEditor: Existing project:', project);
-    console.log('ProjectEditor: Token length:', token ? token.length : 'NO_TOKEN');
+    // Starting submit process
     
     // Validation
     if (!formData.title.trim()) {
@@ -175,8 +172,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
       
       const method = project ? 'PUT' : 'POST';
 
-      console.log('ProjectEditor: Making API request to:', url, 'with method:', method);
-      console.log('ProjectEditor: Project data being sent:', projectData);
+      // Making API request
 
       const response = await fetch(url, {
         method,
@@ -187,12 +183,11 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
         body: JSON.stringify(projectData),
       });
 
-      console.log('ProjectEditor: API response status:', response.status);
+      // API response received
 
       if (response.ok) {
         const savedProject = await response.json();
-        console.log('ProjectEditor: API response successful, saved project:', savedProject);
-        console.log('ProjectEditor: Calling onSave callback with:', savedProject);
+        // API response successful
         
         // Add a small delay to ensure the callback is processed
         setTimeout(() => {
@@ -200,12 +195,10 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
         }, 100);
       } else {
         const errorData = await response.json().catch(() => ({}));
-        console.error('ProjectEditor: API error response:', errorData);
-        console.error('ProjectEditor: Response status:', response.status, response.statusText);
+        // API error response received
         setError(errorData.message || `Failed to save project (${response.status})`);
       }
     } catch (error) {
-      console.error('ProjectEditor: Network error:', error);
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
@@ -230,10 +223,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
             </div>
           )}
           
-          <form onSubmit={(e) => {
-            console.log('ProjectEditor: Form onSubmit triggered');
-            handleSubmit(e);
-          }} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-2">
                 Title *
@@ -492,9 +482,8 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, token, onSave, o
                 type="submit" 
                 disabled={loading || imageUploading} 
                 className="flex-1"
-                onClick={(e) => {
-                  console.log('ProjectEditor: Submit button clicked');
-                  // Don't prevent default here - let form handle it
+                onClick={() => {
+                  // Form submission will be handled by onSubmit
                 }}
               >
                 {loading ? (

@@ -121,8 +121,10 @@ function App() {
     } else {
       // Simple pre-cache for development
       preCacheData(API_BASE_URL).then(() => {
-        console.log('Pre-cache completed successfully');
-      }).catch(console.error);
+        // Pre-cache completed successfully
+      }).catch(() => {
+        // Pre-cache failed
+      });
     }
     
     return () => {

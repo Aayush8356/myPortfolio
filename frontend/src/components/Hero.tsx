@@ -73,7 +73,6 @@ const Hero: React.FC = () => {
       );
       setContactDetails(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
-      console.error('Error fetching contact details:', error);
       // Keep using default contact details - no loading state needed
     }
   };
@@ -90,7 +89,6 @@ const Hero: React.FC = () => {
       );
       setHeroContent(prev => ({ ...prev, ...data })); // Merge with defaults
     } catch (error) {
-      console.error('Error fetching hero content:', error);
       // Keep using default hero content - no loading state needed
     }
   };
@@ -102,11 +100,10 @@ const Hero: React.FC = () => {
         const data = await response.json();
         setHasUploadedResume(data.hasResume);
       } else {
-        console.warn('Resume status check failed, falling back to static resume');
+        // Resume status check failed, falling back to static resume
         setHasUploadedResume(false);
       }
     } catch (error) {
-      console.error('Error checking resume status:', error);
       setHasUploadedResume(false);
     }
   };
