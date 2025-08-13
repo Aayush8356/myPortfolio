@@ -5,6 +5,10 @@
       "destination": "https://portfolio-backend-fm3n.onrender.com/api/$1"
     },
     {
+      "source": "/api/resume/(.*)",
+      "destination": "https://portfolio-backend-fm3n.onrender.com/api/resume/$1"
+    },
+    {
       "source": "/blob/(.*)",
       "destination": "https://portfolio-backend-fm3n.onrender.com/blob/$1"
     },
@@ -14,6 +18,14 @@
     }
   ],
   "headers": [
+    {
+      "source": "/api/resume/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" }
+      ]
+    },
     {
       "source": "/api/(.*)",
       "headers": [
@@ -31,17 +43,16 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=300, s-maxage=300"
+          "value": "public, max-age=60, s-maxage=60"
         }
       ]
     },
     {
       "source": "/blob/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=1800, s-maxage=1800"
-        },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" },
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; object-src 'none';"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
-import { API_BASE_URL, PRODUCTION_DOMAIN } from '../config/api';
+import { API_BASE_URL, BLOB_BASE_URL } from '../config/api';
 import { HeroSkeleton } from './ui/skeleton';
 import { cachedFetch } from '../lib/cache';
 
@@ -116,8 +116,8 @@ const Hero: React.FC = () => {
   };
 
   const downloadResume = async () => {
-    // Always use the custom domain for a consistent user experience
-    window.open(`${PRODUCTION_DOMAIN}/api/resume/download`, '_blank');
+    const ts = Date.now();
+    window.open(`${BLOB_BASE_URL}/resume/download?cb=${ts}`, '_blank');
   };
 
   // Premium particle animation system

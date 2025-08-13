@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Eye, Download } from 'lucide-react';
-import { API_BASE_URL, PRODUCTION_DOMAIN } from '../config/api';
+import { API_BASE_URL, BLOB_BASE_URL } from '../config/api';
 import { cachedFetch } from '../lib/cache';
 
 interface AboutContent {
@@ -62,13 +62,13 @@ const About: React.FC = () => {
   };
 
   const openResumePreview = async () => {
-    // Use custom domain for consistent branding
-    window.open(`${PRODUCTION_DOMAIN}/blob/resume`, '_blank');
+    const ts = Date.now();
+    window.open(`${BLOB_BASE_URL}/resume?cb=${ts}`, '_blank');
   };
 
   const downloadResume = async () => {
-    // Always use the custom domain for consistent branding
-    window.open(`${PRODUCTION_DOMAIN}/api/resume/download`, '_blank');
+    const ts = Date.now();
+    window.open(`${API_BASE_URL}/resume/download?cb=${ts}`, '_blank');
   };
 
   return (

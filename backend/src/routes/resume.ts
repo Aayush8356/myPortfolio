@@ -27,6 +27,10 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
     }
 
     try {
+      // Capture previous resume URL (if any) to delete after successful upload
+      const existingDetails = await ContactDetails.findOne().lean();
+      const previousResumeUrl = existingDetails?.resume || '';
+
       let resumeUrl: string;
 
       if (process.env.NODE_ENV === 'production' && process.env.BLOB_READ_WRITE_TOKEN) {
@@ -50,6 +54,19 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
         // Write file to local storage
         fs.writeFileSync(resumePath, req.file.buffer);
         resumeUrl = '/uploads/resume.pdf';
+      }
+
+      // If we uploaded a new blob and there was a previous blob URL, delete the old blob
+      try {
+        if (
+          previousResumeUrl &&
+          previousResumeUrl.startsWith('https://') &&
+          process.env.BLOB_READ_WRITE_TOKEN
+        ) {
+          await del(previousResumeUrl);
+        }
+      } catch (cleanupErr) {
+        console.warn('Old resume cleanup failed (non-blocking):', cleanupErr);
       }
 
       // Store internal blob URL but return custom domain URL
