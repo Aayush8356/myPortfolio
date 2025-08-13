@@ -1,21 +1,8 @@
 {
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://portfolio-backend-fm3n.onrender.com/api/$1"
-    },
-    {
-      "source": "/api/resume/(.*)",
-      "destination": "https://portfolio-backend-fm3n.onrender.com/api/resume/$1"
-    },
-    {
-      "source": "/blob/(.*)",
-      "destination": "https://portfolio-backend-fm3n.onrender.com/blob/$1"
-    },
-    {
-      "source": "/assets/(.*)",
-      "destination": "https://portfolio-backend-fm3n.onrender.com/assets/$1"
-    }
+    { "source": "/api/(.*)", "destination": "https://portfolio-backend-fm3n.onrender.com/api/$1" },
+    { "source": "/blob/(.*)", "destination": "https://portfolio-backend-fm3n.onrender.com/blob/$1" },
+    { "source": "/assets/(.*)", "destination": "https://portfolio-backend-fm3n.onrender.com/assets/$1" }
   ],
   "headers": [
     {
@@ -27,46 +14,13 @@
       ]
     },
     {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=60, s-maxage=60"
-        }
-      ]
-    },
-    {
       "source": "/blob/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
-        { "key": "Expires", "value": "0" },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; object-src 'none';"
-        }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control", 
-          "value": "public, max-age=3600, s-maxage=3600"
-        }
+        { "key": "Expires", "value": "0" }
       ]
     }
   ]
 }
+
