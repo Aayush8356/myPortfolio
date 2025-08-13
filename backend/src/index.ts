@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
@@ -21,7 +21,38 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Restrictive CORS: allow only specific origins
+const defaultProdOrigin = process.env.PRODUCTION_DOMAIN || 'https://meetaayush.com';
+const additionalOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+const allowedOrigins = (
+  process.env.NODE_ENV === 'production'
+    ? [defaultProdOrigin, ...additionalOrigins]
+    : [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'http://localhost:5002',
+        ...additionalOrigins
+      ]
+).map(origin => origin.replace(/\/$/, '')); // normalize trailing slashes
+
+const corsOptions: CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // non-browser or same-origin
+    const normalized = origin.replace(/\/$/, '');
+    if (allowedOrigins.includes(normalized)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 // Serve uploads directory with correct path for both dev and production
