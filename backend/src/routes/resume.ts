@@ -88,7 +88,7 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
 router.get('/current', async (req, res) => {
   try {
     // Quick database lookup with lean query
-    const contactDetails = await ContactDetails.findOne().lean();
+    const contactDetails = await ContactDetails.findOne().sort({ updatedAt: -1 }).lean();
     
     if (contactDetails && contactDetails.resume) {
       // Trust the database record without external verification for speed
@@ -115,10 +115,12 @@ router.get('/current', async (req, res) => {
 // Preview resume (opens in browser) - serves PDF directly through custom domain
 router.get('/preview', async (req, res) => {
   try {
-    // Set cache headers for better performance
-    res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+    // Reduce caching to avoid stale previews after updates
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     
-    const contactDetails = await ContactDetails.findOne().lean();
+    const contactDetails = await ContactDetails.findOne().sort({ updatedAt: -1 }).lean();
     
     if (contactDetails && contactDetails.resume) {
       // If it's a Vercel Blob URL, fetch and serve through our domain
@@ -181,6 +183,11 @@ router.get('/preview', async (req, res) => {
 // Download resume - serves directly through custom domain
 router.get('/download', async (req, res) => {
   try {
+    // Reduce caching for downloads as well
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
     const contactDetails = await ContactDetails.findOne().lean();
     
     if (contactDetails && contactDetails.resume) {

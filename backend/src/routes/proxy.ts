@@ -16,6 +16,10 @@ router.get('/blob/*', async (req: Request, res: Response) => {
 
     // Handle resume requests - serve directly through custom domain
     if (blobPath === 'resume' || blobPath === 'resume.pdf') {
+      // Avoid stale caching on resume preview through proxy
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       try {
         const contactDetails = await ContactDetails.findOne().lean();
         
@@ -32,7 +36,8 @@ router.get('/blob/*', async (req: Request, res: Response) => {
                 res.setHeader('Content-Type', 'application/pdf');
                 res.setHeader('Content-Disposition', 'inline; filename="Aayush_Gupta_Resume.pdf"');
                 res.setHeader('Content-Length', buffer.byteLength.toString());
-                res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+                // Do not cache to ensure latest resume is served
+                res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
                 
                 return res.send(Buffer.from(buffer));
               }

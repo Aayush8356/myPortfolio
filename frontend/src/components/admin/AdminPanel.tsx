@@ -1091,7 +1091,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(`${BLOB_BASE_URL}/resume`, '_blank')}
+                          onClick={() => {
+                            const ts = Date.now();
+                            window.open(`${BLOB_BASE_URL}/resume?cb=${ts}`,'_blank');
+                          }}
                         >
                           <Eye className="w-4 h-4 mr-1" />
                           Preview
@@ -1099,7 +1102,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(`${BLOB_BASE_URL}/resume/download`, '_blank')}
+                          onClick={() => {
+                            const ts = Date.now();
+                            window.open(`${BLOB_BASE_URL}/resume/download?cb=${ts}`,'_blank');
+                          }}
                         >
                           <Download className="w-4 h-4 mr-1" />
                           Download
