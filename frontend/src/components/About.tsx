@@ -68,7 +68,8 @@ const About: React.FC = () => {
 
   const downloadResume = async () => {
     const ts = Date.now();
-    window.open(`${API_BASE_URL}/resume/download?cb=${ts}`, '_blank');
+    // Route through blob proxy to guarantee same-origin URLs
+    window.open(`${BLOB_BASE_URL}/resume/download?cb=${ts}`, '_blank');
   };
 
   return (

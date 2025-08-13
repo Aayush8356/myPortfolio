@@ -2,7 +2,8 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://portfolio-backend-fm3n.onrender.com/api/$1" },
     { "source": "/blob/(.*)", "destination": "https://portfolio-backend-fm3n.onrender.com/blob/$1" },
-    { "source": "/assets/(.*)", "destination": "https://portfolio-backend-fm3n.onrender.com/assets/$1" }
+    { "source": "/assets/(.*)", "destination": "https://portfolio-backend-fm3n.onrender.com/assets/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
