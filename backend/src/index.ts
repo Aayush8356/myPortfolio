@@ -30,25 +30,46 @@ const additionalOrigins = (process.env.ALLOWED_ORIGINS || '')
 
 const allowedOrigins = (
   process.env.NODE_ENV === 'production'
-    ? [defaultProdOrigin, ...additionalOrigins]
+    ? [
+        defaultProdOrigin,
+        'https://www.meetaayush.com', // www version
+        'https://meetaayush.com', // non-www version
+        ...additionalOrigins
+      ]
     : [
         'http://localhost:3000',
         'http://localhost:5173',
         'http://localhost:5002',
         'https://meetaayush.com', // Allow production domain to connect to local backend for testing
+        'https://www.meetaayush.com', // www version for testing
         ...additionalOrigins
       ]
 ).map(origin => origin.replace(/\/$/, '')); // normalize trailing slashes
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // non-browser or same-origin
+    // Allow requests with no origin (mobile apps, server-to-server, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
     const normalized = origin.replace(/\/$/, '');
-    if (allowedOrigins.includes(normalized)) return callback(null, true);
+    
+    // Allow all Vercel preview deployments and internal requests
+    if (normalized.includes('.vercel.app') || 
+        normalized.includes('vercel.com') ||
+        allowedOrigins.includes(normalized)) {
+      return callback(null, true);
+    }
+    
+    // Log rejected origins for debugging (only in production)
+    if (process.env.NODE_ENV === 'production') {
+      console.warn(`CORS: Rejected origin: ${origin}`);
+      console.log(`CORS: Allowed origins: ${allowedOrigins.join(', ')}`);
+    }
+    
     return callback(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma'],
   credentials: true
 };
 
