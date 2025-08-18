@@ -11,7 +11,7 @@ import Projects from './components/Projects';
 import Contact from './components/Contact';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminPanel from './components/admin/AdminPanel';
-import { preCacheData, warmCache } from './lib/cache';
+import { preCacheData, warmCache, clearAllCache } from './lib/cache';
 import { API_BASE_URL } from './config/api';
 import { useSectionVisibility } from './hooks/useSectionVisibility';
 
@@ -115,7 +115,15 @@ function App() {
 
     document.addEventListener('keydown', handleKeyDown);
     
-    // Aggressive cache warming for production to handle cold starts
+    // Clear cache on fresh page load to ensure fresh data
+    // Use modern Navigation API if available, fallback to deprecated method
+    const isPageRefresh = window.performance.getEntriesByType?.('navigation')?.[0]?.type === 'reload' || 
+                         window.performance.navigation?.type === 1;
+    if (isPageRefresh) {
+      clearAllCache();
+    }
+    
+    // Moderate cache warming for production
     if (process.env.NODE_ENV === 'production') {
       warmCache(API_BASE_URL);
     } else {

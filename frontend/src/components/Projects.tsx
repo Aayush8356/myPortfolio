@@ -72,8 +72,8 @@ const defaultProjects: Project[] = [
 ];
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>(defaultProjects); // Start with defaults for better UX
-  const [loading, setLoading] = useState(false); // Don't show loading since we have defaults
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -111,16 +111,14 @@ const Projects: React.FC = () => {
         );
       }
       
-      // Only update if we got real data
-      if (data && data.length > 0) {
-        setProjects(data);
-      }
+      // Always update with fresh data from API, even if empty
+      setProjects(data || []);
       setLoading(false);
       // Update scroll indicators after projects load
       setTimeout(updateScrollIndicators, 100);
     } catch (error) {
-      // Keep showing default projects for better UX
-      // Don't change projects state on error - defaults are already loaded
+      // Fallback to defaults only on error
+      setProjects(defaultProjects);
       setLoading(false);
       setTimeout(updateScrollIndicators, 100);
     }

@@ -26,12 +26,12 @@ const Contact: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [contactDetails, setContactDetails] = useState<ContactDetails>({
-    email: 'aayush@meetaayush.com',
-    phone: '+1 (555) 123-4567',
+    email: 'guptaaayush537@gmail.com',
+    phone: '+91 9878154202',
     location: 'India',
-    linkedin: 'https://linkedin.com/in/aayush-gupta',
-    github: 'https://github.com/Aayush8356',
-    twitter: '',
+    linkedin: 'https://linkedin.com/in/aayushgupta23',
+    github: 'https://github.com/aayush8356',
+    twitter: 'https://twitter.com/meetaayushgupta',
     resume: ''
   });
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
@@ -46,19 +46,31 @@ const Contact: React.FC = () => {
 
   const fetchContactDetails = async () => {
     try {
-      // Don't set loading state - show defaults immediately
+      // Try fresh fetch first, then fallback to cache
+      const response = await fetch(`${API_BASE_URL}/contact-details`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Accept': 'application/json'
+        }
+      });
       
-      // Use consistent cache key and aggressive caching for contact details (15 minutes)
+      if (response.ok) {
+        const data = await response.json();
+        setContactDetails(data); // Replace entirely with API data
+        return;
+      }
+      
+      // Fallback to cached data if fresh fetch fails
       const data = await cachedFetch<ContactDetails>(
         `${API_BASE_URL}/contact-details`,
         {},
-        'contact-details', // Consistent with pre-cache
-        900 // 15 minute cache
+        'contact-details',
+        300 // 5 minute cache
       );
       
-      setContactDetails(prev => ({ ...prev, ...data })); // Merge with defaults
+      setContactDetails(data);
     } catch (error) {
-      // Keep using default contact info - no error message to user
+      // Keep using fallback contact info
     }
   };
 

@@ -154,13 +154,8 @@ export const cachedFetch = async <T>(
     return cached;
   }
 
-  // For production, use stale cache more aggressively if available
+  // Only use stale cache as last resort, not proactively
   const staleCache = apiCache.get<T>(key + '_stale');
-  if (staleCache && process.env.NODE_ENV === 'production') {
-    // Return stale data immediately and refresh in background
-    refreshInBackground(url, options, key, ttlSeconds);
-    return staleCache;
-  }
 
   // Extended timeout for cold starts - 30 seconds for production
   const timeout = process.env.NODE_ENV === 'production' ? 30000 : 10000;
@@ -186,13 +181,12 @@ export const cachedFetch = async <T>(
 
     const data = await response.json();
     
-    // Cache the successful response with much longer TTL for production stability
-    const productionTTL = process.env.NODE_ENV === 'production' ? 3600 : ttlSeconds; // 1 hour in production
-    const extendedTTL = url.includes('/projects') || url.includes('/contact-details') ? productionTTL : ttlSeconds;
-    apiCache.set(key, data, extendedTTL);
+    // Use shorter TTL to ensure fresh data is prioritized
+    const shortTTL = process.env.NODE_ENV === 'production' ? 300 : ttlSeconds; // 5 minutes in production
+    apiCache.set(key, data, shortTTL);
     
-    // Store stale cache with very long TTL for robust fallback
-    apiCache.set(key + '_stale', data, extendedTTL * 12); // 12x longer (12 hours in production)
+    // Store stale cache with moderate TTL for emergency fallback only
+    apiCache.set(key + '_stale', data, shortTTL * 4); // 4x longer (20 minutes in production)
     
     return data;
   } catch (error) {
