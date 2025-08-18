@@ -117,8 +117,9 @@ function App() {
     
     // Clear cache on fresh page load to ensure fresh data
     // Use modern Navigation API if available, fallback to deprecated method
-    const isPageRefresh = window.performance.getEntriesByType?.('navigation')?.[0]?.type === 'reload' || 
-                         window.performance.navigation?.type === 1;
+    const navigationEntries = window.performance.getEntriesByType?.('navigation') as PerformanceNavigationTiming[];
+    const isPageRefresh = (navigationEntries?.[0]?.type === 'reload') || 
+                         (window.performance.navigation?.type === 1);
     if (isPageRefresh) {
       clearAllCache();
     }

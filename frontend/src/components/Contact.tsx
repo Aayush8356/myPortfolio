@@ -25,26 +25,28 @@ const Contact: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [contactDetails, setContactDetails] = useState<ContactDetails>({
-    email: 'guptaaayush537@gmail.com',
-    phone: '+91 9878154202',
-    location: 'India',
-    linkedin: 'https://linkedin.com/in/aayushgupta23',
-    github: 'https://github.com/aayush8356',
-    twitter: 'https://twitter.com/meetaayushgupta',
-    resume: ''
-  });
+  const [contactDetails, setContactDetails] = useState<ContactDetails | null>(null);
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
-  // Remove unused loading states since we show defaults immediately
-  // const [contactLoading, setContactLoading] = useState(false);
-  // const [contactError, setContactError] = useState<string | null>(null);
+  const [contactLoading, setContactLoading] = useState(true);
+  const [contactError, setContactError] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch data immediately - no artificial delay
     Promise.all([fetchContactDetails(), checkResumeStatus()]);
+    
+    // Auto-refresh every 30 seconds to pick up admin changes
+    const autoRefreshInterval = setInterval(() => {
+      fetchContactDetails();
+      checkResumeStatus();
+    }, 30000);
+    
+    return () => clearInterval(autoRefreshInterval);
   }, []);
 
   const fetchContactDetails = async () => {
+    setContactLoading(true);
+    setContactError(null);
+    
     try {
       // Try fresh fetch first, then fallback to cache
       const response = await fetch(`${API_BASE_URL}/contact-details`, {
@@ -56,7 +58,8 @@ const Contact: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
-        setContactDetails(data); // Replace entirely with API data
+        setContactDetails(data);
+        setContactLoading(false);
         return;
       }
       
@@ -69,8 +72,10 @@ const Contact: React.FC = () => {
       );
       
       setContactDetails(data);
+      setContactLoading(false);
     } catch (error) {
-      // Keep using fallback contact info
+      setContactError('Failed to load contact information. Please try again.');
+      setContactLoading(false);
     }
   };
 
@@ -171,11 +176,20 @@ const Contact: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 md:space-y-6">
-              {false ? (
+              {contactLoading ? (
                 <ContactSkeleton />
-              ) : (
+              ) : contactError ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">{contactError}</p>
+                  <button 
+                    onClick={fetchContactDetails}
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : contactDetails ? (
                 <>
-                  {/* Remove error display - use graceful fallbacks instead */}
                   <div className="flex items-start space-x-3 py-2">
                     <Mail className="w-5 h-5 contact-icon-email flex-shrink-0 mt-1" />
                     <a href={`mailto:${contactDetails.email}`} className="text-muted-foreground hover:text-accent transition-colors text-sm md:text-base break-all leading-6">
@@ -193,46 +207,48 @@ const Contact: React.FC = () => {
                     <span className="text-muted-foreground text-sm md:text-base leading-6">{contactDetails.location}</span>
                   </div>
                 </>
-              )}
+              ) : null}
               
               {/* Social Links */}
-              <div className="pt-4">
-                <div className="flex items-center justify-start gap-4 mb-4">
-                  {contactDetails.linkedin && (
-                    <a href={contactDetails.linkedin} target="_blank" rel="noopener noreferrer" 
-                       className="text-muted-foreground social-linkedin hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
-                      <Linkedin className="w-5 h-5" />
-                    </a>
-                  )}
-                  {contactDetails.github && (
-                    <a href={contactDetails.github} target="_blank" rel="noopener noreferrer"
-                       className="text-muted-foreground social-github hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
-                      <Github className="w-5 h-5" />
-                    </a>
-                  )}
-                  {contactDetails.twitter && (
-                    <a href={contactDetails.twitter} target="_blank" rel="noopener noreferrer"
-                       className="text-muted-foreground social-twitter hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
-                      <Twitter className="w-5 h-5" />
-                    </a>
-                  )}
-                  {(hasUploadedResume || contactDetails.resume) && (
-                    <a 
-                      href={`${PRODUCTION_DOMAIN}/blob/resume`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground contact-icon-default hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300"
-                      title="View Resume"
-                    >
-                      <FileText className="w-5 h-5" />
-                    </a>
-                  )}
+              {!contactLoading && !contactError && contactDetails && (
+                <div className="pt-4">
+                  <div className="flex items-center justify-start gap-4 mb-4">
+                    {contactDetails.linkedin && (
+                      <a href={contactDetails.linkedin} target="_blank" rel="noopener noreferrer" 
+                         className="text-muted-foreground social-linkedin hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
+                        <Linkedin className="w-5 h-5" />
+                      </a>
+                    )}
+                    {contactDetails.github && (
+                      <a href={contactDetails.github} target="_blank" rel="noopener noreferrer"
+                         className="text-muted-foreground social-github hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
+                        <Github className="w-5 h-5" />
+                      </a>
+                    )}
+                    {contactDetails.twitter && (
+                      <a href={contactDetails.twitter} target="_blank" rel="noopener noreferrer"
+                         className="text-muted-foreground social-twitter hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
+                        <Twitter className="w-5 h-5" />
+                      </a>
+                    )}
+                    {(hasUploadedResume || contactDetails.resume) && (
+                      <a 
+                        href={`${PRODUCTION_DOMAIN}/blob/resume`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground contact-icon-default hover-lift p-2 rounded-full hover:bg-primary/10 transition-all duration-300"
+                        title="View Resume"
+                      >
+                        <FileText className="w-5 h-5" />
+                      </a>
+                    )}
+                  </div>
+                  <p className="text-muted-foreground">
+                    I'm always interested in new opportunities and exciting projects. 
+                    Whether you have a question or just want to say hi, feel free to reach out!
+                  </p>
                 </div>
-                <p className="text-muted-foreground">
-                  I'm always interested in new opportunities and exciting projects. 
-                  Whether you have a question or just want to say hi, feel free to reach out!
-                </p>
-              </div>
+              )}
             </CardContent>
           </Card>
 
