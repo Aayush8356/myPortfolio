@@ -34,7 +34,10 @@ const Projects: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const fetchProjects = useCallback(async (forceRefresh = false) => {
-    setLoading(true);
+    // Don't show loading on auto-refresh if we already have projects
+    if (!forceRefresh || projects.length === 0) {
+      setLoading(true);
+    }
     setError(null);
     
     try {
@@ -68,26 +71,31 @@ const Projects: React.FC = () => {
         );
       }
       
-      // Always update with API data
-      setProjects(data || []);
+      // Only update projects if we got valid data
+      if (data && Array.isArray(data)) {
+        setProjects(data);
+      }
       setLoading(false);
       // Update scroll indicators after projects load
       setTimeout(updateScrollIndicators, 100);
     } catch (error) {
-      setError('Failed to load projects. Please try again.');
+      // Only show error if we don't have existing projects (avoid clearing working data)
+      if (projects.length === 0) {
+        setError('Failed to load projects. Please try again.');
+      }
       setLoading(false);
       setTimeout(updateScrollIndicators, 100);
     }
-  }, []);
+  }, [projects.length]);
 
   useEffect(() => {
     // Fetch immediately on component mount
     fetchProjects();
     
-    // Auto-refresh every 10 seconds to pick up admin changes quickly
+    // Auto-refresh every 30 seconds to pick up admin changes (less aggressive to avoid interference)
     const autoRefreshInterval = setInterval(() => {
       fetchProjects(true); // Force fresh data to catch admin updates
-    }, 10000);
+    }, 30000);
     
     // Refresh when page becomes visible (user switches back to tab)
     const handleVisibilityChange = () => {

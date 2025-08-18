@@ -34,16 +34,16 @@ const Contact: React.FC = () => {
     // Fetch data immediately - no artificial delay
     Promise.all([fetchContactDetails(), checkResumeStatus()]);
     
-    // Auto-refresh every 15 seconds to pick up admin changes quickly
+    // Auto-refresh every 30 seconds to pick up admin changes (less aggressive)
     const autoRefreshInterval = setInterval(() => {
-      fetchContactDetails();
+      fetchContactDetails(true); // Auto-refresh mode
       checkResumeStatus();
-    }, 15000);
+    }, 30000);
     
     // Refresh when page becomes visible (user switches back to tab)
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        fetchContactDetails(); // Force fresh data when user returns
+        fetchContactDetails(false); // Force fresh data when user returns
         checkResumeStatus();
       }
     };
@@ -56,8 +56,11 @@ const Contact: React.FC = () => {
     };
   }, []);
 
-  const fetchContactDetails = async () => {
-    setContactLoading(true);
+  const fetchContactDetails = async (isAutoRefresh = false) => {
+    // Don't show loading on auto-refresh if we already have contact details
+    if (!isAutoRefresh || !contactDetails) {
+      setContactLoading(true);
+    }
     setContactError(null);
     
     try {
@@ -87,7 +90,10 @@ const Contact: React.FC = () => {
       setContactDetails(data);
       setContactLoading(false);
     } catch (error) {
-      setContactError('Failed to load contact information. Please try again.');
+      // Only show error if we don't have existing contact details
+      if (!contactDetails) {
+        setContactError('Failed to load contact information. Please try again.');
+      }
       setContactLoading(false);
     }
   };
@@ -195,7 +201,7 @@ const Contact: React.FC = () => {
                 <div className="text-center py-8">
                   <p className="text-muted-foreground mb-4">{contactError}</p>
                   <button 
-                    onClick={fetchContactDetails}
+                    onClick={() => fetchContactDetails(false)}
                     className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Retry
