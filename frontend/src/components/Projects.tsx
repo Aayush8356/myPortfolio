@@ -84,12 +84,24 @@ const Projects: React.FC = () => {
     // Fetch immediately on component mount
     fetchProjects();
     
-    // Auto-refresh every 15 seconds to pick up admin changes
+    // Auto-refresh every 10 seconds to pick up admin changes quickly
     const autoRefreshInterval = setInterval(() => {
       fetchProjects(true); // Force fresh data to catch admin updates
-    }, 15000);
+    }, 10000);
     
-    return () => clearInterval(autoRefreshInterval);
+    // Refresh when page becomes visible (user switches back to tab)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchProjects(true); // Force fresh data when user returns
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(autoRefreshInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [fetchProjects]);
 
   const updateScrollIndicators = () => {

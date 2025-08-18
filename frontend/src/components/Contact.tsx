@@ -34,13 +34,26 @@ const Contact: React.FC = () => {
     // Fetch data immediately - no artificial delay
     Promise.all([fetchContactDetails(), checkResumeStatus()]);
     
-    // Auto-refresh every 30 seconds to pick up admin changes
+    // Auto-refresh every 15 seconds to pick up admin changes quickly
     const autoRefreshInterval = setInterval(() => {
       fetchContactDetails();
       checkResumeStatus();
-    }, 30000);
+    }, 15000);
     
-    return () => clearInterval(autoRefreshInterval);
+    // Refresh when page becomes visible (user switches back to tab)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchContactDetails(); // Force fresh data when user returns
+        checkResumeStatus();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(autoRefreshInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const fetchContactDetails = async () => {

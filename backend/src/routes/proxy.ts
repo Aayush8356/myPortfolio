@@ -4,6 +4,9 @@ import ContactDetails from '../models/ContactDetails';
 
 const router = express.Router();
 
+// Get the Render backend URL from environment variable
+const RENDER_BACKEND_URL = process.env.RENDER_BACKEND_URL || 'https://your-backend.onrender.com';
+
 // Proxy endpoint for blob storage
 // This allows all blob URLs to use meetaayush.com domain instead of exposing Vercel Blob URLs
 router.get('/blob/*', async (req: Request, res: Response) => {
@@ -126,5 +129,8 @@ router.get('/assets/*', async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Asset proxy error' });
   }
 });
+
+// Note: API routes are handled directly by the main Express app
+// No need to proxy API calls since this backend serves them directly
 
 export default router;

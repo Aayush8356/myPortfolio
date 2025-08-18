@@ -5,6 +5,7 @@ import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth
 import { uploadResume } from '../middleware/upload';
 import ContactDetails from '../models/ContactDetails';
 import { put, del, head } from '@vercel/blob';
+import { invalidateResumeCache } from '../utils/cacheInvalidation';
 
 const router = express.Router();
 
@@ -87,6 +88,9 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
       }
       
       await contactDetails.save();
+
+      // Invalidate cache to ensure resume changes appear immediately
+      await invalidateResumeCache();
 
       res.json({
         message: 'Resume uploaded successfully',
@@ -277,6 +281,9 @@ router.delete('/', authenticateToken, requireAdmin, async (req: AuthRequest, res
       // Clear resume URL from database
       contactDetails.resume = '';
       await contactDetails.save();
+      
+      // Invalidate cache to ensure resume deletion appears immediately
+      await invalidateResumeCache();
       
       res.json({ message: 'Resume deleted successfully' });
     } else {

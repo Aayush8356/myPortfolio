@@ -5,6 +5,7 @@ import { uploadProjectImage } from '../middleware/upload';
 import { put, del } from '@vercel/blob';
 import path from 'path';
 import fs from 'fs';
+import { invalidateProjectsCache } from '../utils/cacheInvalidation';
 
 const router = express.Router();
 
@@ -90,6 +91,10 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: 
     });
 
     await project.save();
+    
+    // Invalidate cache to ensure new project appears immediately
+    await invalidateProjectsCache();
+    
     res.status(201).json(project);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -136,6 +141,9 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res
       return res.status(404).json({ message: 'Project not found' });
     }
 
+    // Invalidate cache to ensure project updates appear immediately
+    await invalidateProjectsCache();
+
     res.json(project);
   } catch (error) {
     console.error('PUT request error:', error);
@@ -173,6 +181,10 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, 
     }
 
     await Project.findByIdAndDelete(req.params.id);
+    
+    // Invalidate cache to ensure project deletion appears immediately
+    await invalidateProjectsCache();
+    
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

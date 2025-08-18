@@ -181,12 +181,12 @@ export const cachedFetch = async <T>(
 
     const data = await response.json();
     
-    // Use shorter TTL to ensure fresh data is prioritized
-    const shortTTL = process.env.NODE_ENV === 'production' ? 300 : ttlSeconds; // 5 minutes in production
+    // Use very short TTL to ensure admin changes appear quickly
+    const shortTTL = process.env.NODE_ENV === 'production' ? 30 : ttlSeconds; // 30 seconds in production for rapid updates
     apiCache.set(key, data, shortTTL);
     
     // Store stale cache with moderate TTL for emergency fallback only
-    apiCache.set(key + '_stale', data, shortTTL * 4); // 4x longer (20 minutes in production)
+    apiCache.set(key + '_stale', data, shortTTL * 6); // 6x longer (3 minutes in production)
     
     return data;
   } catch (error) {

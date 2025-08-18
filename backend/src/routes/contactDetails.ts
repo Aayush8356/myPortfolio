@@ -1,6 +1,7 @@
 import express from 'express';
 import ContactDetails from '../models/ContactDetails';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
+import { invalidateContactCache } from '../utils/cacheInvalidation';
 
 const router = express.Router();
 
@@ -67,6 +68,10 @@ router.put('/', authenticateToken, requireAdmin, async (req: AuthRequest, res) =
     }
     
     await contactDetails.save();
+    
+    // Invalidate cache to ensure contact updates appear immediately
+    await invalidateContactCache();
+    
     res.json(contactDetails);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
