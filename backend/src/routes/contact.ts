@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import Contact from '../models/Contact';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
 import emailService from '../services/emailService';
+import { WebhookTriggers } from '../utils/webhookService';
 
 const router = express.Router();
 
@@ -97,6 +98,10 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, 
     if (!contact) {
       return res.status(404).json({ message: 'Contact not found' });
     }
+    
+    // Trigger Vercel rebuild (fire-and-forget) - contact message deletion might affect admin data
+    WebhookTriggers.contactMessageDeleted(req.params.id);
+    
     res.json({ message: 'Contact deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

@@ -2,6 +2,7 @@ import express from 'express';
 import ContactDetails from '../models/ContactDetails';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
 import { invalidateContactCache } from '../utils/cacheInvalidation';
+import { WebhookTriggers } from '../utils/webhookService';
 
 const router = express.Router();
 
@@ -71,6 +72,9 @@ router.put('/', authenticateToken, requireAdmin, async (req: AuthRequest, res) =
     
     // Invalidate cache to ensure contact updates appear immediately
     await invalidateContactCache();
+    
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.contactDetailsUpdated();
     
     res.json(contactDetails);
   } catch (error) {

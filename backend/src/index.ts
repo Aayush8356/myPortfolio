@@ -14,6 +14,7 @@ import resumeRoutes from './routes/resume';
 import heroRoutes from './routes/hero';
 import aboutRoutes from './routes/about';
 import funCentreRoutes from './routes/funCentre';
+import webhookRoutes from './routes/webhooks';
 import proxyRoutes from './routes/proxy';
 
 dotenv.config();
@@ -108,6 +109,7 @@ app.use('/api/resume', resumeRoutes);
 app.use('/api/hero', heroRoutes);
 app.use('/api/about', aboutRoutes);
 app.use('/api/fun-centre', funCentreRoutes);
+app.use('/api/webhooks', webhookRoutes);
 
 // Custom domain proxy routes (must be before catch-all routes)
 app.use('/', proxyRoutes);

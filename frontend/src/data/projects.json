@@ -1,0 +1,175 @@
+{
+  "data": [
+    {
+      "_id": "6864d7baf75ecc5fee4970fa",
+      "title": "Vendora",
+      "description": "Transform your business with this stunning eCommerce template. Designed for brands that value quality, elegance, and customer experience.",
+      "technologies": [
+        "NextJs",
+        "NodeJS",
+        "MongoDb",
+        "Typescript",
+        "TailwindCSS"
+      ],
+      "imageUrl": "https://weodrdad7bedbizf.public.blob.vercel-storage.com/project-1751439268426-447067137.png",
+      "githubUrl": "https://github.com/Aayush8356/vendora",
+      "liveUrl": "https://vendora.meetaayush.com",
+      "featured": true,
+      "challenge": "Modern businesses struggle with creating compelling eCommerce experiences that balance aesthetic appeal with functionality, leading to high bounce rates, poor conversion rates, and difficulty competing with established platforms in crowded digital marketplaces.",
+      "solution": "Developed a premium eCommerce template using Next.js 14 with TypeScript for type safety, MongoDB for scalable data management, and Tailwind CSS for responsive design. Implemented modern UI/UX patterns, optimized performance with server-side rendering, integrated secure payment processing, and created reusable components for rapid customization.",
+      "impact": "Achieved 40% faster page load times with Next.js optimization, 95% mobile responsiveness score, secure payment integration with 99.9% transaction success rate, and provided businesses with a professional eCommerce foundation that reduces development time by 70% while maintaining enterprise-grade quality.",
+      "duration": "3 months",
+      "team": "Solo Developer",
+      "createdAt": "2025-07-02T06:54:50.349Z",
+      "updatedAt": "2025-07-03T03:08:02.666Z",
+      "__v": 0
+    },
+    {
+      "_id": "685844af5f66c68ff5c0c62f",
+      "title": "Payment UI Component",
+      "description": "A reusable React component library providing secure, accessible payment interfaces with seamless integration across multiple projects and payment gateways.",
+      "technologies": [
+        "ReactJs",
+        "NodeJS",
+        "TailwindCSS",
+        "TypeScript",
+        "PostgreSQL"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=400&fit=crop&auto=format",
+      "githubUrl": "https://github.com/Aayush8356/payment-ui",
+      "liveUrl": "https://payment-ui-frontend.vercel.app/",
+      "featured": false,
+      "__v": 0,
+      "createdAt": "2025-06-22T18:00:15.032Z",
+      "updatedAt": "2025-07-02T15:30:47.673Z",
+      "challenge": "Inconsistent payment UI implementations across projects leading to poor user experience, security vulnerabilities, longer development cycles, and maintenance overhead when integrating with different payment providers.",
+      "duration": "2 months",
+      "impact": "Reduced payment integration development time by 40%, eliminated UI inconsistencies across 12+ projects, achieved 99.8% transaction success rate, and maintained WCAG AA accessibility compliance with zero security incidents.",
+      "solution": "Developed a modular TypeScript component library with PCI-compliant design patterns, comprehensive form validation, customizable themes, and seamless integration APIs. Implemented automated testing, accessibility features, and documentation for rapid adoption across development teams.",
+      "team": "Solo Developer"
+    },
+    {
+      "_id": "685844af5f66c68ff5c0c630",
+      "title": "Web Food",
+      "description": "A full-scale food delivery application with real-time order tracking, integrated payment processing, and GPS-based delivery management for seamless customer experience.",
+      "technologies": [
+        "NextJs",
+        "NodeJS",
+        "MongoDB",
+        "Javascript"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=400&fit=crop&auto=format",
+      "githubUrl": "https://github.com/Aayush8356/webfood",
+      "liveUrl": "https://webfood.meetaayush.com",
+      "featured": true,
+      "__v": 0,
+      "createdAt": "2025-06-22T18:00:15.032Z",
+      "updatedAt": "2025-06-22T18:10:55.296Z",
+      "challenge": "Complex real-time order management requiring synchronization between customers, restaurants, and delivery drivers, while maintaining system performance under high load and ensuring accurate delivery tracking with minimal latency.",
+      "duration": "5 months",
+      "impact": "Successfully handles 100+ concurrent orders with real-time notifications, maintains 99.9% uptime during peak hours, processes 2,000+ daily transactions, and achieved 95% customer satisfaction with average delivery tracking accuracy of 98%.",
+      "solution": "Architected a scalable Next.js application with MongoDB for data persistence, WebSocket connections for real-time updates, integrated payment APIs, and GPS tracking systems. Implemented efficient state management, API optimization, and responsive design for cross-platform compatibility.",
+      "team": "Solo Developer"
+    },
+    {
+      "_id": "685844af5f66c68ff5c0c62e",
+      "title": "Wandarlog",
+      "description": "A comprehensive travel planning platform that revolutionizes how travelers organize and share their journeys with real-time collaboration and intelligent itinerary management.",
+      "technologies": [
+        "ReactJs",
+        "NodeJS",
+        "TailwindCSS",
+        "TypeScript",
+        "MongoDB"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=400&fit=crop&auto=format",
+      "githubUrl": "https://github.com/Aayush8356/wanderlust",
+      "liveUrl": "https://wandarlog.meetaayush.com/",
+      "featured": true,
+      "__v": 0,
+      "createdAt": "2025-06-22T18:00:15.031Z",
+      "updatedAt": "2025-07-02T15:33:21.220Z",
+      "challenge": "Travelers struggle with scattered trip information across multiple platforms, lack of real-time collaboration tools, and inefficient itinerary planning processes that waste valuable time and create confusion among travel groups.",
+      "duration": "4 months",
+      "impact": "Reduced trip planning time by 60%, supports real-time collaboration for groups up to 10 users, handles 500+ concurrent sessions with 99.5% uptime, and processes over 1,000 itinerary updates daily with sub-200ms response times.",
+      "solution": "Built a full-stack platform using React, Node.js, and MongoDB with real-time WebSocket connections for collaborative planning. Implemented JWT authentication, RESTful APIs, interactive maps integration, and responsive design patterns. Created efficient caching strategies and optimized database queries for concurrent user sessions.",
+      "team": "Solo Developer"
+    }
+  ],
+  "count": 4,
+  "featured": [
+    {
+      "_id": "6864d7baf75ecc5fee4970fa",
+      "title": "Vendora",
+      "description": "Transform your business with this stunning eCommerce template. Designed for brands that value quality, elegance, and customer experience.",
+      "technologies": [
+        "NextJs",
+        "NodeJS",
+        "MongoDb",
+        "Typescript",
+        "TailwindCSS"
+      ],
+      "imageUrl": "https://weodrdad7bedbizf.public.blob.vercel-storage.com/project-1751439268426-447067137.png",
+      "githubUrl": "https://github.com/Aayush8356/vendora",
+      "liveUrl": "https://vendora.meetaayush.com",
+      "featured": true,
+      "challenge": "Modern businesses struggle with creating compelling eCommerce experiences that balance aesthetic appeal with functionality, leading to high bounce rates, poor conversion rates, and difficulty competing with established platforms in crowded digital marketplaces.",
+      "solution": "Developed a premium eCommerce template using Next.js 14 with TypeScript for type safety, MongoDB for scalable data management, and Tailwind CSS for responsive design. Implemented modern UI/UX patterns, optimized performance with server-side rendering, integrated secure payment processing, and created reusable components for rapid customization.",
+      "impact": "Achieved 40% faster page load times with Next.js optimization, 95% mobile responsiveness score, secure payment integration with 99.9% transaction success rate, and provided businesses with a professional eCommerce foundation that reduces development time by 70% while maintaining enterprise-grade quality.",
+      "duration": "3 months",
+      "team": "Solo Developer",
+      "createdAt": "2025-07-02T06:54:50.349Z",
+      "updatedAt": "2025-07-03T03:08:02.666Z",
+      "__v": 0
+    },
+    {
+      "_id": "685844af5f66c68ff5c0c630",
+      "title": "Web Food",
+      "description": "A full-scale food delivery application with real-time order tracking, integrated payment processing, and GPS-based delivery management for seamless customer experience.",
+      "technologies": [
+        "NextJs",
+        "NodeJS",
+        "MongoDB",
+        "Javascript"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=400&fit=crop&auto=format",
+      "githubUrl": "https://github.com/Aayush8356/webfood",
+      "liveUrl": "https://webfood.meetaayush.com",
+      "featured": true,
+      "__v": 0,
+      "createdAt": "2025-06-22T18:00:15.032Z",
+      "updatedAt": "2025-06-22T18:10:55.296Z",
+      "challenge": "Complex real-time order management requiring synchronization between customers, restaurants, and delivery drivers, while maintaining system performance under high load and ensuring accurate delivery tracking with minimal latency.",
+      "duration": "5 months",
+      "impact": "Successfully handles 100+ concurrent orders with real-time notifications, maintains 99.9% uptime during peak hours, processes 2,000+ daily transactions, and achieved 95% customer satisfaction with average delivery tracking accuracy of 98%.",
+      "solution": "Architected a scalable Next.js application with MongoDB for data persistence, WebSocket connections for real-time updates, integrated payment APIs, and GPS tracking systems. Implemented efficient state management, API optimization, and responsive design for cross-platform compatibility.",
+      "team": "Solo Developer"
+    },
+    {
+      "_id": "685844af5f66c68ff5c0c62e",
+      "title": "Wandarlog",
+      "description": "A comprehensive travel planning platform that revolutionizes how travelers organize and share their journeys with real-time collaboration and intelligent itinerary management.",
+      "technologies": [
+        "ReactJs",
+        "NodeJS",
+        "TailwindCSS",
+        "TypeScript",
+        "MongoDB"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=400&fit=crop&auto=format",
+      "githubUrl": "https://github.com/Aayush8356/wanderlust",
+      "liveUrl": "https://wandarlog.meetaayush.com/",
+      "featured": true,
+      "__v": 0,
+      "createdAt": "2025-06-22T18:00:15.031Z",
+      "updatedAt": "2025-07-02T15:33:21.220Z",
+      "challenge": "Travelers struggle with scattered trip information across multiple platforms, lack of real-time collaboration tools, and inefficient itinerary planning processes that waste valuable time and create confusion among travel groups.",
+      "duration": "4 months",
+      "impact": "Reduced trip planning time by 60%, supports real-time collaboration for groups up to 10 users, handles 500+ concurrent sessions with 99.5% uptime, and processes over 1,000 itinerary updates daily with sub-200ms response times.",
+      "solution": "Built a full-stack platform using React, Node.js, and MongoDB with real-time WebSocket connections for collaborative planning. Implemented JWT authentication, RESTful APIs, interactive maps integration, and responsive design patterns. Created efficient caching strategies and optimized database queries for concurrent user sessions.",
+      "team": "Solo Developer"
+    }
+  ],
+  "lastUpdated": "2025-08-19T14:27:25.844Z",
+  "source": "database"
+}

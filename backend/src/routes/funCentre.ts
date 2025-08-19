@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import FunCentre from '../models/FunCentre';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
+import { WebhookTriggers } from '../utils/webhookService';
 
 const router = express.Router();
 
@@ -43,6 +44,10 @@ router.put('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: R
     }
     
     await funCentre.save();
+    
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.funCentreUpdated();
+    
     res.json(funCentre);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

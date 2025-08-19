@@ -1,6 +1,7 @@
 import express from 'express';
 import About from '../models/About';
 import { authenticateToken } from '../middleware/auth';
+import { WebhookTriggers } from '../utils/webhookService';
 
 const router = express.Router();
 
@@ -48,6 +49,10 @@ router.put('/', authenticateToken, async (req, res) => {
     }
     
     await about.save();
+    
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.aboutUpdated();
+    
     res.json(about);
   } catch (error) {
     console.error('Error updating about content:', error);

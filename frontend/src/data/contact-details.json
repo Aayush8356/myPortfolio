@@ -1,0 +1,18 @@
+{
+  "data": {
+    "_id": "68430b6d60e99bcacecd3daf",
+    "email": "guptaaayush537@gmail.com",
+    "phone": "+91 9878154202",
+    "location": "India",
+    "linkedin": "https://linkedin.com/in/aayushgupta23",
+    "github": "https://github.com/aayush8356",
+    "twitter": "https://twitter.com/meetaayushgupta",
+    "resume": "https://weodrdad7bedbizf.public.blob.vercel-storage.com/resume-1755108625794.pdf",
+    "createdAt": "2025-06-06T15:38:21.462Z",
+    "updatedAt": "2025-08-13T18:10:27.097Z",
+    "__v": 0,
+    "resumePublicUrl": "https://meetaayush.com/blob/resume"
+  },
+  "lastUpdated": "2025-08-19T14:27:25.644Z",
+  "source": "database"
+}

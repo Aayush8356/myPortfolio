@@ -37,7 +37,8 @@
       "Bash(touch:*)",
       "mcp__ide__getDiagnostics",
       "mcp__ide__executeCode",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(npm run generate-data:*)"
     ],
     "deny": []
   }

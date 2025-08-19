@@ -6,6 +6,7 @@ import { uploadResume } from '../middleware/upload';
 import ContactDetails from '../models/ContactDetails';
 import { put, del, head } from '@vercel/blob';
 import { invalidateResumeCache } from '../utils/cacheInvalidation';
+import { WebhookTriggers } from '../utils/webhookService';
 
 const router = express.Router();
 
@@ -91,6 +92,9 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
 
       // Invalidate cache to ensure resume changes appear immediately
       await invalidateResumeCache();
+
+      // Trigger Vercel rebuild (fire-and-forget)
+      WebhookTriggers.resumeUploaded();
 
       res.json({
         message: 'Resume uploaded successfully',
@@ -285,6 +289,9 @@ router.delete('/', authenticateToken, requireAdmin, async (req: AuthRequest, res
       // Invalidate cache to ensure resume deletion appears immediately
       await invalidateResumeCache();
       
+      // Trigger Vercel rebuild (fire-and-forget)
+      WebhookTriggers.resumeDeleted();
+      
       res.json({ message: 'Resume deleted successfully' });
     } else {
       res.status(404).json({ message: 'Resume not found' });
@@ -367,6 +374,9 @@ router.post('/sync-url', authenticateToken, requireAdmin, async (req: AuthReques
     }
     
     await contactDetails.save();
+
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.resumeUrlSynced();
 
     res.json({
       message: 'Resume URL synced successfully',

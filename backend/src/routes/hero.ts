@@ -1,6 +1,7 @@
 import express from 'express';
 import Hero from '../models/Hero';
 import { authenticateToken } from '../middleware/auth';
+import { WebhookTriggers } from '../utils/webhookService';
 
 const router = express.Router();
 
@@ -50,6 +51,10 @@ router.put('/', authenticateToken, async (req, res) => {
     }
     
     await hero.save();
+    
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.heroUpdated();
+    
     res.json(hero);
   } catch (error) {
     console.error('Error updating hero content:', error);

@@ -1,0 +1,18 @@
+{
+  "buildTime": "2025-08-19T14:27:25.846Z",
+  "buildId": "1755613645846",
+  "version": "1.0.0",
+  "dataStatus": {
+    "projects": "success",
+    "contact": "success",
+    "resume": "success"
+  },
+  "counts": {
+    "projects": 4,
+    "featuredProjects": 3
+  },
+  "environment": {
+    "nodeEnv": "development",
+    "apiBaseUrl": "https://meetaayush.com/api"
+  }
+}

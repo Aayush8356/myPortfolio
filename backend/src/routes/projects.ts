@@ -6,6 +6,7 @@ import { put, del } from '@vercel/blob';
 import path from 'path';
 import fs from 'fs';
 import { invalidateProjectsCache } from '../utils/cacheInvalidation';
+import { WebhookTriggers } from '../utils/webhookService';
 
 const router = express.Router();
 
@@ -90,12 +91,15 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: 
       team: team || ''
     });
 
-    await project.save();
+    const savedProject = await project.save();
     
     // Invalidate cache to ensure new project appears immediately
     await invalidateProjectsCache();
     
-    res.status(201).json(project);
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.projectCreated(String(savedProject._id));
+    
+    res.status(201).json(savedProject);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
@@ -144,6 +148,9 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res
     // Invalidate cache to ensure project updates appear immediately
     await invalidateProjectsCache();
 
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.projectUpdated(String(project._id));
+
     res.json(project);
   } catch (error) {
     console.error('PUT request error:', error);
@@ -184,6 +191,9 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, 
     
     // Invalidate cache to ensure project deletion appears immediately
     await invalidateProjectsCache();
+    
+    // Trigger Vercel rebuild (fire-and-forget)
+    WebhookTriggers.projectDeleted(req.params.id);
     
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
@@ -231,6 +241,9 @@ router.post('/upload-image', authenticateToken, requireAdmin, uploadProjectImage
       imageUrl = `/projects/images/${filename}`;
     }
 
+    // Trigger Vercel rebuild (fire-and-forget) - image upload might affect projects
+    WebhookTriggers.projectImageUploaded();
+    
     res.json({ 
       message: 'Image uploaded successfully',
       imageUrl,

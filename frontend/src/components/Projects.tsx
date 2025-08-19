@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Github, ExternalLink, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Clock, Users, Target, Lightbulb, TrendingUp, X } from 'lucide-react';
-import { API_BASE_URL, ASSETS_BASE_URL } from '../config/api';
-import { cachedFetch, clearProjectsCache, updateProjectsCache } from '../lib/cache';
+import { Github, ExternalLink, ChevronLeft, ChevronRight, Clock, Users, Target, Lightbulb, TrendingUp, X } from 'lucide-react';
+import { ASSETS_BASE_URL } from '../config/api';
+import { loadProjectsData } from '../utils/staticDataLoader';
 import { ProjectSkeleton } from './ui/skeleton';
 
 interface Project {
@@ -22,94 +22,45 @@ interface Project {
   team?: string;
 }
 
-// No more static fallback projects - everything loads from API
-
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [, setDataSource] = useState<string>('loading');
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const fetchProjects = useCallback(async (forceRefresh = false) => {
-    // Don't show loading on auto-refresh if we already have projects
-    if (!forceRefresh || projects.length === 0) {
-      setLoading(true);
-    }
+  const fetchProjects = useCallback(async () => {
+    setLoading(true);
     setError(null);
     
     try {
-      let data: Project[];
+      const projectsData = await loadProjectsData();
       
-      if (forceRefresh) {
-        // For force refresh, bypass cache completely
-        clearProjectsCache();
-        const response = await fetch(`${API_BASE_URL}/projects`, {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        data = await response.json();
-        // Update cache with fresh data
-        updateProjectsCache(data);
+      if (projectsData && projectsData.data && Array.isArray(projectsData.data)) {
+        setProjects(projectsData.data);
+        setDataSource(projectsData.source);
+        console.log(`✅ Loaded ${projectsData.data.length} projects from ${projectsData.source}`);
       } else {
-        // Use cached fetch with shorter cache time for admin responsiveness
-        data = await cachedFetch<Project[]>(
-          `${API_BASE_URL}/projects`,
-          {},
-          'projects-list',
-          30 // 30 seconds cache for better responsiveness to admin changes
-        );
+        throw new Error('Invalid projects data structure');
       }
       
-      // Only update projects if we got valid data
-      if (data && Array.isArray(data)) {
-        setProjects(data);
-      }
       setLoading(false);
       // Update scroll indicators after projects load
       setTimeout(updateScrollIndicators, 100);
     } catch (error) {
-      // Only show error if we don't have existing projects (avoid clearing working data)
-      if (projects.length === 0) {
-        setError('Failed to load projects. Please try again.');
-      }
+      console.error('Failed to load projects:', error);
+      setError('Failed to load projects. Using fallback data.');
       setLoading(false);
       setTimeout(updateScrollIndicators, 100);
     }
-  }, [projects.length]);
+  }, []);
 
   useEffect(() => {
-    // Fetch immediately on component mount
+    // Load static data on component mount
     fetchProjects();
-    
-    // Auto-refresh every 30 seconds to pick up admin changes (less aggressive to avoid interference)
-    const autoRefreshInterval = setInterval(() => {
-      fetchProjects(true); // Force fresh data to catch admin updates
-    }, 30000);
-    
-    // Refresh when page becomes visible (user switches back to tab)
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchProjects(true); // Force fresh data when user returns
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      clearInterval(autoRefreshInterval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
   }, [fetchProjects]);
 
   const updateScrollIndicators = () => {
@@ -173,41 +124,21 @@ const Projects: React.FC = () => {
     updateScrollIndicators();
   }, [projects]);
 
-  // Add keyboard shortcut for force refresh and listen for admin updates
+  // Add keyboard shortcut for refresh
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'R') {
         e.preventDefault();
-        clearProjectsCache();
-        fetchProjects(true);
-      }
-    };
-
-    const handleForceRefresh = (e: CustomEvent) => {
-      if (e.detail && e.detail.projects) {
-        // Use the updated projects data directly from the event
-        setProjects(e.detail.projects);
-        setTimeout(updateScrollIndicators, 100);
-        
-        // Also force a fresh fetch to ensure we have the latest data
-        setTimeout(() => {
-          clearProjectsCache(); // Clear cache before fetching
-          fetchProjects(true);
-        }, 1000);
-      } else {
-        // Fallback to fetching if no data in event
-        fetchProjects(true);
+        fetchProjects();
       }
     };
 
     document.addEventListener('keydown', handleKeyPress);
-    window.addEventListener('forceProjectRefresh', handleForceRefresh as EventListener);
     
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
-      window.removeEventListener('forceProjectRefresh', handleForceRefresh as EventListener);
     };
-  }, [fetchProjects, projects]);
+  }, [fetchProjects]);
 
 
   // Only show skeleton for initial load when no projects available (currently disabled)
@@ -252,7 +183,7 @@ const Projects: React.FC = () => {
           <div className="text-center py-12">
             <p className="text-muted-foreground mb-4">{error}</p>
             <button 
-              onClick={() => fetchProjects(true)}
+              onClick={() => fetchProjects()}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               Retry

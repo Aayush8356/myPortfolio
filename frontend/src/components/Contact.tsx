@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, FileText } from 'lucide-react';
-import { API_BASE_URL, BLOB_BASE_URL, PRODUCTION_DOMAIN } from '../config/api';
-import { cachedFetch } from '../lib/cache';
+import { API_BASE_URL, PRODUCTION_DOMAIN } from '../config/api';
+import { loadContactData, loadResumeData } from '../utils/staticDataLoader';
 import { ContactSkeleton } from './ui/skeleton';
 
 interface ContactDetails {
@@ -29,84 +29,48 @@ const Contact: React.FC = () => {
   const [hasUploadedResume, setHasUploadedResume] = useState(false);
   const [contactLoading, setContactLoading] = useState(true);
   const [contactError, setContactError] = useState<string | null>(null);
+  const [, setDataSource] = useState<string>('loading');
 
   useEffect(() => {
-    // Fetch data immediately - no artificial delay
+    // Load static data immediately
     Promise.all([fetchContactDetails(), checkResumeStatus()]);
-    
-    // Auto-refresh every 30 seconds to pick up admin changes (less aggressive)
-    const autoRefreshInterval = setInterval(() => {
-      fetchContactDetails(true); // Auto-refresh mode
-      checkResumeStatus();
-    }, 30000);
-    
-    // Refresh when page becomes visible (user switches back to tab)
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchContactDetails(false); // Force fresh data when user returns
-        checkResumeStatus();
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      clearInterval(autoRefreshInterval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
   }, []);
 
-  const fetchContactDetails = async (isAutoRefresh = false) => {
-    // Don't show loading on auto-refresh if we already have contact details
-    if (!isAutoRefresh || !contactDetails) {
-      setContactLoading(true);
-    }
+  const fetchContactDetails = async () => {
+    setContactLoading(true);
     setContactError(null);
     
     try {
-      // Try fresh fetch first, then fallback to cache
-      const response = await fetch(`${API_BASE_URL}/contact-details`, {
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Accept': 'application/json'
-        }
-      });
+      const contactData = await loadContactData();
       
-      if (response.ok) {
-        const data = await response.json();
-        setContactDetails(data);
-        setContactLoading(false);
-        return;
+      if (contactData && contactData.data) {
+        setContactDetails(contactData.data);
+        setDataSource(contactData.source);
+        console.log(`✅ Loaded contact details from ${contactData.source}`);
+      } else {
+        throw new Error('Invalid contact data structure');
       }
       
-      // Fallback to cached data if fresh fetch fails
-      const data = await cachedFetch<ContactDetails>(
-        `${API_BASE_URL}/contact-details`,
-        {},
-        'contact-details',
-        300 // 5 minute cache
-      );
-      
-      setContactDetails(data);
       setContactLoading(false);
     } catch (error) {
-      // Only show error if we don't have existing contact details
-      if (!contactDetails) {
-        setContactError('Failed to load contact information. Please try again.');
-      }
+      console.error('Failed to load contact details:', error);
+      setContactError('Failed to load contact information. Using fallback data.');
       setContactLoading(false);
     }
   };
 
   const checkResumeStatus = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/resume/current`);
-      if (response.ok) {
-        const data = await response.json();
-        setHasUploadedResume(data.hasResume);
+      const resumeData = await loadResumeData();
+      
+      if (resumeData && resumeData.data) {
+        setHasUploadedResume(resumeData.data.hasResume || false);
+        console.log(`✅ Loaded resume status from ${resumeData.source}`);
       }
     } catch (error) {
-      // Resume status check failed - use fallback
+      console.error('Failed to load resume status:', error);
+      // Use fallback - no resume
+      setHasUploadedResume(false);
     }
   };
 
@@ -201,7 +165,7 @@ const Contact: React.FC = () => {
                 <div className="text-center py-8">
                   <p className="text-muted-foreground mb-4">{contactError}</p>
                   <button 
-                    onClick={() => fetchContactDetails(false)}
+                    onClick={() => fetchContactDetails()}
                     className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Retry
