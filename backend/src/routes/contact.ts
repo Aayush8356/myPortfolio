@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import Contact from '../models/Contact';
+import ContactDetails from '../models/ContactDetails';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
 import emailService from '../services/emailService';
 import { WebhookTriggers } from '../utils/webhookService';
@@ -34,9 +35,11 @@ router.post('/', async (req: Request, res: Response) => {
 
     await contact.save();
 
+    const contactDetails = await ContactDetails.findOne().lean();
+
     // Send email if environment variables are configured
     if (process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD) {
-      const emailSent = await emailService.sendContactEmail({ name, email, message });
+      const emailSent = await emailService.sendContactEmail({ name, email, message }, contactDetails);
       
       if (emailSent) {
         res.status(201).json({ 

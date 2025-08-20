@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 
+import { IContactDetails } from '../models/ContactDetails';
+
 interface EmailData {
   name: string;
   email: string;
@@ -19,7 +21,7 @@ class EmailService {
     });
   }
 
-  async sendContactEmail(data: EmailData): Promise<boolean> {
+  async sendContactEmail(data: EmailData, contactDetails: IContactDetails | null): Promise<boolean> {
     try {
       // Email to you (the portfolio owner)
       const mailOptions = {
@@ -83,8 +85,8 @@ class EmailService {
             <p>In the meantime, feel free to:</p>
             <ul style="line-height: 1.8;">
               <li>Check out my projects at <a href="https://meetaayush.com/#projects">meetaayush.com</a></li>
-              <li>Connect with me on <a href="https://linkedin.com/in/aayush-gupta">LinkedIn</a></li>
-              <li>View my code on <a href="https://github.com/Aayush8356">GitHub</a></li>
+              <li>Connect with me on <a href="${contactDetails?.linkedin || 'https://www.linkedin.com/in/aayushgupta23/'}">LinkedIn</a></li>
+              <li>View my code on <a href="${contactDetails?.github || 'https://github.com/Aayush8356'}">GitHub</a></li>
             </ul>
             
             <p>Looking forward to connecting with you!</p>
