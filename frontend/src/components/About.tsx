@@ -14,8 +14,8 @@ interface AboutContent {
 }
 
 const About: React.FC = () => {
-  // Remove unused variable since resume functionality is handled by API
-  // const [hasUploadedResume, setHasUploadedResume] = useState(false);
+  const [hasResume, setHasResume] = useState(false);
+  const [resumeUrl, setResumeUrl] = useState('');
   const [aboutContent, setAboutContent] = useState<AboutContent>({
     backgroundTitle: 'BACKGROUND',
     backgroundContent: "I'm Aayush Gupta, a Full Stack Developer with 1+ year of hands-on experience building web applications using the MERN stack (MongoDB, Express.js, React.js, and Node.js). I hold a Bachelor's degree in Computer Science and Engineering from Chandigarh University (2020–2024), and my journey as a developer has been shaped through self-driven learning, building solo projects, and solving real-world problems through software.",
@@ -46,31 +46,19 @@ const About: React.FC = () => {
 
   const checkResumeStatus = async () => {
     try {
-      await cachedFetch<{hasResume: boolean}>(
-        `${API_BASE_URL}/resume/current`,
-        {},
-        'resume-status',
-        60 // 1 minute cache for resume status
-      );
-      // setHasUploadedResume(data.hasResume);
-    } catch (error) {
-      if (error instanceof Error && error.name !== 'AbortError') {
-        // Resume status check failed
+      const res = await fetch('/data/resume-status.json');
+      const data = await res.json();
+      if (data && data.data) {
+        setHasResume(data.data.hasResume || false);
+        setResumeUrl(data.data.resumeUrl || '');
       }
-      // setHasUploadedResume(false);
+    } catch (error) {
+      setHasResume(false);
+      setResumeUrl('');
     }
   };
 
-  const openResumePreview = async () => {
-    const ts = Date.now();
-    window.open(`${BLOB_BASE_URL}/resume?cb=${ts}`, '_blank');
-  };
-
-  const downloadResume = async () => {
-    const ts = Date.now();
-    // Route through blob proxy to guarantee same-origin URLs
-    window.open(`${BLOB_BASE_URL}/resume/download?cb=${ts}`, '_blank');
-  };
+  
 
   return (
     <section id="about" className="py-12 md:py-20 bg-background relative">
@@ -123,14 +111,18 @@ const About: React.FC = () => {
                 {aboutContent.resumeDescription}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                <Button onClick={openResumePreview} variant="outline" className="border-dark text-foreground hover:bg-muted hover-lift text-xs md:text-sm">
-                  <Eye className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                  Preview Resume
-                </Button>
-                <Button onClick={downloadResume} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift text-xs md:text-sm">
-                  <Download className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                  Download Resume
-                </Button>
+                <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="border-dark text-foreground hover:bg-muted hover-lift text-xs md:text-sm" disabled={!hasResume}>
+                    <Eye className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                    Preview Resume
+                  </Button>
+                </a>
+                <a href={resumeUrl} download="Aayush_Gupta_Resume.pdf">
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-dark hover-lift text-xs md:text-sm" disabled={!hasResume}>
+                    <Download className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                    Download Resume
+                  </Button>
+                </a>
               </div>
             </CardContent>
           </Card>

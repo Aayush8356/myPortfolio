@@ -80,12 +80,10 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
           email: 'your.email@example.com',
           phone: '+1 (555) 123-4567',
           location: 'Your City, Country',
-          resume: resumeUrl, // Store the actual blob URL internally
-          resumePublicUrl: `${process.env.PRODUCTION_DOMAIN || 'https://meetaayush.com'}/blob/resume` // Public URL for external access
+          resume: resumeUrl, // Store the actual blob URL
         });
       } else {
-        contactDetails.resume = resumeUrl; // Store the actual blob URL internally
-        contactDetails.resumePublicUrl = `${process.env.PRODUCTION_DOMAIN || 'https://meetaayush.com'}/blob/resume`; // Public URL for external access
+        contactDetails.resume = resumeUrl; // Store the actual blob URL
       }
       
       await contactDetails.save();
@@ -99,8 +97,7 @@ router.post('/upload', authenticateToken, requireAdmin, (req: AuthRequest, res) 
       res.json({
         message: 'Resume uploaded successfully',
         filename: req.file.originalname,
-        resumeUrl: `${process.env.PRODUCTION_DOMAIN || 'https://meetaayush.com'}/blob/resume`, // Return custom domain URL
-        downloadUrl: `${process.env.PRODUCTION_DOMAIN || 'https://meetaayush.com'}/api/resume/download` // Consistent download URL
+        resumeUrl: resumeUrl, // Return direct blob URL
       });
     } catch (error) {
       console.error('Error uploading resume:', error);

@@ -280,7 +280,7 @@ const Projects: React.FC = () => {
                 {project.imageUrl && (
                   <div className="relative w-full h-32 md:h-40 lg:h-48 bg-muted rounded-t-2xl overflow-hidden">
                     <img
-                      src={project.imageUrl.startsWith('/projects') ? `${ASSETS_BASE_URL}${project.imageUrl}` : project.imageUrl}
+                      src={project.imageUrl}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 group-hover:brightness-110"
                     />

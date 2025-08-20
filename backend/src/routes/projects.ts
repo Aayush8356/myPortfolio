@@ -238,7 +238,7 @@ router.post('/upload-image', authenticateToken, requireAdmin, uploadProjectImage
       
       // Write file to local storage
       fs.writeFileSync(imagePath, req.file.buffer);
-      imageUrl = `/projects/images/${filename}`;
+      imageUrl = `${process.env.API_URL}/projects/images/${filename}`;
     }
 
     // Trigger Vercel rebuild (fire-and-forget) - image upload might affect projects

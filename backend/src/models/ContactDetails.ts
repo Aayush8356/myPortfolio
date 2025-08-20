@@ -7,8 +7,7 @@ export interface IContactDetails extends Document {
   linkedin?: string;
   github?: string;
   twitter?: string;
-  resume?: string; // Internal blob URL
-  resumePublicUrl?: string; // Public custom domain URL
+  resume?: string; // Direct blob URL
   updatedAt: Date;
 }
 
@@ -49,11 +48,7 @@ const contactDetailsSchema = new Schema({
     trim: true,
     default: ''
   },
-  resumePublicUrl: {
-    type: String,
-    trim: true,
-    default: ''
-  }
+  
 }, {
   timestamps: true
 });
