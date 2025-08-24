@@ -10,6 +10,8 @@
     "postinstall": "npm run build",
     "seed": "ts-node src/seeds/createAdmin.ts",
     "seed-projects": "ts-node src/seeds/createProjects.ts",
+    "seed-experience": "ts-node src/seeds/createExperiences.ts",
+    "seed-education": "ts-node src/seeds/createEducations.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

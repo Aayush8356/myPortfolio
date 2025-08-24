@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
-import { X } from 'lucide-react';
+import { Save, X } from 'lucide-react';
 
 interface Education {
   _id: string;
@@ -55,14 +55,18 @@ const EducationEditor: React.FC<EducationEditorProps> = ({ education, token, onS
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-      <Card className="w-full max-w-2xl">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">{education ? 'Edit' : 'Add'} Education</h2>
-            <Button variant="ghost" size="sm" onClick={onClose}><X className="w-4 h-4" /></Button>
-          </div>
-          <div className="space-y-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            {education ? 'Edit Education' : 'Add New Education'}
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="w-4 h-4" />
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSave} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">Type</label>
               <select
@@ -151,10 +155,16 @@ const EducationEditor: React.FC<EducationEditorProps> = ({ education, token, onS
                 className="w-full px-3 py-2 border border-border rounded-md bg-background"
               />
             </div>
-          </div>
-          <div className="flex justify-end mt-6">
-            <Button onClick={handleSave}>Save</Button>
-          </div>
+            <div className="flex gap-3 pt-4">
+              <Button type="submit" className="flex-1">
+                <Save className="w-4 h-4 mr-2" />
+                {education ? 'Update Education' : 'Create Education'}
+              </Button>
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
     </div>
