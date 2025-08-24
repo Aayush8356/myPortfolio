@@ -19,7 +19,7 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: 
   try {
     const newExperience = new Experience(req.body);
     const savedExperience = await newExperience.save();
-    WebhookTriggers.experienceCreated(savedExperience._id.toString());
+    WebhookTriggers.experienceCreated(savedExperience.id);
     res.status(201).json(savedExperience);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -32,7 +32,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res
     if (!updatedExperience) {
       return res.status(404).json({ message: 'Experience not found' });
     }
-    WebhookTriggers.experienceUpdated(updatedExperience._id.toString());
+    WebhookTriggers.experienceUpdated(updatedExperience.id);
     res.json(updatedExperience);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

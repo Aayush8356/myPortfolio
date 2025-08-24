@@ -19,7 +19,7 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthRequest, res: 
   try {
     const newEducation = new Education(req.body);
     const savedEducation = await newEducation.save();
-    WebhookTriggers.educationCreated(savedEducation._id.toString());
+    WebhookTriggers.educationCreated(savedEducation.id);
     res.status(201).json(savedEducation);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -32,7 +32,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res
     if (!updatedEducation) {
       return res.status(404).json({ message: 'Education not found' });
     }
-    WebhookTriggers.educationUpdated(updatedEducation._id.toString());
+    WebhookTriggers.educationUpdated(updatedEducation.id);
     res.json(updatedEducation);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
