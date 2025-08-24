@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import PasswordInput from '../ui/password-input';
-import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText, Home, Info, Key } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, LogOut, Mail, Settings, User, Upload, Download, FileText, Home, Info, Key, Briefcase, GraduationCap } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
+import ExperienceEditor from './ExperienceEditor';
+import EducationEditor from './EducationEditor';
 import { API_BASE_URL, BLOB_BASE_URL } from '../../config/api';
 import { useToast, ToastContainer } from '../ui/toast';
 import { updateProjectsCache, cachedFetch } from '../../lib/cache';
@@ -58,6 +60,31 @@ interface AboutContent {
   experienceContent: string;
   skills: string[];
   resumeDescription: string;
+}
+
+interface Experience {
+  _id: string;
+  type: 'education' | 'project' | 'learning' | 'goal';
+  title: string;
+  organization?: string;
+  location?: string;
+  period: string;
+  description: string[];
+  technologies?: string[];
+  current?: boolean;
+}
+
+interface Education {
+  _id: string;
+  type: 'degree' | 'certification' | 'course';
+  title: string;
+  institution: string;
+  location?: string;
+  period: string;
+  description: string[];
+  grade?: string;
+  status: 'completed' | 'in-progress';
+  highlights?: string[];
 }
 
 
@@ -129,6 +156,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     email: '',
     currentPassword: ''
   });
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [educations, setEducations] = useState<Education[]>([]);
+  const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
+  const [editingEducation, setEditingEducation] = useState<Education | null>(null);
+  const [showExperienceEditor, setShowExperienceEditor] = useState(false);
+  const [showEducationEditor, setShowEducationEditor] = useState(false);
 
   useEffect(() => {
     if (activeTab === 'projects') {
@@ -142,6 +175,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       fetchHeroContent();
     } else if (activeTab === 'about') {
       fetchAboutContent();
+    } else if (activeTab === 'experience') {
+      fetchExperiences();
+    } else if (activeTab === 'education') {
+      fetchEducations();
     } else if (activeTab === 'account') {
       fetchUserInfo();
     }
@@ -170,6 +207,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
       } catch (fallbackError) {
         // Fallback project fetch failed
       }
+    }
+  };
+
+  const fetchExperiences = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/experience`);
+      if (response.ok) {
+        const data = await response.json();
+        setExperiences(data);
+      }
+    } catch (error) {
+      // Error fetching experiences
+    }
+  };
+
+  const fetchEducations = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/education`);
+      if (response.ok) {
+        const data = await response.json();
+        setEducations(data);
+      }
+    } catch (error) {
+      // Error fetching educations
     }
   };
 
@@ -387,6 +448,50 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     }
   };
 
+  const deleteExperience = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this experience item?')) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/experience/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setExperiences(experiences.filter(e => e._id !== id));
+        toast.success('Experience item deleted successfully');
+      } else {
+        toast.error('Failed to delete experience item', 'Please try again.');
+      }
+    } catch (error) {
+      toast.error('Delete error', 'Please check your connection and try again.');
+    }
+  };
+
+  const deleteEducation = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this education item?')) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/education/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setEducations(educations.filter(e => e._id !== id));
+        toast.success('Education item deleted successfully');
+      } else {
+        toast.error('Failed to delete education item', 'Please try again.');
+      }
+    } catch (error) {
+      toast.error('Delete error', 'Please check your connection and try again.');
+    }
+  };
+
   const handleProjectSave = async (project: Project) => {
     let updatedProjects;
     if (editingProject) {
@@ -414,6 +519,26 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
     
     setShowProjectEditor(false);
     setEditingProject(null);
+  };
+
+  const handleExperienceSave = (experience: Experience) => {
+    if (editingExperience) {
+      setExperiences(experiences.map(e => e._id === experience._id ? experience : e));
+    } else {
+      setExperiences([experience, ...experiences]);
+    }
+    setShowExperienceEditor(false);
+    setEditingExperience(null);
+  };
+
+  const handleEducationSave = (education: Education) => {
+    if (editingEducation) {
+      setEducations(educations.map(e => e._id === education._id ? education : e));
+    } else {
+      setEducations([education, ...educations]);
+    }
+    setShowEducationEditor(false);
+    setEditingEducation(null);
   };
 
   const updateHeroContent = async () => {
@@ -620,6 +745,28 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
           >
             <Settings className="w-4 h-4 inline mr-2" />
             Projects
+          </button>
+          <button
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'experience' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+            onClick={() => setActiveTab('experience')}
+          >
+            <Briefcase className="w-4 h-4 inline mr-2" />
+            Experience
+          </button>
+          <button
+            className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'education' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+            onClick={() => setActiveTab('education')}
+          >
+            <GraduationCap className="w-4 h-4 inline mr-2" />
+            Education
           </button>
           <button
             className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${
@@ -924,6 +1071,106 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
                           variant="outline"
                           size="sm"
                           onClick={() => deleteProject(project._id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'experience' && (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold">Manage Experience</h2>
+              <Button onClick={() => {
+                setEditingExperience(null);
+                setShowExperienceEditor(true);
+              }}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Experience
+              </Button>
+            </div>
+
+            <div className="grid gap-4">
+              {experiences.map((experience) => (
+                <Card key={experience._id}>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold">{experience.title}</h3>
+                        <p className="text-muted-foreground mb-2">{experience.organization}</p>
+                        <p className="text-sm text-muted-foreground">{experience.period}</p>
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditingExperience(experience);
+                            setShowExperienceEditor(true);
+                          }}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => deleteExperience(experience._id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'education' && (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold">Manage Education</h2>
+              <Button onClick={() => {
+                setEditingEducation(null);
+                setShowEducationEditor(true);
+              }}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Education
+              </Button>
+            </div>
+
+            <div className="grid gap-4">
+              {educations.map((education) => (
+                <Card key={education._id}>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold">{education.title}</h3>
+                        <p className="text-muted-foreground mb-2">{education.institution}</p>
+                        <p className="text-sm text-muted-foreground">{education.period}</p>
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditingEducation(education);
+                            setShowEducationEditor(true);
+                          }}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => deleteEducation(education._id)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -1298,6 +1545,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ token, onLogout }) => {
           onClose={() => {
             setShowProjectEditor(false);
             setEditingProject(null);
+          }}
+        />
+      )}
+
+      {showExperienceEditor && (
+        <ExperienceEditor
+          experience={editingExperience}
+          token={token}
+          onSave={handleExperienceSave}
+          onClose={() => {
+            setShowExperienceEditor(false);
+            setEditingExperience(null);
+          }}
+        />
+      )}
+
+      {showEducationEditor && (
+        <EducationEditor
+          education={editingEducation}
+          token={token}
+          onSave={handleEducationSave}
+          onClose={() => {
+            setShowEducationEditor(false);
+            setEditingEducation(null);
           }}
         />
       )}

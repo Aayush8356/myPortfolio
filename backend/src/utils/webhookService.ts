@@ -201,6 +201,56 @@ export const WebhookTriggers = {
     model: 'Contact',
     id,
     description: 'Contact message deleted'
+  }),
+
+  // Experience triggers
+  experienceCreated: (id: string) => triggerVercelRebuild({
+    source: '/api/experience',
+    action: 'create',
+    model: 'Experience',
+    id,
+    description: 'New experience added'
+  }),
+
+  experienceUpdated: (id: string) => triggerVercelRebuild({
+    source: '/api/experience',
+    action: 'update',
+    model: 'Experience',
+    id,
+    description: 'Experience updated'
+  }),
+
+  experienceDeleted: (id: string) => triggerVercelRebuild({
+    source: '/api/experience',
+    action: 'delete',
+    model: 'Experience',
+    id,
+    description: 'Experience deleted'
+  }),
+
+  // Education triggers
+  educationCreated: (id: string) => triggerVercelRebuild({
+    source: '/api/education',
+    action: 'create',
+    model: 'Education',
+    id,
+    description: 'New education added'
+  }),
+
+  educationUpdated: (id: string) => triggerVercelRebuild({
+    source: '/api/education',
+    action: 'update',
+    model: 'Education',
+    id,
+    description: 'Education updated'
+  }),
+
+  educationDeleted: (id: string) => triggerVercelRebuild({
+    source: '/api/education',
+    action: 'delete',
+    model: 'Education',
+    id,
+    description: 'Education deleted'
   })
 };
 

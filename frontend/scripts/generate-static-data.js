@@ -169,7 +169,63 @@ async function generateResumeData() {
   }
 }
 
-async function generateBuildMetadata(projectsData, contactData, resumeData) {
+async function generateExperienceData() {
+  console.log('🧠 Generating experience data...');
+  try {
+    const experiences = await fetchData(`${API_BASE_URL}/experience`);
+    if (!Array.isArray(experiences)) {
+      throw new Error('Experience data is not an array');
+    }
+    const experienceData = {
+      data: experiences,
+      lastUpdated: new Date().toISOString(),
+      source: 'database'
+    };
+    fs.writeFileSync(
+      path.join(OUTPUT_DIR, 'experience.json'),
+      JSON.stringify(experienceData, null, 2)
+    );
+    fs.writeFileSync(
+      path.join(FALLBACK_DIR, 'experience.json'),
+      JSON.stringify(experienceData, null, 2)
+    );
+    console.log(`✅ Generated experience data: ${experiences.length} items`);
+    return experienceData;
+  } catch (error) {
+    console.error('❌ Failed to generate experience data:', error.message);
+    return null;
+  }
+}
+
+async function generateEducationData() {
+  console.log('🎓 Generating education data...');
+  try {
+    const educations = await fetchData(`${API_BASE_URL}/education`);
+    if (!Array.isArray(educations)) {
+      throw new Error('Education data is not an array');
+    }
+    const educationData = {
+      data: educations,
+      lastUpdated: new Date().toISOString(),
+      source: 'database'
+    };
+    fs.writeFileSync(
+      path.join(OUTPUT_DIR, 'education.json'),
+      JSON.stringify(educationData, null, 2)
+    );
+    fs.writeFileSync(
+      path.join(FALLBACK_DIR, 'education.json'),
+      JSON.stringify(educationData, null, 2)
+    );
+    console.log(`✅ Generated education data: ${educations.length} items`);
+    return educationData;
+  } catch (error) {
+    console.error('❌ Failed to generate education data:', error.message);
+    return null;
+  }
+}
+
+async function generateBuildMetadata(projectsData, contactData, resumeData, experienceData, educationData) {
   console.log('🏗️ Generating build metadata...');
   
   const metadata = {
@@ -179,7 +235,9 @@ async function generateBuildMetadata(projectsData, contactData, resumeData) {
     dataStatus: {
       projects: projectsData ? 'success' : 'failed',
       contact: contactData ? 'success' : 'failed',
-      resume: resumeData ? 'success' : 'failed'
+      resume: resumeData ? 'success' : 'failed',
+      experience: experienceData ? 'success' : 'failed',
+      education: educationData ? 'success' : 'failed'
     },
     counts: {
       projects: projectsData ? projectsData.data.length : 0,
@@ -217,24 +275,25 @@ async function main() {
   const startTime = Date.now();
   
   try {
-    // Generate all data in parallel for speed
-    const [projectsData, contactData, resumeData] = await Promise.all([
+    const [projectsData, contactData, resumeData, experienceData, educationData] = await Promise.all([
       generateProjectsData(),
       generateContactData(),
-      generateResumeData()
+      generateResumeData(),
+      generateExperienceData(),
+      generateEducationData()
     ]);
     
     // Generate build metadata
-    const metadata = await generateBuildMetadata(projectsData, contactData, resumeData);
+    const metadata = await generateBuildMetadata(projectsData, contactData, resumeData, experienceData, educationData);
     
     const duration = Date.now() - startTime;
     
     console.log('');
     console.log('✅ Static data generation completed!');
     console.log(`⏱️  Duration: ${duration}ms`);
-    console.log(`📊 Status: ${metadata.dataStatus.projects}/${metadata.dataStatus.contact}/${metadata.dataStatus.resume}`);
+    console.log(`📊 Status: ${metadata.dataStatus.projects}/${metadata.dataStatus.contact}/${metadata.dataStatus.resume}/${metadata.dataStatus.experience}/${metadata.dataStatus.education}`);
     
-    if (projectsData && contactData && resumeData) {
+    if (projectsData && contactData && resumeData && experienceData && educationData) {
       console.log('🎉 All data generated successfully!');
       process.exit(0);
     } else {
@@ -254,4 +313,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { main, generateProjectsData, generateContactData, generateResumeData };
+module.exports = { main, generateProjectsData, generateContactData, generateResumeData, generateExperienceData, generateEducationData };
